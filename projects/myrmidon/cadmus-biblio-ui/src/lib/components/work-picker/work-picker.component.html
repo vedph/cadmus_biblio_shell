@@ -1,16 +1,31 @@
 <form [formGroup]="form">
+  <mat-autocomplete #lookupAuto="matAutocomplete" [displayWith]="workToString">
+    <mat-option
+      *ngFor="let w of works$ | async"
+      [value]="w"
+      (onSelectionChange)="pickWork(w)"
+    >
+      {{ workToString(w) }}
+    </mat-option>
+  </mat-autocomplete>
+
   <mat-form-field>
     <input
       matInput
-      [formControl]="filter"
       type="text"
-      placeholder="{{ container ? 'container' : 'work' }}"
-      [matAutocomplete]="auto"
+      [placeholder]="label"
+      [formControl]="lookup"
+      [matAutocomplete]="lookupAuto"
     />
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let work of works$ | async" [value]="work">
-        {{ work.key }}
-      </mat-option>
-    </mat-autocomplete>
   </mat-form-field>
+  <button
+    type="button"
+    mat-icon-button
+    color="warn"
+    (click)="clear()"
+    [disabled]="!work"
+    matTooltip="Clear"
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
 </form>
