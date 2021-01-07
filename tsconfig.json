@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -19,7 +18,21 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@myrmidon/cadmus-biblio-ui": [
+        "dist/myrmidon/cadmus-biblio-ui/myrmidon-cadmus-biblio-ui",
+        "dist/myrmidon/cadmus-biblio-ui"
+      ],
+      "@myrmidon/cadmus-biblio-core": [
+        "dist/myrmidon/cadmus-biblio-core/myrmidon-cadmus-biblio-core",
+        "dist/myrmidon/cadmus-biblio-core"
+      ],
+      "@myrmidon/cadmus-biblio-api": [
+        "dist/myrmidon/cadmus-biblio-api/myrmidon-cadmus-biblio-api",
+        "dist/myrmidon/cadmus-biblio-api"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
