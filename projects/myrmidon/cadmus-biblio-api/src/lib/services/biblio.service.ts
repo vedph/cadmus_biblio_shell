@@ -9,6 +9,7 @@ import {
   WorkType,
   Keyword,
   Container,
+  Work,
 } from '@myrmidon/cadmus-biblio-core';
 
 export interface AuthorFilter extends PagingOptions {
@@ -210,6 +211,33 @@ export class BiblioService {
   public deleteContainer(id: string): Observable<any> {
     return this._http
       .delete(`${this._env.apiUrl}/containers/${id}`)
+      .pipe(catchError(this._error.handleError));
+  }
+
+  public getWorks(filter: WorkFilter): Observable<DataPage<Work>> {
+    const httpParams = this.getWorkFilterParams(filter);
+    return this._http
+      .get<DataPage<Work>>(`${this._env.apiUrl}/works`, {
+        params: httpParams,
+      })
+      .pipe(retry(3), catchError(this._error.handleError));
+  }
+
+  public getWork(id: string): Observable<Work> {
+    return this._http
+      .get<Work>(`${this._env.apiUrl}/works/${id}`)
+      .pipe(retry(3), catchError(this._error.handleError));
+  }
+
+  public addWork(work: Work): Observable<Work> {
+    return this._http
+      .post<Work>(`${this._env.apiUrl}/works`, work)
+      .pipe(catchError(this._error.handleError));
+  }
+
+  public deleteWork(id: string): Observable<any> {
+    return this._http
+      .delete(`${this._env.apiUrl}/works/${id}`)
       .pipe(catchError(this._error.handleError));
   }
 }

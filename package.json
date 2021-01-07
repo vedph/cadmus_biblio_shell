@@ -32,7 +32,7 @@
     "@myrmidon/cadmus-api": "0.0.8",
     "@myrmidon/cadmus-core": "0.0.13",
     "@myrmidon/cadmus-login": "0.0.5",
-    "@myrmidon/cadmus-material": "0.0.4",
+    "@myrmidon/cadmus-material": "0.0.5",
     "@myrmidon/cadmus-ui": "0.0.24",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",

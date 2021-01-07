@@ -1,0 +1,16 @@
+<form [formGroup]="form">
+  <mat-form-field>
+    <input
+      matInput
+      [formControl]="filter"
+      type="text"
+      placeholder="{{ container ? 'container' : 'work' }}"
+      [matAutocomplete]="auto"
+    />
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let work of works$ | async" [value]="work">
+        {{ work.key }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>
