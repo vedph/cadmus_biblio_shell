@@ -41,3 +41,13 @@ export interface Work extends WorkBase {
   firstPage?: number;
   lastPage?: number;
 }
+
+export interface PagingOptions {
+  pageNumber: number;
+  pageSize: number;
+}
+
+export interface WorkType {
+  id: string;
+  name: string;
+}
