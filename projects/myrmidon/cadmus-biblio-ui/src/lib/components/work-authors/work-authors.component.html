@@ -1,0 +1,210 @@
+<form [formGroup]="form" (submit)="save()">
+  authors
+  <button
+    type="button"
+    mat-icon-button
+    color="primary"
+    matTooltip="Edit authors"
+    [disabled]="editing"
+    (click)="editing = true"
+  ></button>
+  <div class="current" *ngIf="current">
+    {{ current }}
+  </div>
+
+  <mat-expansion-panel [disabled]="!editing" [expanded]="editing">
+    <mat-expansion-panel-header>
+      <mat-panel-title>edit authors</mat-panel-title>
+      <mat-panel-description>{{ authors?.length || 0 }}</mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <form [formGroup]="search">
+      <mat-autocomplete
+        #lookupAuto="matAutocomplete"
+        [displayWith]="authorToString"
+      >
+        <mat-option
+          *ngFor="let a of authors$ | async"
+          [value]="a"
+          (onSelectionChange)="pickAuthor(a)"
+        >
+          {{ authorToString(a) }}
+        </mat-option>
+      </mat-autocomplete>
+
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          placeholder="last name"
+          [formControl]="lookup"
+          [matAutocomplete]="lookupAuto"
+        />
+      </mat-form-field>
+      <button
+        type="button"
+        mat-icon-button
+        color="warn"
+        (click)="clearAuthor()"
+        [disabled]="!author"
+        matTooltip="Clear"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+      &nbsp;
+      <button
+        type="button"
+        mat-icon-button
+        color="primary"
+        (click)="addAuthor()"
+        matTooltip="Add a new author"
+      >
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </form>
+
+    <!-- authors array -->
+    <div formArrayName="authors">
+      <div
+        *ngFor="
+          let item of authors.controls;
+          let i = index;
+          let first = first;
+          let last = last
+        "
+      >
+        <!-- child form -->
+        <div [formGroupName]="i">
+          <!-- child actions -->
+          {{ i + 1 }}.
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Remove this author"
+            color="warn"
+            (click)="removeAuthor(i)"
+          >
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+          <button
+            [disabled]="first"
+            mat-icon-button
+            type="button"
+            matTooltip="Move author up"
+            (click)="moveAuthorUp(i)"
+          >
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button
+            [disabled]="last"
+            mat-icon-button
+            type="button"
+            matTooltip="Move author down"
+            (click)="moveAuthorDown(i)"
+          >
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+
+          <!-- child controls -->
+          <!-- last -->
+          <mat-form-field>
+            <input matInput formControlName="last" placeholder="last" />
+            <mat-error
+              *ngIf="
+                item['controls'].last.errors?.required &&
+                (item['controls'].last.dirty || item['controls'].last.touched)
+              "
+              >required</mat-error
+            >
+            <mat-error
+              *ngIf="
+                item['controls'].last.errors?.maxLength &&
+                (item['controls'].last.dirty || item['controls'].last.touched)
+              "
+              >too long</mat-error
+            >
+          </mat-form-field>
+
+          &nbsp;
+          <!-- first -->
+          <mat-form-field>
+            <input matInput formControlName="first" placeholder="first" />
+            <mat-error
+              *ngIf="
+                item['controls'].first.errors?.required &&
+                (item['controls'].first.dirty || item['controls'].first.touched)
+              "
+              >required</mat-error
+            >
+            <mat-error
+              *ngIf="
+                item['controls'].first.errors?.maxLength &&
+                (item['controls'].first.dirty || item['controls'].first.touched)
+              "
+              >too long</mat-error
+            >
+          </mat-form-field>
+
+          <div class="indented">
+            <!-- suffix -->
+            <mat-form-field>
+              <input matInput formControlName="suffix" placeholder="suffix" />
+              <mat-error
+                *ngIf="
+                  item['controls'].suffix.errors?.maxLength &&
+                  (item['controls'].suffix.dirty ||
+                    item['controls'].suffix.touched)
+                "
+                >too long</mat-error
+              >
+            </mat-form-field>
+
+            &nbsp;
+            <!-- role (bound) -->
+            <mat-form-field *ngIf="roleEntries?.length" style="width: 8em">
+              <mat-select formControlName="role" placeholder="role">
+                <mat-option *ngFor="let e of roleEntries" [value]="e.id">{{
+                  e.value
+                }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- role (free) -->
+            <mat-form-field *ngIf="!roleEntries?.length" style="width: 8em">
+              <input matInput formControlName="role" placeholder="role" />
+              <mat-error
+                *ngIf="
+                  item['controls'].role.errors?.maxLength &&
+                  (item['controls'].role.dirty || item['controls'].role.touched)
+                "
+                >too long</mat-error
+              >
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- buttons -->
+    <div>
+      <button
+        type="button"
+        color="warn"
+        mat-icon-button
+        matTooltip="Discard authors"
+        (click)="cancel()"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button
+        type="submit"
+        color="primary"
+        mat-icon-button
+        matTooltip="Accept authors"
+        [disabled]="form.invalid || form.pristine"
+      >
+        <mat-icon>check_circle</mat-icon>
+      </button>
+    </div>
+  </mat-expansion-panel>
+</form>

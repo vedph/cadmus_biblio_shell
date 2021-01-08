@@ -1,5 +1,5 @@
 export interface Author {
-  id: string;
+  id?: string;
   first: string;
   last: string;
   suffix?: string;
@@ -16,7 +16,7 @@ export interface Keyword {
 }
 
 export interface WorkBase {
-  id: string;
+  id?: string;
   key: string;
   authors: WorkAuthor[];
   type: string;

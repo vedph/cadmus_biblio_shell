@@ -5,9 +5,10 @@ import { RouterModule } from '@angular/router';
 import { CadmusCoreModule } from '@myrmidon/cadmus-core';
 import { CadmusMaterialModule } from '@myrmidon/cadmus-material';
 import { WorkPickerComponent } from './components/work-picker/work-picker.component';
+import { WorkAuthorsComponent } from './components/work-authors/work-authors.component';
 
 @NgModule({
-  declarations: [WorkPickerComponent],
+  declarations: [WorkPickerComponent, WorkAuthorsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -17,6 +18,6 @@ import { WorkPickerComponent } from './components/work-picker/work-picker.compon
     CadmusCoreModule,
     CadmusMaterialModule,
   ],
-  exports: [WorkPickerComponent],
+  exports: [WorkPickerComponent, WorkAuthorsComponent],
 })
 export class CadmusBiblioUiModule {}

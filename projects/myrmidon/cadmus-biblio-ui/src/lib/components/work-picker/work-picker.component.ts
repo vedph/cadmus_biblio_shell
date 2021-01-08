@@ -7,6 +7,12 @@ import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataPage } from '@myrmidon/cadmus-core';
 
+/**
+ * Work or container picker component. This uses the biblio service
+ * to let users pick a work or container by typing letters belonging
+ * to their title or author last name(s), and selecting one of the
+ * first matches.
+ */
 @Component({
   selector: 'biblio-work-picker',
   templateUrl: './work-picker.component.html',
@@ -20,7 +26,7 @@ export class WorkPickerComponent implements OnInit {
   public limit: number;
 
   /**
-   * The label attached to this picker.
+   * The label attached to this picker. Default=work or container.
    */
   @Input()
   public label: string | undefined;
@@ -31,6 +37,9 @@ export class WorkPickerComponent implements OnInit {
   @Input()
   public container: boolean;
 
+  /**
+   * Fired when a work or container is selected.
+   */
   @Output()
   public workChange: EventEmitter<WorkBase>;
 
@@ -54,7 +63,7 @@ export class WorkPickerComponent implements OnInit {
     // match either title or author's last name
     return {
       pageNumber: 1,
-      pageSize: 10,
+      pageSize: this.limit,
       matchAny: true,
       title: filterText,
       lastName: filterText,
