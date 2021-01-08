@@ -5,7 +5,6 @@ import { WorkBase } from '@myrmidon/cadmus-biblio-core';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { DataPage } from '@myrmidon/cadmus-core';
 
 /**
  * Work or container picker component. This uses the biblio service
@@ -29,7 +28,7 @@ export class WorkPickerComponent implements OnInit {
    * The label attached to this picker. Default=work or container.
    */
   @Input()
-  public label: string | undefined;
+  public label: string;
 
   /**
    * True if the picker refers to containers; false if refers to works.
@@ -45,11 +44,12 @@ export class WorkPickerComponent implements OnInit {
 
   public form: FormGroup;
   public lookup: FormControl;
-  public works$: Observable<DataPage<WorkBase>> | undefined;
+  public works$: Observable<WorkBase[]> | undefined;
   public work: WorkBase | undefined;
 
   constructor(formBuilder: FormBuilder, private _biblioService: BiblioService) {
     this.limit = 10;
+    this.label = 'work';
     this.container = false;
     this.workChange = new EventEmitter<WorkBase>();
     // form
@@ -72,18 +72,26 @@ export class WorkPickerComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.label) {
-      this.label = this.container? 'work' : 'container';
+      this.label = this.container ? 'work' : 'container';
     }
 
     this.works$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((value: DataPage<WorkBase> | string) => {
+      switchMap((value: WorkBase[] | string) => {
         if (typeof value === 'string') {
           const filter = this.getFilter(value);
           return this.container
-            ? this._biblioService.getContainers(filter)
-            : this._biblioService.getWorks(filter);
+            ? this._biblioService.getContainers(filter).pipe(
+                switchMap((p) => {
+                  return of(p.items);
+                })
+              )
+            : this._biblioService.getWorks(filter).pipe(
+                switchMap((p) => {
+                  return of(p.items);
+                })
+              );
         } else {
           return of(value);
         }

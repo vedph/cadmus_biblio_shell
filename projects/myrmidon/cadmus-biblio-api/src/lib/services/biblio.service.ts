@@ -56,7 +56,7 @@ export class BiblioService {
       httpParams = httpParams.set('last', filter.last);
     }
     return this._http
-      .get<DataPage<Author>>(`${this._env.apiUrl}/authors`, {
+      .get<DataPage<Author>>(`${this._env.apiUrl}authors`, {
         params: httpParams,
       })
       .pipe(retry(3), catchError(this._error.handleError));
@@ -64,25 +64,25 @@ export class BiblioService {
 
   public getAuthor(id: string): Observable<Author> {
     return this._http
-      .get<Author>(`${this._env.apiUrl}/authors/${id}`)
+      .get<Author>(`${this._env.apiUrl}authors/${id}`)
       .pipe(retry(3), catchError(this._error.handleError));
   }
 
   public addAuthor(author: Author): Observable<Author> {
     return this._http
-      .post<Author>(`${this._env.apiUrl}/authors`, author)
+      .post<Author>(`${this._env.apiUrl}authors`, author)
       .pipe(catchError(this._error.handleError));
   }
 
   public deleteAuthor(id: string): Observable<any> {
     return this._http
-      .delete(`${this._env.apiUrl}/authors/${id}`)
+      .delete(`${this._env.apiUrl}authors/${id}`)
       .pipe(catchError(this._error.handleError));
   }
 
   public pruneAuthors(): Observable<any> {
     return this._http
-      .delete(`${this._env.apiUrl}/unused/authors`)
+      .delete(`${this._env.apiUrl}unused/authors`)
       .pipe(catchError(this._error.handleError));
   }
 
@@ -94,7 +94,7 @@ export class BiblioService {
       httpParams = httpParams.set('name', filter.name);
     }
     return this._http
-      .get<DataPage<WorkType>>(`${this._env.apiUrl}/work-types`, {
+      .get<DataPage<WorkType>>(`${this._env.apiUrl}work-types`, {
         params: httpParams,
       })
       .pipe(retry(3), catchError(this._error.handleError));
@@ -102,19 +102,19 @@ export class BiblioService {
 
   public getWorkType(id: string): Observable<WorkType> {
     return this._http
-      .get<WorkType>(`${this._env.apiUrl}/work-types/${id}`)
+      .get<WorkType>(`${this._env.apiUrl}work-types/${id}`)
       .pipe(retry(3), catchError(this._error.handleError));
   }
 
   public addWorkType(type: WorkType): Observable<WorkType> {
     return this._http
-      .post<WorkType>(`${this._env.apiUrl}/work-types`, type)
+      .post<WorkType>(`${this._env.apiUrl}work-types`, type)
       .pipe(catchError(this._error.handleError));
   }
 
   public deleteWorkType(id: string): Observable<any> {
     return this._http
-      .delete(`${this._env.apiUrl}/work-types/${id}`)
+      .delete(`${this._env.apiUrl}work-types/${id}`)
       .pipe(catchError(this._error.handleError));
   }
 
@@ -129,7 +129,7 @@ export class BiblioService {
       httpParams = httpParams.set('value', filter.value);
     }
     return this._http
-      .get<DataPage<Keyword>>(`${this._env.apiUrl}/keywords`, {
+      .get<DataPage<Keyword>>(`${this._env.apiUrl}keywords`, {
         params: httpParams,
       })
       .pipe(retry(3), catchError(this._error.handleError));
@@ -137,13 +137,13 @@ export class BiblioService {
 
   public getKeyword(id: number): Observable<Keyword> {
     return this._http
-      .get<Keyword>(`${this._env.apiUrl}/keywords/${id}`)
+      .get<Keyword>(`${this._env.apiUrl}keywords/${id}`)
       .pipe(retry(3), catchError(this._error.handleError));
   }
 
   public addKeyword(keyword: Keyword): Observable<Keyword> {
     return this._http
-      .post<Keyword>(`${this._env.apiUrl}/keywords`, keyword)
+      .post<Keyword>(`${this._env.apiUrl}keywords`, keyword)
       .pipe(catchError(this._error.handleError));
   }
 
@@ -190,7 +190,7 @@ export class BiblioService {
   public getContainers(filter: WorkFilter): Observable<DataPage<Container>> {
     const httpParams = this.getWorkFilterParams(filter);
     return this._http
-      .get<DataPage<Container>>(`${this._env.apiUrl}/containers`, {
+      .get<DataPage<Container>>(`${this._env.apiUrl}containers`, {
         params: httpParams,
       })
       .pipe(retry(3), catchError(this._error.handleError));
@@ -198,26 +198,26 @@ export class BiblioService {
 
   public getContainer(id: string): Observable<Container> {
     return this._http
-      .get<Container>(`${this._env.apiUrl}/containers/${id}`)
+      .get<Container>(`${this._env.apiUrl}containers/${id}`)
       .pipe(retry(3), catchError(this._error.handleError));
   }
 
   public addContainer(container: Container): Observable<Container> {
     return this._http
-      .post<Container>(`${this._env.apiUrl}/containers`, container)
+      .post<Container>(`${this._env.apiUrl}containers`, container)
       .pipe(catchError(this._error.handleError));
   }
 
   public deleteContainer(id: string): Observable<any> {
     return this._http
-      .delete(`${this._env.apiUrl}/containers/${id}`)
+      .delete(`${this._env.apiUrl}containers/${id}`)
       .pipe(catchError(this._error.handleError));
   }
 
   public getWorks(filter: WorkFilter): Observable<DataPage<Work>> {
     const httpParams = this.getWorkFilterParams(filter);
     return this._http
-      .get<DataPage<Work>>(`${this._env.apiUrl}/works`, {
+      .get<DataPage<Work>>(`${this._env.apiUrl}works`, {
         params: httpParams,
       })
       .pipe(retry(3), catchError(this._error.handleError));
@@ -225,19 +225,19 @@ export class BiblioService {
 
   public getWork(id: string): Observable<Work> {
     return this._http
-      .get<Work>(`${this._env.apiUrl}/works/${id}`)
+      .get<Work>(`${this._env.apiUrl}works/${id}`)
       .pipe(retry(3), catchError(this._error.handleError));
   }
 
   public addWork(work: Work): Observable<Work> {
     return this._http
-      .post<Work>(`${this._env.apiUrl}/works`, work)
+      .post<Work>(`${this._env.apiUrl}works`, work)
       .pipe(catchError(this._error.handleError));
   }
 
   public deleteWork(id: string): Observable<any> {
     return this._http
-      .delete(`${this._env.apiUrl}/works/${id}`)
+      .delete(`${this._env.apiUrl}works/${id}`)
       .pipe(catchError(this._error.handleError));
   }
 }

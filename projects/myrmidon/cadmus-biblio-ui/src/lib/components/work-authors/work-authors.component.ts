@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
-import { DataPage, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { AuthorFilter, BiblioService } from '@myrmidon/cadmus-biblio-api';
 import { Author, WorkAuthor } from '@myrmidon/cadmus-biblio-core';
@@ -64,11 +64,12 @@ export class WorkAuthorsComponent implements OnInit {
   public search: FormGroup;
   public authors: FormArray;
   public form: FormGroup;
+  public groups: FormGroup[];
 
   public current: string | undefined;
   public editing: boolean;
 
-  public authors$: Observable<DataPage<Author>> | undefined;
+  public authors$: Observable<Author[]> | undefined;
   public author: WorkAuthor | undefined;
 
   constructor(
@@ -85,6 +86,7 @@ export class WorkAuthorsComponent implements OnInit {
       lookup: this.lookup,
     });
     this.authors = _formBuilder.array([], Validators.required);
+    this.groups = this.authors.controls as FormGroup[];
     this.form = _formBuilder.group({
       search: this.search,
       authors: this.authors,
@@ -107,11 +109,18 @@ export class WorkAuthorsComponent implements OnInit {
     this.authors$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((value: DataPage<WorkAuthor> | string) => {
+      switchMap((value: WorkAuthor[] | string) => {
+        // the string comes from user typing
         if (typeof value === 'string') {
+          // lookup and return results
           const filter = this.getFilter(value);
-          return this._biblioService.getAuthors(filter);
+          return this._biblioService.getAuthors(filter).pipe(
+            switchMap((p) => {
+              return of(p.items);
+            })
+          );
         } else {
+          // the authors come from results
           return of(value);
         }
       })
@@ -174,7 +183,7 @@ export class WorkAuthorsComponent implements OnInit {
     this.author = author;
     const a: WorkAuthor = {
       ...author,
-      ordinal: this.authors.length + 1
+      ordinal: this.authors.length + 1,
     };
     this.addAuthor(a);
   }

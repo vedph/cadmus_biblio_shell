@@ -13,9 +13,16 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '@myrmidon/cadmus-api';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
+import { DemoComponent } from './demo/demo.component';
+import { CadmusBiblioCoreModule } from 'projects/myrmidon/cadmus-biblio-core/src/public-api';
+import { CadmusBiblioApiModule } from 'projects/myrmidon/cadmus-biblio-api/src/public-api';
+import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
+// import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
+// import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
+// import { CadmusBiblioUiModule } from '@myrmidon/cadmus-biblio-ui';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent],
+  declarations: [AppComponent, HomeComponent, DemoComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -24,6 +31,7 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
       [
         { path: '', redirectTo: 'home', pathMatch: 'full' },
         { path: 'home', component: HomeComponent },
+        { path: 'demo', component: DemoComponent },
         {
           path: 'login',
           loadChildren: () =>
@@ -47,6 +55,10 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
     CadmusCoreModule,
     CadmusMaterialModule,
     CadmusUiModule,
+    // Biblio
+    CadmusBiblioCoreModule,
+    CadmusBiblioApiModule,
+    CadmusBiblioUiModule,
   ],
   providers: [
     EnvServiceProvider,
