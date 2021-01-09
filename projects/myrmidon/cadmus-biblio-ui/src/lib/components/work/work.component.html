@@ -19,6 +19,9 @@
     <!-- key -->
     <mat-form-field style="width: 585px">
       <input matInput [formControl]="key" placeholder="key" />
+      <button mat-icon-button matSuffix (click)="buildKey()">
+        <mat-icon>redo</mat-icon>
+      </button>
       <mat-error *ngIf="key.errors?.maxLength && (key.dirty || key.touched)"
         >key too long</mat-error
       >

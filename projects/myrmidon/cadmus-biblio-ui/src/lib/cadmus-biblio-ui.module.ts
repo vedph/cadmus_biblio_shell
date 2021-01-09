@@ -8,6 +8,8 @@ import { WorkPickerComponent } from './components/work-picker/work-picker.compon
 import { WorkAuthorsComponent } from './components/work-authors/work-authors.component';
 import { WorkKeywordsComponent } from './components/work-keywords/work-keywords.component';
 import { WorkComponent } from './components/work/work.component';
+import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
+import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { WorkComponent } from './components/work/work.component';
     // cadmus
     CadmusCoreModule,
     CadmusMaterialModule,
+    CadmusBiblioCoreModule,
+    CadmusBiblioApiModule,
   ],
   exports: [
     WorkPickerComponent,

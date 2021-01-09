@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -13,6 +12,7 @@ import {
   WorkAuthor,
   WorkBase,
   WorkType,
+  WorkKeyService,
 } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
@@ -78,7 +78,11 @@ export class WorkComponent implements OnInit {
   public types$: Observable<WorkType[]> | undefined;
   public container: Container | undefined;
 
-  constructor(formBuilder: FormBuilder, private _biblioService: BiblioService) {
+  constructor(
+    formBuilder: FormBuilder,
+    private _biblioService: BiblioService,
+    private _workKeyService: WorkKeyService
+  ) {
     this.modelChange = new EventEmitter<Work | Container>();
     this.editorClose = new EventEmitter<any>();
 
@@ -263,6 +267,10 @@ export class WorkComponent implements OnInit {
       sb.push(work.yearPub.toString());
     }
     return sb.join('');
+  }
+
+  public buildKey(): void {
+    this.key.setValue(this._workKeyService.buildKey(this.getModel()));
   }
 
   public cancel(): void {

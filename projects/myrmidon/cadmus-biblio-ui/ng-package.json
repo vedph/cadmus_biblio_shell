@@ -6,6 +6,7 @@
     "umdModuleIds": {
       "@myrmidon/cadmus-core": "@myrmidon/cadmus-core",
       "@myrmidon/cadmus-material": "@myrmidon/cadmus-material",
+      "@myrmidon/cadmus-biblio-core": "@myrmidon/cadmus-biblio-core",
       "@myrmidon/cadmus-biblio-api": "@myrmidon/cadmus-biblio-api"
     }
   }
