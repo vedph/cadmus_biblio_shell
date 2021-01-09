@@ -42,6 +42,11 @@ export interface Work extends WorkBase {
   lastPage?: number;
 }
 
+export interface EditedWork extends Work {
+  isContainer?: boolean;
+  number?: string;
+}
+
 export interface PagingOptions {
   pageNumber: number;
   pageSize: number;

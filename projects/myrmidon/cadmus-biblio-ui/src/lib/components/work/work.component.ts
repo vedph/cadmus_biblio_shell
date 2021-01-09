@@ -7,8 +7,8 @@ import {
 } from '@angular/forms';
 import {
   Container,
+  EditedWork,
   Keyword,
-  Work,
   WorkAuthor,
   WorkBase,
   WorkType,
@@ -28,13 +28,13 @@ import { distinctUntilChanged, switchMap, take } from 'rxjs/operators';
   styleUrls: ['./work.component.css'],
 })
 export class WorkComponent implements OnInit {
-  private _model: Work | Container | undefined;
+  private _model: EditedWork | undefined;
 
   @Input()
-  public get model(): Work | Container | undefined {
+  public get model(): EditedWork | undefined {
     return this._model;
   }
-  public set model(value: Work | Container | undefined) {
+  public set model(value: EditedWork | undefined) {
     this._model = value;
     this.updateForm(value);
   }
@@ -51,7 +51,7 @@ export class WorkComponent implements OnInit {
   public langEntries: ThesaurusEntry[] | undefined;
 
   @Output()
-  public modelChange: EventEmitter<Work | Container>;
+  public modelChange: EventEmitter<EditedWork>;
   @Output()
   public editorClose: EventEmitter<any>;
 
@@ -83,7 +83,7 @@ export class WorkComponent implements OnInit {
     private _biblioService: BiblioService,
     private _workKeyService: WorkKeyService
   ) {
-    this.modelChange = new EventEmitter<Work | Container>();
+    this.modelChange = new EventEmitter<EditedWork>();
     this.editorClose = new EventEmitter<any>();
 
     // form
@@ -173,15 +173,13 @@ export class WorkComponent implements OnInit {
       });
   }
 
-  private updateForm(model: Work | Container | undefined): void {
+  private updateForm(model: EditedWork | undefined): void {
     if (!model) {
       this.form.reset();
       return;
     }
 
-    const work = model as Work;
-    const container = model as Container;
-
+    this.isContainer.setValue(model.isContainer);
     this.type.setValue(model.type);
     this.key.setValue(model.key);
     this.authors.setValue(model.authors || []);
@@ -190,11 +188,11 @@ export class WorkComponent implements OnInit {
     this.placePub.setValue(model.placePub);
     this.yearPub.setValue(model.yearPub);
     this.publisher.setValue(model.publisher);
-    this.containerId.setValue(work.container?.id);
-    this.container = work.container;
-    this.firstPage.setValue(work.firstPage);
-    this.lastPage.setValue(work.lastPage);
-    this.number.setValue(container.number);
+    this.containerId.setValue(model.container?.id);
+    this.container = model.container;
+    this.firstPage.setValue(model.firstPage);
+    this.lastPage.setValue(model.lastPage);
+    this.number.setValue(model.number);
     this.note.setValue(model.note);
     this.location.setValue(model.location);
     this.hasAccessDate.setValue(model.accessDate ? true : false);
@@ -202,15 +200,16 @@ export class WorkComponent implements OnInit {
     this.keywords.setValue(model.keywords);
 
     // if it has a container it can't be a container
-    if (work.container) {
+    if (model.container) {
       this.isContainer.setValue(false);
     }
 
     this.form.markAsPristine();
   }
 
-  private getModel(): Work | Container {
+  private getModel(): EditedWork {
     return {
+      isContainer: this.isContainer.value,
       type: this.type.value,
       key: this.key.value?.trim(),
       authors: this.authors.value?.length ? this.authors.value : undefined,
