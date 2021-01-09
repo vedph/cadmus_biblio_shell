@@ -287,7 +287,7 @@ export class WorkAuthorsComponent implements OnInit {
 
   public cancel(): void {
     this.editing = false;
-    this.current = this.buildCurrent();
+    this.updateForm(this._model);
     this.editorClose.emit();
   }
 

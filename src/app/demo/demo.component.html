@@ -34,9 +34,14 @@
 
       <!-- work authors -->
       <mat-tab label="work authors">
-        <biblio-work-authors [roleEntries]="roleEntries"></biblio-work-authors>
+        <biblio-work-authors
+          [roleEntries]="roleEntries"
+          (modelChange)="onAuthorsChange($event)"
+        ></biblio-work-authors>
+        <div *ngIf="authors">
+          <pre>{{ authors | json }}</pre>
+        </div>
       </mat-tab>
     </mat-tab-group>
-
   </mat-card-content>
 </mat-card>

@@ -2,7 +2,7 @@
   <mat-expansion-panel [(expanded)]="editing">
     <mat-expansion-panel-header>
       <mat-panel-title>
-      {{ current || '(no authors)' }}
+        <span class="current"> {{ current || "(no authors)" }}</span>
       </mat-panel-title>
       <mat-panel-description>{{ authors?.length || 0 }}</mat-panel-description>
     </mat-expansion-panel-header>
