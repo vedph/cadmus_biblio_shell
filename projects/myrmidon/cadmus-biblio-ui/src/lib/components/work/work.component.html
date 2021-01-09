@@ -1,0 +1,175 @@
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- isContainer -->
+    <mat-checkbox [formControl]="isContainer">container</mat-checkbox>
+    &nbsp;
+    <!-- type (bound) -->
+    <mat-form-field style="width: 8em">
+      <mat-select [formControl]="type" placeholder="type">
+        <mat-option *ngFor="let t of types$ | async" [value]="t.id">{{
+          t.name
+        }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="type.errors?.required && (type.dirty || type.touched)"
+        >type required</mat-error
+      >
+    </mat-form-field>
+
+    &nbsp;
+    <!-- key -->
+    <mat-form-field>
+      <input matInput [formControl]="key" placeholder="key" />
+      <mat-error *ngIf="key.errors?.maxLength && (key.dirty || key.touched)"
+        >key too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div>
+    <!-- authors -->
+    TODO
+  </div>
+
+  <div>
+    <!-- title -->
+    <mat-form-field class="long-text">
+      <input matInput [formControl]="title" placeholder="title" />
+      <mat-error
+        *ngIf="title.errors?.required && (title.dirty || title.touched)"
+        >title required</mat-error
+      >
+      <mat-error
+        *ngIf="title.errors?.maxLength && (title.dirty || title.touched)"
+        >title too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div>
+    <!-- language (bound) -->
+    <mat-form-field *ngIf="langEntries?.length" style="width: 8em">
+      <mat-select [formControl]="language" placeholder="language">
+        <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          language.errors?.required && (language.dirty || language.touched)
+        "
+        >language required</mat-error
+      >
+    </mat-form-field>
+    <!-- language (free) -->
+    <mat-form-field *ngIf="!langEntries?.length" style="width: 8em">
+      <input matInput [formControl]="language" placeholder="language" />
+      <mat-error
+        *ngIf="
+          language.errors?.required && (language.dirty || language.touched)
+        "
+        >language required</mat-error
+      >
+      <mat-error
+        *ngIf="language.errors?.pattern && (language.dirty || language.touched)"
+        >invalid language</mat-error
+      >
+    </mat-form-field>
+    &nbsp;
+
+    <!-- placePub -->
+    <mat-form-field>
+      <input matInput [formControl]="placePub" placeholder="place" />
+      <mat-error
+        *ngIf="
+          placePub.errors?.maxLength && (placePub.dirty || placePub.touched)
+        "
+        >place too long</mat-error
+      >
+    </mat-form-field>
+    &nbsp;
+
+    <!-- yearPub -->
+    <mat-form-field style="width: 5em">
+      <input
+        matInput
+        type="number"
+        min="0"
+        [formControl]="yearPub"
+        placeholder="year"
+      />
+      <mat-error
+        *ngIf="yearPub.errors?.maxLength && (yearPub.dirty || yearPub.touched)"
+        >yearPub too long</mat-error
+      >
+    </mat-form-field>
+    &nbsp;
+
+    <!-- publisher -->
+    <mat-form-field>
+      <input matInput [formControl]="publisher" placeholder="publisher" />
+      <mat-error
+        *ngIf="
+          publisher.errors?.maxLength && (publisher.dirty || publisher.touched)
+        "
+        >publisher too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="!isContainer">
+    <div>
+      <!-- container -->
+    </div>
+    <div>
+      <!-- firstPage -->
+      <!-- lastPage -->
+    </div>
+  </div>
+
+  <div *ngIf="isContainer">
+    <!-- number -->
+  </div>
+
+  <div>
+    <!-- note -->
+  </div>
+  <div>
+    <!-- location -->
+  </div>
+  <div>
+    <!-- hasAccessDate -->
+    &nbsp;
+    <!-- accessDate -->
+    <mat-form-field *ngIf="hasAccessDate?.value">
+      <mat-label>access date</mat-label>
+      <input matInput [matDatepicker]="picker" [formControl]="accessDate" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- keywords -->
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard work changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept work changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

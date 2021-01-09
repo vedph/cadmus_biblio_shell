@@ -7,12 +7,14 @@ import { CadmusMaterialModule } from '@myrmidon/cadmus-material';
 import { WorkPickerComponent } from './components/work-picker/work-picker.component';
 import { WorkAuthorsComponent } from './components/work-authors/work-authors.component';
 import { WorkKeywordsComponent } from './components/work-keywords/work-keywords.component';
+import { WorkComponent } from './components/work/work.component';
 
 @NgModule({
   declarations: [
     WorkPickerComponent,
     WorkAuthorsComponent,
     WorkKeywordsComponent,
+    WorkComponent,
   ],
   imports: [
     CommonModule,
@@ -23,6 +25,11 @@ import { WorkKeywordsComponent } from './components/work-keywords/work-keywords.
     CadmusCoreModule,
     CadmusMaterialModule,
   ],
-  exports: [WorkPickerComponent, WorkAuthorsComponent, WorkKeywordsComponent],
+  exports: [
+    WorkPickerComponent,
+    WorkAuthorsComponent,
+    WorkKeywordsComponent,
+    WorkComponent,
+  ],
 })
 export class CadmusBiblioUiModule {}
