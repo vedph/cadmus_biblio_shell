@@ -42,6 +42,17 @@
           <pre>{{ authors | json }}</pre>
         </div>
       </mat-tab>
+
+      <!-- work keywords -->
+      <mat-tab label="work keywords">
+        <biblio-work-keywords
+          [langEntries]="langEntries"
+          (modelChange)="onKeywordsChange($event)"
+        ></biblio-work-keywords>
+        <div *ngIf="keywords">
+          <pre>{{ keywords | json }}</pre>
+        </div>
+      </mat-tab>
     </mat-tab-group>
   </mat-card-content>
 </mat-card>

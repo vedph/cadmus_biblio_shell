@@ -2,6 +2,8 @@
   <mat-expansion-panel [(expanded)]="editing">
     <mat-expansion-panel-header>
       <mat-panel-title>
+        <mat-icon>account_circle</mat-icon>
+        &nbsp;
         <span class="current"> {{ current || "(no authors)" }}</span>
       </mat-panel-title>
       <mat-panel-description>{{ authors?.length || 0 }}</mat-panel-description>
@@ -36,7 +38,6 @@
           color="warn"
           (click)="clearAuthor()"
           [disabled]="!author"
-          matTooltip="Clear"
         >
           <mat-icon>clear</mat-icon>
         </button>

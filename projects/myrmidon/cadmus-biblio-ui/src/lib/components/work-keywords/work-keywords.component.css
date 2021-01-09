@@ -1,0 +1,11 @@
+.current {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  padding: 4px;
+  border: solid 1px silver;
+  border-radius: 6px;
+}
+.indented {
+  margin-left: 135px;
+}

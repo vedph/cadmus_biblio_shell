@@ -1,0 +1,165 @@
+<form [formGroup]="form" (submit)="save()">
+  <mat-expansion-panel [(expanded)]="editing">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>vpn_key</mat-icon>
+        &nbsp;
+        <span class="current"> {{ current || "(no keywords)" }}</span>
+      </mat-panel-title>
+      <mat-panel-description>{{ keywords?.length || 0 }}</mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <form [formGroup]="search">
+      <mat-autocomplete
+        #lookupAuto="matAutocomplete"
+        [displayWith]="keywordToString"
+      >
+        <mat-option
+          *ngFor="let k of keywords$ | async"
+          [value]="k"
+          (onSelectionChange)="pickKeyword(k)"
+        >
+          {{ keywordToString(k) }}
+        </mat-option>
+      </mat-autocomplete>
+
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          placeholder="value or lang:value"
+          [formControl]="lookup"
+          [matAutocomplete]="lookupAuto"
+        />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          color="warn"
+          (click)="clearKeyword()"
+          [disabled]="!keyword"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+      &nbsp;
+      <button
+        type="button"
+        mat-icon-button
+        color="primary"
+        (click)="addKeyword()"
+        matTooltip="Add a new keyword"
+      >
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </form>
+
+    <!-- keywords array -->
+    <div formArrayName="keywords">
+      <div
+        *ngFor="
+          let item of groups;
+          let i = index;
+          let first = first;
+          let last = last
+        "
+      >
+        <!-- child form -->
+        <div [formGroupName]="i">
+          <!-- child actions -->
+          {{ i + 1 }}.
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Remove this keyword"
+            color="warn"
+            (click)="removeKeyword(i)"
+          >
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+
+          <!-- child controls -->
+          <!-- language (bound) -->
+          <mat-form-field *ngIf="langEntries?.length" style="width: 8em">
+            <mat-select formControlName="language" placeholder="language">
+              <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
+                e.value
+              }}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="
+                item['controls'].language.errors?.required &&
+                (item['controls'].language.dirty ||
+                  item['controls'].language.touched)
+              "
+              >required</mat-error
+            >
+          </mat-form-field>
+
+          <!-- language (free) -->
+          <mat-form-field *ngIf="!langEntries?.length" style="width: 8em">
+            <input matInput formControlName="language" placeholder="language" />
+            <mat-error
+              *ngIf="
+                item['controls'].language.errors?.required &&
+                (item['controls'].language.dirty ||
+                  item['controls'].language.touched)
+              "
+              >required</mat-error
+            >
+            <mat-error
+              *ngIf="
+                item['controls'].language.errors?.maxLength &&
+                (item['controls'].language.dirty ||
+                  item['controls'].language.touched)
+              "
+              >too long</mat-error
+            >
+          </mat-form-field>
+
+          &nbsp;
+          <!-- value -->
+          <mat-form-field>
+            <input matInput formControlName="value" placeholder="value" />
+            <mat-error
+              *ngIf="
+                item['controls'].value.errors?.required &&
+                (item['controls'].value.dirty || item['controls'].value.touched)
+              "
+              >required</mat-error
+            >
+            <mat-error
+              *ngIf="
+                item['controls'].value.errors?.maxLength &&
+                (item['controls'].value.dirty || item['controls'].value.touched)
+              "
+              >too long</mat-error
+            >
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <!-- buttons -->
+    <div>
+      <button
+        type="button"
+        color="warn"
+        mat-icon-button
+        matTooltip="Discard keywords"
+        (click)="cancel()"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button
+        type="submit"
+        color="primary"
+        mat-icon-button
+        matTooltip="Accept keywords"
+        [disabled]="form.invalid || form.pristine"
+      >
+        <mat-icon>check_circle</mat-icon>
+      </button>
+    </div>
+  </mat-expansion-panel>
+</form>
