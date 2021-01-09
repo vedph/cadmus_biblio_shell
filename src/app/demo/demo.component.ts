@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Keyword, WorkAuthor, WorkBase } from '@myrmidon/cadmus-biblio-core';
+import { Container, Keyword, Work, WorkAuthor, WorkBase } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 @Component({
@@ -16,6 +16,8 @@ export class DemoComponent implements OnInit {
 
   public keywords: Keyword[] | undefined;
   public langEntries: ThesaurusEntry[];
+
+  public editedWork: Work | Container | undefined;
 
   constructor() {
     this.roleEntries = [
@@ -49,5 +51,9 @@ export class DemoComponent implements OnInit {
 
   public onKeywordsChange(keywords: Keyword[]): void {
     this.keywords = keywords;
+  }
+
+  public onEditedWorkChange(work: Work | Container): void {
+    this.editedWork = work;
   }
 }

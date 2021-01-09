@@ -53,6 +53,13 @@
           <pre>{{ keywords | json }}</pre>
         </div>
       </mat-tab>
+
+      <mat-tab label="work">
+        <biblio-work [langEntries]="langEntries"></biblio-work>
+        <div *ngIf="editedWork">
+          <pre>{{ editedWork | json }}</pre>
+        </div>
+      </mat-tab>
     </mat-tab-group>
   </mat-card-content>
 </mat-card>

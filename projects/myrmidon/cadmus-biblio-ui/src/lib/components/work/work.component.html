@@ -17,7 +17,7 @@
 
     &nbsp;
     <!-- key -->
-    <mat-form-field>
+    <mat-form-field style="width: 585px">
       <input matInput [formControl]="key" placeholder="key" />
       <mat-error *ngIf="key.errors?.maxLength && (key.dirty || key.touched)"
         >key too long</mat-error
@@ -27,7 +27,11 @@
 
   <div>
     <!-- authors -->
-    TODO
+    <biblio-work-authors
+      [roleEntries]="roleEntries"
+      [model]="authors?.value"
+      (modelChange)="onAuthorsChange($event)"
+    ></biblio-work-authors>
   </div>
 
   <div>
@@ -116,39 +120,103 @@
     </mat-form-field>
   </div>
 
-  <div *ngIf="!isContainer">
+  <!-- container -->
+  <div *ngIf="!isContainer?.value">
     <div>
-      <!-- container -->
+      <biblio-work-picker
+        [container]="true"
+        (workChange)="onContainerChange($event)"
+      ></biblio-work-picker>
+      <span class="container">
+        {{ workToString(container) }}
+      </span>
     </div>
     <div>
       <!-- firstPage -->
+      <mat-form-field style="width: 4em">
+        <input
+          matInput
+          type="number"
+          min="0"
+          [formControl]="firstPage"
+          placeholder="from"
+        />
+      </mat-form-field>
+      -
       <!-- lastPage -->
+      <mat-form-field style="width: 4em">
+        <input
+          matInput
+          type="number"
+          min="0"
+          [formControl]="lastPage"
+          placeholder="to"
+        />
+      </mat-form-field>
     </div>
   </div>
 
-  <div *ngIf="isContainer">
+  <div *ngIf="isContainer?.value">
     <!-- number -->
+    <mat-form-field>
+      <input matInput [formControl]="number" placeholder="number" />
+      <mat-error
+        *ngIf="number.errors?.maxLength && (number.dirty || number.touched)"
+        >number too long</mat-error
+      >
+    </mat-form-field>
   </div>
 
   <div>
     <!-- note -->
+    <mat-form-field class="long-text">
+      <textarea
+        rows="2"
+        matInput
+        [formControl]="note"
+        placeholder="note"
+      ></textarea>
+      <mat-error *ngIf="note.errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
+      >
+    </mat-form-field>
   </div>
+
   <div>
     <!-- location -->
+    <mat-form-field class="long-text">
+      <input matInput [formControl]="location" placeholder="location" />
+      <mat-error
+        *ngIf="
+          location.errors?.maxLength && (location.dirty || location.touched)
+        "
+        >location too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <div>
     <!-- hasAccessDate -->
+    <mat-checkbox [formControl]="hasAccessDate">access date</mat-checkbox>
     &nbsp;
     <!-- accessDate -->
-    <mat-form-field *ngIf="hasAccessDate?.value">
+    <mat-form-field style="width: 12em;">
       <mat-label>access date</mat-label>
-      <input matInput [matDatepicker]="picker" [formControl]="accessDate" />
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [formControl]="accessDate"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
   </div>
   <div>
     <!-- keywords -->
+    <biblio-work-keywords
+      [langEntries]="langEntries"
+      [model]="keywords.value"
+      (modelChange)="onKeywordsChange($event)"
+    ></biblio-work-keywords>
   </div>
 
   <!-- buttons -->

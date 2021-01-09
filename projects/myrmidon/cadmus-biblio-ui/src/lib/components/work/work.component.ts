@@ -6,11 +6,18 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Container, Work, WorkType } from '@myrmidon/cadmus-biblio-core';
+import {
+  Container,
+  Keyword,
+  Work,
+  WorkAuthor,
+  WorkBase,
+  WorkType,
+} from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import { Observable, of } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
+import { distinctUntilChanged, switchMap, take } from 'rxjs/operators';
 
 /**
  * Work or container editor.
@@ -33,6 +40,11 @@ export class WorkComponent implements OnInit {
   }
 
   /**
+   * Authors roles entries.
+   */
+  @Input()
+  public roleEntries: ThesaurusEntry[] | undefined;
+  /**
    * Keywords language entries.
    */
   @Input()
@@ -53,7 +65,7 @@ export class WorkComponent implements OnInit {
   public placePub: FormControl;
   public yearPub: FormControl;
   public publisher: FormControl;
-  public container: FormControl;
+  public containerId: FormControl;
   public firstPage: FormControl;
   public lastPage: FormControl;
   public number: FormControl;
@@ -63,7 +75,8 @@ export class WorkComponent implements OnInit {
   public accessDate: FormControl;
   public keywords: FormControl;
 
-  public types$: Observable<WorkType[]>;
+  public types$: Observable<WorkType[]> | undefined;
+  public container: Container | undefined;
 
   constructor(formBuilder: FormBuilder, private _biblioService: BiblioService) {
     this.modelChange = new EventEmitter<Work | Container>();
@@ -85,7 +98,7 @@ export class WorkComponent implements OnInit {
     this.placePub = formBuilder.control(null, Validators.maxLength(100));
     this.yearPub = formBuilder.control(0);
     this.publisher = formBuilder.control(null, Validators.maxLength(50));
-    this.container = formBuilder.control(null);
+    this.containerId = formBuilder.control(null);
     this.firstPage = formBuilder.control(0);
     this.lastPage = formBuilder.control(0);
     this.number = formBuilder.control(null, Validators.maxLength(50));
@@ -104,7 +117,7 @@ export class WorkComponent implements OnInit {
       placePub: this.placePub,
       yearPub: this.yearPub,
       publisher: this.publisher,
-      container: this.container,
+      containerId: this.containerId,
       firstPage: this.firstPage,
       lastPage: this.lastPage,
       number: this.number,
@@ -117,13 +130,14 @@ export class WorkComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.accessDate.disable();
     this.updateForm(this.model);
 
     // types are loaded once from backend
     this.types$ = this._biblioService
       .getWorkTypes({
         pageNumber: 1,
-        pageSize: 0,  // = all at once
+        pageSize: 0, // = all at once
       })
       .pipe(
         switchMap((page) => {
@@ -131,6 +145,28 @@ export class WorkComponent implements OnInit {
         }),
         take(1)
       );
+
+    // automatically set last page when first is set to something > 0
+    // and last is not set
+    this.firstPage.valueChanges.pipe(distinctUntilChanged()).subscribe((_) => {
+      if (
+        this.firstPage.value > 0 &&
+        this.lastPage.value < this.firstPage.value
+      ) {
+        this.lastPage.setValue(this.firstPage.value);
+      }
+    });
+
+    // disable access date when has none
+    this.hasAccessDate.valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((value) => {
+        if (value) {
+          this.accessDate.enable();
+        } else {
+          this.accessDate.disable();
+        }
+      });
   }
 
   private updateForm(model: Work | Container | undefined): void {
@@ -150,7 +186,8 @@ export class WorkComponent implements OnInit {
     this.placePub.setValue(model.placePub);
     this.yearPub.setValue(model.yearPub);
     this.publisher.setValue(model.publisher);
-    this.container.setValue(work.container);
+    this.containerId.setValue(work.container?.id);
+    this.container = work.container;
     this.firstPage.setValue(work.firstPage);
     this.lastPage.setValue(work.lastPage);
     this.number.setValue(container.number);
@@ -178,7 +215,7 @@ export class WorkComponent implements OnInit {
       placePub: this.placePub.value?.trim(),
       yearPub: this.yearPub.value,
       publisher: this.publisher.value?.trim(),
-      container: this.container.value,
+      container: this.containerId.value,
       firstPage: this.firstPage.value,
       lastPage: this.lastPage.value,
       number: this.number.value?.trim(),
@@ -187,6 +224,45 @@ export class WorkComponent implements OnInit {
       accessDate: this.hasAccessDate.value ? this.accessDate.value : undefined,
       keywords: this.keywords.value?.length ? this.keywords.value : undefined,
     };
+  }
+
+  public onAuthorsChange(authors: WorkAuthor[]): void {
+    this.authors.setValue(authors || []);
+  }
+
+  public onKeywordsChange(keywords: Keyword[]): void {
+    this.keywords.setValue(keywords || []);
+  }
+
+  public onContainerChange(container: Container | undefined): void {
+    this.containerId.setValue(container?.id);
+    this.container = container;
+  }
+
+  public workToString(work?: WorkBase): string {
+    if (!work) {
+      return '';
+    }
+    const sb: string[] = [];
+    if (work.authors?.length) {
+      for (let i = 0; i < work.authors.length; i++) {
+        if (i > 0) {
+          sb.push(' & ');
+        }
+        sb.push(work.authors[i].last);
+      }
+    }
+
+    if (work.title) {
+      sb.push(' - ');
+      sb.push(work.title);
+    }
+
+    if (work.yearPub) {
+      sb.push(', ');
+      sb.push(work.yearPub.toString());
+    }
+    return sb.join('');
   }
 
   public cancel(): void {
