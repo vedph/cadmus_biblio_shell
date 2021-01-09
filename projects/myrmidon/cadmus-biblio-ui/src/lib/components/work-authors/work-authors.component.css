@@ -6,3 +6,6 @@
   border: solid 1px silver;
   border-radius: 6px;
 }
+.indented {
+  margin-left: 135px;
+}

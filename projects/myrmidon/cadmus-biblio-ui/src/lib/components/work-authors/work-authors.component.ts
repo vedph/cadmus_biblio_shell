@@ -286,6 +286,7 @@ export class WorkAuthorsComponent implements OnInit {
   //#endregion
 
   public cancel(): void {
+    this.editing = false;
     this.editorClose.emit();
   }
 
@@ -297,6 +298,7 @@ export class WorkAuthorsComponent implements OnInit {
     if (!model) {
       return;
     }
+    this.editing = false;
     this.modelChange.emit(model);
   }
 }

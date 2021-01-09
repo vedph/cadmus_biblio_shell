@@ -5,6 +5,7 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
+    <!-- work picker -->
     <mat-tab-group>
       <mat-tab label="work picker">
         <div>
@@ -12,9 +13,9 @@
           <biblio-work-picker
             (workChange)="onWorkChange($event)"
           ></biblio-work-picker>
-          <hr>
+          <hr />
           <div *ngIf="work">
-            <pre>{{work | json}}</pre>
+            <pre>{{ work | json }}</pre>
           </div>
         </div>
 
@@ -24,14 +25,18 @@
             [container]="true"
             (workChange)="onContainerChange($event)"
           ></biblio-work-picker>
-          <hr>
+          <hr />
           <div *ngIf="container">
-            <pre>{{container | json}}</pre>
+            <pre>{{ container | json }}</pre>
           </div>
         </div>
       </mat-tab>
 
-      <h3>Container</h3>
+      <!-- work authors -->
+      <mat-tab label="work authors">
+        <biblio-work-authors [roleEntries]="roleEntries"></biblio-work-authors>
+      </mat-tab>
     </mat-tab-group>
+
   </mat-card-content>
 </mat-card>

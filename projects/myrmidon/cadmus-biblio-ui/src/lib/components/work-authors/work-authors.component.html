@@ -7,14 +7,16 @@
     matTooltip="Edit authors"
     [disabled]="editing"
     (click)="editing = true"
-  ></button>
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
   <div class="current" *ngIf="current">
     {{ current }}
   </div>
 
   <mat-expansion-panel [disabled]="!editing" [expanded]="editing">
     <mat-expansion-panel-header>
-      <mat-panel-title>edit authors</mat-panel-title>
+      <mat-panel-title>edited authors</mat-panel-title>
       <mat-panel-description>{{ authors?.length || 0 }}</mat-panel-description>
     </mat-expansion-panel-header>
 
@@ -40,17 +42,18 @@
           [formControl]="lookup"
           [matAutocomplete]="lookupAuto"
         />
+        <button
+          type="button"
+          mat-icon-button
+          matSuffix
+          color="warn"
+          (click)="clearAuthor()"
+          [disabled]="!author"
+          matTooltip="Clear"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
       </mat-form-field>
-      <button
-        type="button"
-        mat-icon-button
-        color="warn"
-        (click)="clearAuthor()"
-        [disabled]="!author"
-        matTooltip="Clear"
-      >
-        <mat-icon>clear</mat-icon>
-      </button>
       &nbsp;
       <button
         type="button"
