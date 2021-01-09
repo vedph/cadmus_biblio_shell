@@ -109,7 +109,7 @@ export class WorkAuthorsComponent implements OnInit {
     this.authors$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((value: WorkAuthor[] | string) => {
+      switchMap((value: WorkAuthor | string) => {
         // the string comes from user typing
         if (typeof value === 'string') {
           // lookup and return results
@@ -121,7 +121,7 @@ export class WorkAuthorsComponent implements OnInit {
           );
         } else {
           // the authors come from results
-          return of(value);
+          return of([value]);
         }
       })
     );

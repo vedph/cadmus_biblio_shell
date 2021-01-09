@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
-import { WorkBase } from '@myrmidon/cadmus-biblio-core';
+import { Container, WorkBase } from '@myrmidon/cadmus-biblio-core';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 
 /**
  * Work or container picker component. This uses the biblio service
@@ -78,22 +78,22 @@ export class WorkPickerComponent implements OnInit {
     this.works$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((value: WorkBase[] | string) => {
+      switchMap((value: WorkBase | string) => {
         if (typeof value === 'string') {
           const filter = this.getFilter(value);
           return this.container
             ? this._biblioService.getContainers(filter).pipe(
                 switchMap((p) => {
-                  return of(p.items);
+                  return of(p.items as WorkBase[]);
                 })
               )
             : this._biblioService.getWorks(filter).pipe(
                 switchMap((p) => {
-                  return of(p.items);
+                  return of(p.items as WorkBase[]);
                 })
               );
         } else {
-          return of(value);
+          return of([value]);
         }
       })
     );
