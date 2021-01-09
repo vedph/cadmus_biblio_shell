@@ -72,7 +72,7 @@ export class WorkPickerComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.label) {
-      this.label = this.container ? 'work' : 'container';
+      this.label = this.container ? 'container' : 'work';
     }
 
     this.works$ = this.lookup.valueChanges.pipe(
