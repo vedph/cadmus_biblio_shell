@@ -16,15 +16,25 @@ export class WorkKeyService {
     }
     const sb: string[] = [];
     if (work.authors?.length) {
+      // sort by ordinal, last, suffix
       const sorted = [...work.authors];
       sorted.sort((a: WorkAuthor, b: WorkAuthor) => {
         if (a.ordinal !== b.ordinal) {
           return (a.ordinal || 0) - (b.ordinal || 0);
         } else {
-          return a.last.localeCompare(b.last);
+          const n = a.last.localeCompare(b.last);
+          if (n !== 0) {
+            return n;
+          }
+          return (a.suffix || '').localeCompare(b.suffix || '');
         }
       });
-      sb.push(sorted.map((a) => a.last).join(' & '));
+      // pick last or last + space + suffix
+      sb.push(
+        sorted
+          .map((a) => (a.suffix ? `${a.last} ${a.suffix}` : a.last))
+          .join(' & ')
+      );
     }
     sb.push(' ');
     sb.push((work.yearPub || 0).toString());
