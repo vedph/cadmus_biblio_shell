@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WorkBase, WorkAuthor } from '../models';
+import { WorkBase, WorkAuthor, Container } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +15,8 @@ export class WorkKeyService {
       return '';
     }
     const sb: string[] = [];
+
+    // authors
     if (work.authors?.length) {
       // sort by ordinal, last, suffix
       const sorted = [...work.authors];
@@ -29,13 +31,21 @@ export class WorkKeyService {
           return (a.suffix || '').localeCompare(b.suffix || '');
         }
       });
-      // pick last or last + space + suffix
+      // pick last, or last + space + suffix
       sb.push(
         sorted
           .map((a) => (a.suffix ? `${a.last} ${a.suffix}` : a.last))
           .join(' & ')
       );
     }
+
+    // number if any
+    if ((work as Container)?.number) {
+      sb.push(' ');
+      sb.push((work as Container).number || '');
+    }
+
+    // year
     sb.push(' ');
     sb.push((work.yearPub || 0).toString());
 
