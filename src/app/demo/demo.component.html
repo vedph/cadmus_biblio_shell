@@ -43,6 +43,17 @@
         </div>
       </mat-tab>
 
+      <!-- keyword picker -->
+      <mat-tab label="keyword picker">
+        <biblio-keyword-picker
+          (keywordChange)="onKeywordChange($event)"
+        ></biblio-keyword-picker>
+        <hr />
+        <div *ngIf="keyword">
+          <pre>{{ keyword | json }}</pre>
+        </div>
+      </mat-tab>
+
       <!-- work keywords -->
       <mat-tab label="work keywords">
         <biblio-work-keywords

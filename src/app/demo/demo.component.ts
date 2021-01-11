@@ -14,6 +14,8 @@ export class DemoComponent implements OnInit {
   public authors: WorkAuthor[] | undefined;
   public roleEntries: ThesaurusEntry[];
 
+  public keyword: Keyword | undefined;
+
   public keywords: Keyword[] | undefined;
   public langEntries: ThesaurusEntry[];
 
@@ -47,6 +49,10 @@ export class DemoComponent implements OnInit {
 
   public onAuthorsChange(authors: WorkAuthor[]): void {
     this.authors = authors;
+  }
+
+  public onKeywordChange(keyword: Keyword): void {
+    this.keyword = keyword;
   }
 
   public onKeywordsChange(keywords: Keyword[]): void {

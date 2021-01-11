@@ -10,9 +10,11 @@ import { WorkKeywordsComponent } from './components/work-keywords/work-keywords.
 import { WorkComponent } from './components/work/work.component';
 import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
 import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
+import { KeywordPickerComponent } from './components/keyword-picker/keyword-picker.component';
 
 @NgModule({
   declarations: [
+    KeywordPickerComponent,
     WorkPickerComponent,
     WorkAuthorsComponent,
     WorkKeywordsComponent,
@@ -30,6 +32,7 @@ import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
     CadmusBiblioApiModule,
   ],
   exports: [
+    KeywordPickerComponent,
     WorkPickerComponent,
     WorkAuthorsComponent,
     WorkKeywordsComponent,
