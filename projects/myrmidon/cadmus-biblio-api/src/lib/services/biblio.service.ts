@@ -31,7 +31,7 @@ export interface WorkFilter extends PagingOptions {
   lastName?: string;
   language?: string;
   title?: string;
-  containerTitle?: string;
+  containerId?: string;
   keyword?: string;
   yearPubMin?: number;
   yearPubMax?: number;
@@ -168,8 +168,8 @@ export class BiblioService {
     if (filter.title) {
       httpParams = httpParams.set('title', filter.title);
     }
-    if (filter.containerTitle) {
-      httpParams = httpParams.set('containerTitle', filter.containerTitle);
+    if (filter.containerId) {
+      httpParams = httpParams.set('containerId', filter.containerId);
     }
     if (filter.keyword) {
       httpParams = httpParams.set('keyword', filter.keyword);
