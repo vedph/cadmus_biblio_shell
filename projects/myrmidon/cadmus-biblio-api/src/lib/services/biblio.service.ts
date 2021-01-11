@@ -10,6 +10,7 @@ import {
   Keyword,
   Container,
   Work,
+  WorkInfo,
 } from '@myrmidon/cadmus-biblio-core';
 
 export interface AuthorFilter extends PagingOptions {
@@ -187,10 +188,10 @@ export class BiblioService {
     return httpParams;
   }
 
-  public getContainers(filter: WorkFilter): Observable<DataPage<Container>> {
+  public getContainers(filter: WorkFilter): Observable<DataPage<WorkInfo>> {
     const httpParams = this.getWorkFilterParams(filter);
     return this._http
-      .get<DataPage<Container>>(`${this._env.apiUrl}containers`, {
+      .get<DataPage<WorkInfo>>(`${this._env.apiUrl}containers`, {
         params: httpParams,
       })
       .pipe(retry(3), catchError(this._error.handleError));
@@ -214,10 +215,10 @@ export class BiblioService {
       .pipe(catchError(this._error.handleError));
   }
 
-  public getWorks(filter: WorkFilter): Observable<DataPage<Work>> {
+  public getWorks(filter: WorkFilter): Observable<DataPage<WorkInfo>> {
     const httpParams = this.getWorkFilterParams(filter);
     return this._http
-      .get<DataPage<Work>>(`${this._env.apiUrl}works`, {
+      .get<DataPage<WorkInfo>>(`${this._env.apiUrl}works`, {
         params: httpParams,
       })
       .pipe(retry(3), catchError(this._error.handleError));

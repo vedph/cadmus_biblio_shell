@@ -17,12 +17,13 @@ import { DemoComponent } from './demo/demo.component';
 import { CadmusBiblioCoreModule } from 'projects/myrmidon/cadmus-biblio-core/src/public-api';
 import { CadmusBiblioApiModule } from 'projects/myrmidon/cadmus-biblio-api/src/public-api';
 import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
+import { WorkListComponent } from './work-list/work-list.component';
 // import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
 // import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
 // import { CadmusBiblioUiModule } from '@myrmidon/cadmus-biblio-ui';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, DemoComponent],
+  declarations: [AppComponent, HomeComponent, DemoComponent, WorkListComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -32,6 +33,7 @@ import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/pub
         { path: '', redirectTo: 'home', pathMatch: 'full' },
         { path: 'home', component: HomeComponent },
         { path: 'demo', component: DemoComponent },
+        { path: 'works', component: WorkListComponent },
         {
           path: 'login',
           loadChildren: () =>

@@ -12,11 +12,14 @@ import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
 import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
 import { KeywordPickerComponent } from './components/keyword-picker/keyword-picker.component';
 import { WorkFilterComponent } from './components/work-filter/work-filter.component';
+import { WorkBrowserComponent } from './components/work-browser/work-browser.component';
+import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 
 @NgModule({
   declarations: [
     KeywordPickerComponent,
     WorkAuthorsComponent,
+    WorkBrowserComponent,
     WorkComponent,
     WorkFilterComponent,
     WorkKeywordsComponent,
@@ -30,12 +33,14 @@ import { WorkFilterComponent } from './components/work-filter/work-filter.compon
     // cadmus
     CadmusCoreModule,
     CadmusMaterialModule,
+    CadmusUiModule,
     CadmusBiblioCoreModule,
     CadmusBiblioApiModule,
   ],
   exports: [
     KeywordPickerComponent,
     WorkAuthorsComponent,
+    WorkBrowserComponent,
     WorkComponent,
     WorkFilterComponent,
     WorkKeywordsComponent,

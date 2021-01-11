@@ -1,0 +1,136 @@
+<div
+  gdAreas="spinner spinner | filters list | . paginator"
+  gdAreas.lt-md="spinner | list | paginator | filters"
+  gdColumns="210px 1fr"
+  gdColumns.lt-md="1fr"
+  gdGap="8px"
+>
+  <!-- SPINNER -->
+  <div
+    *ngIf="isLoading"
+    gdArea="spinner"
+    gdAlignColumns="center"
+    gdAlignRows="center"
+  >
+    <mat-spinner [diameter]="48" [strokeWidth]="4"></mat-spinner>
+  </div>
+
+  <!-- FILTERS -->
+  <div gdArea="filters" gdAlignRows.lt-md="center">
+    <biblio-work-filter
+      [langEntries]="langEntries"
+      [persisted]="true"
+      (filterChange)="onFilterChange($event)"
+    ></biblio-work-filter>
+  </div>
+
+  <!-- WORKS -->
+  <div gdArea="list">
+    <!-- toolbar -->
+    <div>
+      <!-- isContainer -->
+      <mat-checkbox [formControl]="isContainer">container</mat-checkbox>
+      &nbsp;
+      <!-- add -->
+      <button
+        *ngIf="addEnabled"
+        type="button"
+        mat-icon-button
+        matTooltip="Add new work"
+        color="primary"
+      >
+        <mat-icon>add_circle</mat-icon>
+        add
+      </button>
+    </div>
+
+    <!-- table -->
+    <table *ngIf="page$ | async as page">
+      <thead>
+        <tr>
+          <th></th>
+          <th>type</th>
+          <th>key</th>
+          <th>authors</th>
+          <th>title</th>
+          <th fxHide.lt-md *ngIf="!isContainer?.value">container</th>
+          <th fxHide.lt-md *ngIf="isContainer?.value">number</th>
+          <th fxHide.lt-md>year</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let w of page.items">
+          <td>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Pick this work"
+              *ngIf="pickEnabled"
+              color="primary"
+              (click)="pickWork(w)"
+            >
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Edit this work"
+              *ngIf="editEnabled"
+              (click)="editWork(w)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Delete this work"
+              *ngIf="deleteEnabled"
+              color="warn"
+              (click)="deleteWork(w)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+          <td>
+            {{ w.type }}
+          </td>
+          <td>
+            {{ w.key }}
+          </td>
+          <td>
+            {{ authorsToString(w.authors) }}
+          </td>
+          <td>
+            {{ w.title }}
+          </td>
+          <td fxHide.lt-md *ngIf="!isContainer?.value">
+            {{ w.container?.title }}
+          </td>
+          <td fxHide.lt-md *ngIf="isContainer?.value">
+            {{ w.number }}
+          </td>
+          <td fxHide.lt-md>
+            {{ w.yearPub? w.yearPub : '' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- pager -->
+    <div
+      *ngIf="page$ | async as page"
+      gdArea="pagination"
+      gdAlignColumns="center"
+      gdAlignRows="start"
+    >
+      <mat-paginator
+        [length]="page.total"
+        [pageSize]="page.pageSize"
+        [pageSizeOptions]="[20, 50, 75, 100]"
+        [pageIndex]="page.pageNumber - 1"
+        [showFirstLastButtons]="true"
+        (page)="onPageChange($event)"
+      ></mat-paginator>
+    </div>
+  </div>
+</div>

@@ -47,6 +47,23 @@ export interface EditedWork extends Work {
   number?: string;
 }
 
+export interface WorkInfo {
+  id: string;
+  key: string;
+  authors: WorkAuthor[];
+  type: string;
+  title: string;
+  language: string;
+  edition: number;
+  yearPub: number;
+  placePub: string;
+  number?: string;
+  firstPage?: number;
+  lastPage?: number;
+  keywords?: Keyword[];
+  container?: Container;
+}
+
 export interface PagingOptions {
   pageNumber: number;
   pageSize: number;

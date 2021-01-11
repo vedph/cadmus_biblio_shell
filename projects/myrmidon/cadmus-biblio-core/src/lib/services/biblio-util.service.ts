@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Container, Work } from '../models';
+import { Author, Container, Work, WorkAuthor } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +38,33 @@ export class BiblioUtilService {
     if (work.yearPub) {
       sb.push(', ');
       sb.push(work.yearPub.toString());
+    }
+    return sb.join('');
+  }
+
+  /**
+   * Return a string representation for the specified author.
+   * @param author Author or work's author.
+   * @returns String.
+   */
+  public authorToString(author: Author | WorkAuthor): string {
+    if (!author) {
+      return '';
+    }
+    const sb: string[] = [];
+    sb.push(author.last);
+    if (author.suffix) {
+      sb.push(' ');
+      sb.push(author.suffix);
+    }
+    if (author.first) {
+      sb.push(', ');
+      sb.push(author.first);
+    }
+    if ((author as WorkAuthor).role) {
+      sb.push(' (');
+      sb.push((author as WorkAuthor)?.role || '');
+      sb.push(')');
     }
     return sb.join('');
   }
