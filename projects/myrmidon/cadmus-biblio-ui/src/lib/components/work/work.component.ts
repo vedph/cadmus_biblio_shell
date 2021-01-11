@@ -13,6 +13,7 @@ import {
   WorkBase,
   WorkType,
   WorkKeyService,
+  BiblioUtilService,
 } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
@@ -81,7 +82,8 @@ export class WorkComponent implements OnInit {
   constructor(
     formBuilder: FormBuilder,
     private _biblioService: BiblioService,
-    private _workKeyService: WorkKeyService
+    private _workKeyService: WorkKeyService,
+    private _biblioUtil: BiblioUtilService
   ) {
     this.modelChange = new EventEmitter<EditedWork>();
     this.editorClose = new EventEmitter<any>();
@@ -243,29 +245,7 @@ export class WorkComponent implements OnInit {
   }
 
   public workToString(work?: WorkBase): string {
-    if (!work) {
-      return '';
-    }
-    const sb: string[] = [];
-    if (work.authors?.length) {
-      for (let i = 0; i < work.authors.length; i++) {
-        if (i > 0) {
-          sb.push(' & ');
-        }
-        sb.push(work.authors[i].last);
-      }
-    }
-
-    if (work.title) {
-      sb.push(' - ');
-      sb.push(work.title);
-    }
-
-    if (work.yearPub) {
-      sb.push(', ');
-      sb.push(work.yearPub.toString());
-    }
-    return sb.join('');
+    return this._biblioUtil.workToString(work);
   }
 
   public buildKey(): void {

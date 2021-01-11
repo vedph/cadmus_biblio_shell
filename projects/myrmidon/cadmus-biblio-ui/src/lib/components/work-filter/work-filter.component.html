@@ -1,0 +1,126 @@
+<form [formGroup]="form" (submit)="apply()">
+  <div>
+    <!-- matchAny -->
+    <mat-checkbox [formControl]="matchAny">match any</mat-checkbox>
+    &nbsp;
+    <!-- type -->
+    <mat-form-field style="width: 8em">
+      <mat-select [formControl]="type" placeholder="type">
+        <mat-option [value]="null">(any)</mat-option>
+        <mat-option *ngFor="let t of types" [value]="t.id">{{
+          t.name
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <!-- language (bound) -->
+    <mat-form-field *ngIf="langEntries?.length" style="width: 8em">
+      <mat-select [formControl]="language" placeholder="language">
+        <mat-option [value]="null">(any)</mat-option>
+        <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- language (free) -->
+    <mat-form-field *ngIf="!langEntries?.length" style="width: 4em">
+      <input matInput [formControl]="language" placeholder="language" />
+    </mat-form-field>
+  </div>
+
+  <!-- lastName -->
+  <div>
+    <mat-form-field>
+      <input matInput [formControl]="lastName" placeholder="author" />
+    </mat-form-field>
+  </div>
+
+  <!-- title -->
+  <div>
+    <mat-form-field>
+      <input matInput [formControl]="title" placeholder="title" />
+    </mat-form-field>
+  </div>
+
+  <div>
+    <!-- yearMin -->
+    <mat-form-field style="width: 5em">
+      <input
+        matInput
+        type="number"
+        min="0"
+        [formControl]="yearMin"
+        placeholder="y.min"
+      />
+    </mat-form-field>
+    -
+    <!-- yearMax -->
+    <mat-form-field style="width: 5em">
+      <input
+        matInput
+        type="number"
+        min="0"
+        [formControl]="yearMax"
+        placeholder="y.max"
+      />
+    </mat-form-field>
+  </div>
+
+  <!-- key -->
+  <div>
+    <mat-form-field>
+      <input matInput [formControl]="key" placeholder="key" />
+    </mat-form-field>
+  </div>
+
+  <!-- keyword -->
+  <div>
+    <mat-form-field>
+      <input matInput [formControl]="keyword" placeholder="lng:keyword" />
+    </mat-form-field>
+  </div>
+
+  <!-- containerId -->
+  <div>
+    <biblio-work-picker
+      [container]="true"
+      (workChange)="onContainerChange($event)"
+    ></biblio-work-picker>
+  </div>
+  <div *ngIf="container?.value">
+    <span class="info">{{ workToString(container.value) }}</span>
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Remove container filter"
+      color="warn"
+      (click)="clearContainer()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Reset all filters"
+      (click)="reset()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Apply filters"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

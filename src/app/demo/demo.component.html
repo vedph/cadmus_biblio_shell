@@ -74,6 +74,18 @@
           <pre>{{ editedWork | json }}</pre>
         </div>
       </mat-tab>
+
+      <!-- work filter -->
+      <mat-tab label="work filter">
+        <biblio-work-filter
+          [langEntries]="langEntries"
+          [persisted]="true"
+          (filterChange)="onFilterChange($event)"
+        ></biblio-work-filter>
+        <div *ngIf="filter">
+          <pre>{{ filter | json }}</pre>
+        </div>
+      </mat-tab>
     </mat-tab-group>
   </mat-card-content>
 </mat-card>

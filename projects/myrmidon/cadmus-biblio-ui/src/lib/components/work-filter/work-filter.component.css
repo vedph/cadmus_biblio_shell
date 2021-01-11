@@ -1,0 +1,7 @@
+.info {
+  padding: 4px;
+  border: 1px solid silver;
+  border-radius: 6px;
+  max-width: 200px;
+  text-overflow: ellipsis;
+}

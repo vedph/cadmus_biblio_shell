@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
-import { WorkBase } from '@myrmidon/cadmus-biblio-core';
+import { BiblioUtilService, WorkBase } from '@myrmidon/cadmus-biblio-core';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import { Observable, of } from 'rxjs';
 import {
@@ -51,7 +51,9 @@ export class WorkPickerComponent implements OnInit {
   public works$: Observable<WorkBase[]> | undefined;
   public work: WorkBase | undefined;
 
-  constructor(formBuilder: FormBuilder, private _biblioService: BiblioService) {
+  constructor(formBuilder: FormBuilder,
+    private _biblioService: BiblioService,
+    private _biblioUtil: BiblioUtilService) {
     this.limit = 10;
     this.label = 'work';
     this.container = false;
@@ -107,29 +109,7 @@ export class WorkPickerComponent implements OnInit {
   }
 
   public workToString(work: WorkBase): string {
-    if (!work) {
-      return '';
-    }
-    const sb: string[] = [];
-    if (work.authors?.length) {
-      for (let i = 0; i < work.authors.length; i++) {
-        if (i > 0) {
-          sb.push(' & ');
-        }
-        sb.push(work.authors[i].last);
-      }
-    }
-
-    if (work.title) {
-      sb.push(' - ');
-      sb.push(work.title);
-    }
-
-    if (work.yearPub) {
-      sb.push(', ');
-      sb.push(work.yearPub.toString());
-    }
-    return sb.join('');
+    return this._biblioUtil?.workToString(work);
   }
 
   public pickWork(work: WorkBase): void {

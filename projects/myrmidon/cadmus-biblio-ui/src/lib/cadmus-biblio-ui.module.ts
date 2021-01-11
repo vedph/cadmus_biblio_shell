@@ -11,14 +11,16 @@ import { WorkComponent } from './components/work/work.component';
 import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
 import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
 import { KeywordPickerComponent } from './components/keyword-picker/keyword-picker.component';
+import { WorkFilterComponent } from './components/work-filter/work-filter.component';
 
 @NgModule({
   declarations: [
     KeywordPickerComponent,
-    WorkPickerComponent,
     WorkAuthorsComponent,
-    WorkKeywordsComponent,
     WorkComponent,
+    WorkFilterComponent,
+    WorkKeywordsComponent,
+    WorkPickerComponent,
   ],
   imports: [
     CommonModule,
@@ -33,10 +35,11 @@ import { KeywordPickerComponent } from './components/keyword-picker/keyword-pick
   ],
   exports: [
     KeywordPickerComponent,
-    WorkPickerComponent,
     WorkAuthorsComponent,
-    WorkKeywordsComponent,
     WorkComponent,
+    WorkFilterComponent,
+    WorkKeywordsComponent,
+    WorkPickerComponent,
   ],
 })
 export class CadmusBiblioUiModule {}
