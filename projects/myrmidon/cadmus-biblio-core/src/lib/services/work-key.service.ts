@@ -16,7 +16,7 @@ export class WorkKeyService {
     }
     const sb: string[] = [];
 
-    // authors
+    // authors (max 3)
     if (work.authors?.length) {
       // sort by ordinal, last, suffix
       const sorted = [...work.authors];
@@ -34,9 +34,14 @@ export class WorkKeyService {
       // pick last, or last + space + suffix
       sb.push(
         sorted
+          .slice(0, 3)
           .map((a) => (a.suffix ? `${a.last} ${a.suffix}` : a.last))
           .join(' & ')
       );
+
+      if (work.authors.length > 3) {
+        sb.push(' & al.');
+      }
     }
 
     // number if any
@@ -49,6 +54,7 @@ export class WorkKeyService {
     sb.push(' ');
     sb.push((work.yearPub || 0).toString());
 
-    return sb.join('');
+    const key = sb.join('');
+    return key.length > 300? key.substr(0, 300) : key;
   }
 }
