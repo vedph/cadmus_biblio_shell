@@ -25,6 +25,8 @@ export class DemoComponent implements OnInit {
 
   public filter: WorkFilter | undefined;
 
+  public detWork: Work | Container | undefined;
+
   constructor() {
     this.roleEntries = [
       { id: '-', value: '---' },
@@ -69,5 +71,9 @@ export class DemoComponent implements OnInit {
 
   public onFilterChange(filter: WorkFilter): void {
     this.filter = filter;
+  }
+
+  public onWorkChangeForDetails(work: Work | Container): void {
+    this.detWork = work;
   }
 }

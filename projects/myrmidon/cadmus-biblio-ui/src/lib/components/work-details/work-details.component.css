@@ -1,0 +1,34 @@
+.boxed {
+  padding: 4px;
+  margin: 4px;
+  border: 1px solid silver;
+  border-radius: 6px;
+  font-size: 95%;
+}
+.key {
+  color: cadetblue;
+}
+.authors {
+  font-variant: small-caps;
+  font-size: 110%;
+  color: lightsalmon;
+}
+.title {
+  font-style: italic;
+}
+.literal {
+  color: silver;
+  font-family: 'Courier New', Courier, monospace;
+}
+.note {
+  margin: 4px 6px;
+  font-size: 95%;
+}
+.keywords {
+  color: cornflowerblue;
+  font-size: 95%;
+}
+.sup {
+  font-size: .83em;
+  vertical-align: super;
+}
