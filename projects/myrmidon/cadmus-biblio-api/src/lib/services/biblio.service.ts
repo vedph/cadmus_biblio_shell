@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ErrorService, DataPage, EnvService } from '@myrmidon/cadmus-core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import {
   Author,
@@ -29,6 +29,7 @@ export interface KeywordFilter extends PagingOptions {
 export interface WorkFilter extends PagingOptions {
   matchAny?: boolean;
   type?: string;
+  authorId?: string;
   lastName?: string;
   language?: string;
   title?: string;
@@ -159,6 +160,9 @@ export class BiblioService {
     }
     if (filter.type) {
       httpParams = httpParams.set('type', filter.type);
+    }
+    if (filter.authorId) {
+      httpParams = httpParams.set('authorId', filter.authorId);
     }
     if (filter.lastName) {
       httpParams = httpParams.set('lastName', filter.lastName);
