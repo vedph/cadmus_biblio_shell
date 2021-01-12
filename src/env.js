@@ -3,5 +3,5 @@
   window.__env = window.__env || {};
 
   // environment-dependent settings
-  window.__env.apiUrl = 'http://localhost:60058/api/';
+  window.__env.apiUrl = 'http://localhost:61691/api/';
 }(this));
