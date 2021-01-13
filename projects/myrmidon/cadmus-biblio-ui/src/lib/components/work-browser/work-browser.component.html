@@ -1,13 +1,13 @@
 <div
-  gdAreas="spinner spinner | filters list | . paginator"
-  gdAreas.lt-md="spinner | list | paginator | filters"
+  gdAreas="spinner spinner | filters list | . paginator | details details"
+  gdAreas.lt-md="spinner | list | paginator | details | filters"
   gdColumns="210px 1fr"
   gdColumns.lt-md="1fr"
   gdGap="8px"
 >
   <!-- SPINNER -->
   <div
-    *ngIf="isLoading"
+    *ngIf="loading"
     gdArea="spinner"
     gdAlignColumns="center"
     gdAlignRows="center"
@@ -64,9 +64,17 @@
             <button
               type="button"
               mat-icon-button
+              matTooltip="View work details"
+              color="primary"
+              (click)="viewDetails(w.id)"
+            >
+              <mat-icon>article</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
               matTooltip="Pick this work"
               *ngIf="pickEnabled"
-              color="primary"
               (click)="pickWork(w)"
             >
               <mat-icon>check_circle</mat-icon>
@@ -110,7 +118,7 @@
             {{ w.number }}
           </td>
           <td fxHide.lt-md>
-            {{ w.yearPub? w.yearPub : '' }}
+            {{ w.yearPub ? w.yearPub : "" }}
           </td>
         </tr>
       </tbody>
@@ -131,6 +139,19 @@
         [showFirstLastButtons]="true"
         (page)="onPageChange($event)"
       ></mat-paginator>
+    </div>
+
+    <!-- details -->
+    <div gdArea="details" *ngIf="work">
+      <div *ngIf="loadingWork">
+        <mat-spinner [diameter]="24" [strokeWidth]="4"></mat-spinner>
+      </div>
+      <mat-expansion-panel [(expanded)]="detailsOpen">
+        <mat-expansion-panel-header>
+          {{ workToString(work) }}
+        </mat-expansion-panel-header>
+        <biblio-work-details [work]="work"></biblio-work-details>
+      </mat-expansion-panel>
     </div>
   </div>
 </div>

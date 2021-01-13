@@ -12,7 +12,7 @@ import {
 } from '@myrmidon/cadmus-biblio-core';
 import { DataPage, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { DialogService } from '@myrmidon/cadmus-ui';
 
 @Component({
@@ -45,7 +45,11 @@ export class WorkBrowserComponent implements OnInit {
   public isContainer: FormControl;
 
   public page$: BehaviorSubject<DataPage<WorkInfo>>;
-  public isLoading: boolean | undefined;
+  public loading: boolean | undefined;
+
+  public work: Work | Container | undefined;
+  public loadingWork: boolean | undefined;
+  public detailsOpen: boolean;
 
   constructor(
     formBuilder: FormBuilder,
@@ -57,6 +61,7 @@ export class WorkBrowserComponent implements OnInit {
     this.editEnabled = true;
     this.deleteEnabled = true;
     this.addEnabled = true;
+    this.detailsOpen = false;
     this.signals$ = new BehaviorSubject<string>('');
     this.workPick = new EventEmitter<Work | Container>();
     this.workEdit = new EventEmitter<Work | Container>();
@@ -77,7 +82,7 @@ export class WorkBrowserComponent implements OnInit {
   }
 
   private loadPage(): void {
-    this.isLoading = true;
+    this.loading = true;
 
     if (this.isContainer.value) {
       this._biblioService
@@ -85,7 +90,7 @@ export class WorkBrowserComponent implements OnInit {
         .pipe(take(1))
         .subscribe((p) => {
           this.page$.next(p);
-          this.isLoading = false;
+          this.loading = false;
         });
     } else {
       this._biblioService
@@ -93,7 +98,7 @@ export class WorkBrowserComponent implements OnInit {
         .pipe(take(1))
         .subscribe((p) => {
           this.page$.next(p);
-          this.isLoading = false;
+          this.loading = false;
         });
     }
   }
@@ -107,7 +112,7 @@ export class WorkBrowserComponent implements OnInit {
     });
 
     // handle received signals
-    this.signals$.subscribe(s => {
+    this.signals$.subscribe((s) => {
       switch (s) {
         case 'refresh':
           this.loadPage();
@@ -155,5 +160,33 @@ export class WorkBrowserComponent implements OnInit {
           this.workDelete.emit(work);
         }
       });
+  }
+
+  public viewDetails(id: string): void {
+    this.loadingWork = true;
+
+    if (this.isContainer.value) {
+      this._biblioService
+        .getContainer(id)
+        .pipe(take(1))
+        .subscribe((w) => {
+          this.work = w;
+          this.loadingWork = false;
+          this.detailsOpen = true;
+        });
+    } else {
+      this._biblioService
+        .getWork(id)
+        .pipe(take(1))
+        .subscribe((w) => {
+          this.work = w;
+          this.loadingWork = false;
+          this.detailsOpen = true;
+        });
+    }
+  }
+
+  public workToString(work: Work | Container): string {
+    return this._biblioUtil.workToString(work);
   }
 }
