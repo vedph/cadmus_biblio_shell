@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 @Component({
-  selector: 'biblio-work-list',
-  templateUrl: './work-list.component.html',
-  styleUrls: ['./work-list.component.css']
+  selector: 'biblio-work-page',
+  templateUrl: './work-page.component.html',
+  styleUrls: ['./work-page.component.css']
 })
-export class WorkListComponent implements OnInit {
+export class WorkPageComponent implements OnInit {
   public langEntries: ThesaurusEntry[];
 
   constructor() {

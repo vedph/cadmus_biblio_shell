@@ -36,11 +36,11 @@ export class WorkBrowserComponent implements OnInit {
   @Input()
   public signals$: BehaviorSubject<string>;
   @Output()
-  public workPick: EventEmitter<Work | Container>;
+  public workPick: EventEmitter<WorkInfo>;
   @Output()
-  public workEdit: EventEmitter<Work | Container>;
+  public workEdit: EventEmitter<WorkInfo>;
   @Output()
-  public workDelete: EventEmitter<Work | Container>;
+  public workDelete: EventEmitter<WorkInfo>;
 
   public isContainer: FormControl;
 
@@ -54,7 +54,7 @@ export class WorkBrowserComponent implements OnInit {
   constructor(
     formBuilder: FormBuilder,
     private _biblioService: BiblioService,
-    private _biblioUtil: BiblioUtilService,
+    private _utilService: BiblioUtilService,
     private _dialogService: DialogService
   ) {
     this.pickEnabled = true;
@@ -63,9 +63,9 @@ export class WorkBrowserComponent implements OnInit {
     this.addEnabled = true;
     this.detailsOpen = false;
     this.signals$ = new BehaviorSubject<string>('');
-    this.workPick = new EventEmitter<Work | Container>();
-    this.workEdit = new EventEmitter<Work | Container>();
-    this.workDelete = new EventEmitter<Work | Container>();
+    this.workPick = new EventEmitter<WorkInfo>();
+    this.workEdit = new EventEmitter<WorkInfo>();
+    this.workDelete = new EventEmitter<WorkInfo>();
     this.page$ = new BehaviorSubject<DataPage<WorkInfo>>({
       total: 0,
       pageNumber: 1,
@@ -140,18 +140,18 @@ export class WorkBrowserComponent implements OnInit {
     if (!authors) {
       return '';
     }
-    return authors.map((a) => this._biblioUtil.authorToString(a)).join('; ');
+    return authors.map((a) => this._utilService.authorToString(a)).join('; ');
   }
 
-  public pickWork(work: Work | Container): void {
+  public pickWork(work: WorkInfo): void {
     this.workPick.emit(work);
   }
 
-  public editWork(work: Work | Container): void {
+  public editWork(work: WorkInfo): void {
     this.workEdit.emit(work);
   }
 
-  public deleteWork(work: Work | Container): void {
+  public deleteWork(work: WorkInfo): void {
     this._dialogService
       .confirm('Confirmation', 'Delete work?')
       .pipe(take(1))
@@ -162,12 +162,12 @@ export class WorkBrowserComponent implements OnInit {
       });
   }
 
-  public viewDetails(id: string): void {
+  public viewDetails(work: WorkInfo): void {
     this.loadingWork = true;
 
-    if (this.isContainer.value) {
+    if (work.isContainer) {
       this._biblioService
-        .getContainer(id)
+        .getContainer(work.id)
         .pipe(take(1))
         .subscribe((w) => {
           this.work = w;
@@ -176,7 +176,7 @@ export class WorkBrowserComponent implements OnInit {
         });
     } else {
       this._biblioService
-        .getWork(id)
+        .getWork(work.id)
         .pipe(take(1))
         .subscribe((w) => {
           this.work = w;
@@ -187,6 +187,6 @@ export class WorkBrowserComponent implements OnInit {
   }
 
   public workToString(work: Work | Container): string {
-    return this._biblioUtil.workToString(work);
+    return this._utilService.workToString(work);
   }
 }

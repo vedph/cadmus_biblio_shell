@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Author, Container, Work, WorkAuthor } from '../models';
+import { Author, Container, Work, WorkAuthor, WorkInfo } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +33,42 @@ export class BiblioUtilService {
     if ((work as Container).number) {
       sb.push(' ');
       sb.push((work as Container)?.number || '');
+    }
+
+    if (work.yearPub) {
+      sb.push(', ');
+      sb.push(work.yearPub.toString());
+    }
+    return sb.join('');
+  }
+
+  /**
+   * Return a string representation for the specified work info.
+   * @param work Work info.
+   * @returns String.
+   */
+  public workInfoToString(work?: WorkInfo): string {
+    if (!work) {
+      return '';
+    }
+    const sb: string[] = [];
+    if (work.authors?.length) {
+      for (let i = 0; i < work.authors.length; i++) {
+        if (i > 0) {
+          sb.push(' & ');
+        }
+        sb.push(work.authors[i].last);
+      }
+    }
+
+    if (work.title) {
+      sb.push(' - ');
+      sb.push(work.title);
+    }
+
+    if (work.number) {
+      sb.push(' ');
+      sb.push(work.number);
     }
 
     if (work.yearPub) {

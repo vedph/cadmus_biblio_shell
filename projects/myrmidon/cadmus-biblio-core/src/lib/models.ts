@@ -48,6 +48,7 @@ export interface EditedWork extends Work {
 }
 
 export interface WorkInfo {
+  isContainer: boolean;
   id: string;
   key: string;
   authors: WorkAuthor[];
@@ -72,4 +73,10 @@ export interface PagingOptions {
 export interface WorkType {
   id: string;
   name: string;
+}
+
+export interface WorkListEntry {
+  id: string;
+  label: string;
+  payload?: string;
 }

@@ -1,0 +1,103 @@
+<form [formGroup]="form">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>work</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let e of entries;
+          let first = first;
+          let last = last;
+          let i = index
+        "
+      >
+        <td>
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="View work"
+            color="primary"
+            (click)="viewEntryDetails(e)"
+          >
+            <mat-icon>article</mat-icon>
+          </button>
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="Edit this work"
+            (click)="editEntry(e)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            [disabled]="first"
+            mat-icon-button
+            type="button"
+            matTooltip="Move work up"
+            (click)="moveEntryUp(i)"
+          >
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button
+            [disabled]="last"
+            mat-icon-button
+            type="button"
+            matTooltip="Move work down"
+            (click)="moveEntryDown(i)"
+          >
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="Remove this work from list"
+            color="warn"
+            (click)="removeEntry(i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+        <td>
+          {{ e.label }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- details -->
+  <div gdArea="details" *ngIf="detailWork">
+    <div *ngIf="loadingDetailWork">
+      <mat-spinner [diameter]="24" [strokeWidth]="4"></mat-spinner>
+    </div>
+    <mat-expansion-panel [(expanded)]="detailsOpen">
+      <mat-expansion-panel-header>
+        {{ workToString(detailWork) }}
+      </mat-expansion-panel-header>
+      <biblio-work-details [work]="detailWork"></biblio-work-details>
+    </mat-expansion-panel>
+  </div>
+
+  <!-- browser -->
+  <hr />
+  <biblio-work-browser
+    [langEntries]="langEntries"
+    [signals$]="browserSignals$"
+    (workPick)="pickWork($event)"
+    (workEdit)="editWork($event)"
+    (workDelete)="deleteWork($event)"
+  ></biblio-work-browser>
+
+  <!-- editor -->
+  <biblio-work
+    *ngIf="editedWork"
+    [model]="editedWork"
+    [langEntries]="langEntries"
+    [roleEntries]="roleEntries"
+    (modelChange)="onWorkChange($event)"
+    (editorClose)="onEditorClose()"
+  ></biblio-work>
+</form>
