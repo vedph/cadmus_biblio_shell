@@ -15,9 +15,11 @@ import { WorkFilterComponent } from './components/work-filter/work-filter.compon
 import { WorkBrowserComponent } from './components/work-browser/work-browser.component';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { WorkDetailsComponent } from './components/work-details/work-details.component';
+import { AuthorPickerComponent } from './components/author-picker/author-picker.component';
 
 @NgModule({
   declarations: [
+    AuthorPickerComponent,
     KeywordPickerComponent,
     WorkAuthorsComponent,
     WorkBrowserComponent,
@@ -40,6 +42,7 @@ import { WorkDetailsComponent } from './components/work-details/work-details.com
     CadmusBiblioApiModule,
   ],
   exports: [
+    AuthorPickerComponent,
     KeywordPickerComponent,
     WorkAuthorsComponent,
     WorkBrowserComponent,

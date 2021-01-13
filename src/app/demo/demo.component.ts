@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
-import { Container, Keyword, Work, WorkAuthor, WorkBase } from '@myrmidon/cadmus-biblio-core';
+import { Author, Container, Keyword, Work, WorkAuthor, WorkBase } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { WorkFilterComponent } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
 
@@ -12,6 +12,8 @@ import { WorkFilterComponent } from 'projects/myrmidon/cadmus-biblio-ui/src/publ
 export class DemoComponent implements OnInit {
   public work: WorkBase | undefined;
   public container: WorkBase | undefined;
+
+  public author: Author | undefined;
 
   public authors: WorkAuthor[] | undefined;
   public roleEntries: ThesaurusEntry[];
@@ -51,6 +53,10 @@ export class DemoComponent implements OnInit {
 
   public onContainerChange(container: WorkBase): void {
     this.container = container;
+  }
+
+  public onAuthorChange(author: Author): void {
+    this.author = author;
   }
 
   public onAuthorsChange(authors: WorkAuthor[]): void {

@@ -2,6 +2,7 @@
  * Public API Surface of cadmus-biblio-ui
  */
 
+export * from './lib/components/author-picker/author-picker.component';
 export * from './lib/components/keyword-picker/keyword-picker.component';
 export * from './lib/components/work-authors/work-authors.component';
 export * from './lib/components/work-browser/work-browser.component';

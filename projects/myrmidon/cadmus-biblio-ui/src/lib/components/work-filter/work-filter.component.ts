@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BiblioService, WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
+  Author,
   BiblioUtilService,
   Container,
   WorkType,
@@ -32,6 +33,7 @@ export class WorkFilterComponent implements OnInit {
   public form: FormGroup;
   public matchAny: FormControl;
   public type: FormControl;
+  public author: FormControl;
   public lastName: FormControl;
   public language: FormControl;
   public title: FormControl;
@@ -59,6 +61,7 @@ export class WorkFilterComponent implements OnInit {
     // form
     this.matchAny = formBuilder.control(false);
     this.type = formBuilder.control(null);
+    this.author = formBuilder.control(null);
     this.lastName = formBuilder.control(null);
     this.language = formBuilder.control(null);
     this.title = formBuilder.control(null);
@@ -71,6 +74,7 @@ export class WorkFilterComponent implements OnInit {
     this.form = formBuilder.group({
       matchAny: this.matchAny,
       type: this.type,
+      author: this.author,
       lastName: this.lastName,
       language: this.language,
       title: this.title,
@@ -122,6 +126,16 @@ export class WorkFilterComponent implements OnInit {
     this.key.setValue(filter.key);
     this.keyword.setValue(filter.keyword);
 
+    // load the author from his ID if any
+    if (filter.authorId) {
+      this._biblioService
+        .getAuthor(filter.authorId)
+        .pipe(take(1))
+        .subscribe((a) => {
+          this.author.setValue(a);
+        });
+    }
+
     // load the container from its container ID if any
     if (filter.containerId) {
       this._biblioService
@@ -143,6 +157,7 @@ export class WorkFilterComponent implements OnInit {
       pageSize: 10,
       matchAny: this.matchAny.value,
       type: this.type.value,
+      authorId: this.author.value?.id,
       lastName: this.lastName.value,
       language: this.language.value,
       title: this.title.value,
@@ -154,12 +169,24 @@ export class WorkFilterComponent implements OnInit {
     };
   }
 
+  public onAuthorChange(author: Author): void {
+    this.author.setValue(author);
+  }
+
   public onContainerChange(container: Container): void {
     this.container.setValue(container);
   }
 
+  public clearAuthor(): void {
+    this.author.setValue(null);
+  }
+
   public clearContainer(): void {
     this.container.setValue(null);
+  }
+
+  public authorToString(author: Author): string {
+    return this._biblioUtil.authorToString(author);
   }
 
   public workToString(work: Container): string {

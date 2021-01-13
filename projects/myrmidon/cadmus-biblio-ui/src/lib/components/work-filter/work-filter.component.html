@@ -31,10 +31,29 @@
     </mat-form-field>
   </div>
 
+  <!-- author -->
+  <div>
+    <biblio-author-picker
+      (authorChange)="onAuthorChange($event)"
+    ></biblio-author-picker>
+  </div>
+  <div *ngIf="author?.value">
+    <span class="info">{{ authorToString(author.value) }}</span>
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Remove author filter"
+      color="warn"
+      (click)="clearAuthor()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+
   <!-- lastName -->
   <div>
     <mat-form-field>
-      <input matInput [formControl]="lastName" placeholder="author" />
+      <input matInput [formControl]="lastName" placeholder="last name" />
     </mat-form-field>
   </div>
 

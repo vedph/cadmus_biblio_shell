@@ -32,6 +32,16 @@
         </div>
       </mat-tab>
 
+      <!-- author picker -->
+      <mat-tab label="author">
+        <biblio-author-picker
+          (authorChange)="onAuthorChange($event)"
+        ></biblio-author-picker>
+        <div *ngIf="author">
+          <pre>{{ author | json }}</pre>
+        </div>
+      </mat-tab>
+
       <!-- work authors -->
       <mat-tab label="work authors">
         <biblio-work-authors
