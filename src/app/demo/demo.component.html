@@ -107,13 +107,16 @@
         <biblio-work-details [work]="detWork"></biblio-work-details>
       </mat-tab>
 
-      <!-- work list -->
-      <mat-tab label="work list">
+      <!-- work browser -->
+      <mat-tab label="work browser">
         <div>
-          <biblio-work-list
+          <biblio-work-browser
             [langEntries]="langEntries"
-            [roleEntries]="roleEntries"
-          ></biblio-work-list>
+            [editEnabled]="false"
+            [addEnabled]="false"
+            [deleteEnabled]="false"
+            [pickEnabled]="false"
+          ></biblio-work-browser>
         </div>
       </mat-tab>
     </mat-tab-group>
