@@ -35,6 +35,8 @@ export class WorkBrowserComponent implements OnInit {
   public langEntries: ThesaurusEntry[] | undefined;
   @Input()
   public signals$: BehaviorSubject<string>;
+  @Input()
+  public pageSize: number;
   @Output()
   public workPick: EventEmitter<WorkInfo>;
   @Output()
@@ -66,16 +68,17 @@ export class WorkBrowserComponent implements OnInit {
     this.workPick = new EventEmitter<WorkInfo>();
     this.workEdit = new EventEmitter<WorkInfo>();
     this.workDelete = new EventEmitter<WorkInfo>();
+    this.pageSize = 20;
     this.page$ = new BehaviorSubject<DataPage<WorkInfo>>({
       total: 0,
       pageNumber: 1,
-      pageSize: 20,
+      pageSize: this.pageSize,
       pageCount: 0,
       items: [],
     });
     this._filter = {
       pageNumber: 1,
-      pageSize: 20,
+      pageSize: this.pageSize,
     };
     // form
     this.isContainer = formBuilder.control(false);
@@ -83,6 +86,7 @@ export class WorkBrowserComponent implements OnInit {
 
   private loadPage(): void {
     this.loading = true;
+    this._filter.pageSize = this.pageSize;
 
     if (this.isContainer.value) {
       this._biblioService
@@ -124,7 +128,7 @@ export class WorkBrowserComponent implements OnInit {
   public onPageChange(event: PageEvent): void {
     // https://material.angular.io/components/paginator/api
     this._filter.pageNumber = event.pageIndex + 1;
-    this._filter.pageSize = event.pageSize;
+    this.pageSize = event.pageSize;
     this.loadPage();
   }
 

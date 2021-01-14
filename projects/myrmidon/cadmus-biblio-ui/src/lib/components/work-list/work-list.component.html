@@ -86,6 +86,7 @@
   <biblio-work-browser
     [langEntries]="langEntries"
     [signals$]="browserSignals$"
+    [pageSize]="10"
     (workPick)="pickWork($event)"
     (workEdit)="editWork($event)"
     (workDelete)="deleteWork($event)"

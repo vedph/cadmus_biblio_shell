@@ -133,8 +133,8 @@
     >
       <mat-paginator
         [length]="page.total"
-        [pageSize]="page.pageSize"
-        [pageSizeOptions]="[20, 50, 75, 100]"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[10, 20, 50, 75, 100]"
         [pageIndex]="page.pageNumber - 1"
         [showFirstLastButtons]="true"
         (page)="onPageChange($event)"
