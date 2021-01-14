@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ClipboardModule } from '@angular/cdk/clipboard'
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -28,6 +29,7 @@ import { WorkPageComponent } from './work-page/work-page.component';
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
+    ClipboardModule,
     RouterModule.forRoot(
       [
         { path: '', redirectTo: 'home', pathMatch: 'full' },

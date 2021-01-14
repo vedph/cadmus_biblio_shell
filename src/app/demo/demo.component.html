@@ -110,7 +110,10 @@
       <!-- work list -->
       <mat-tab label="work list">
         <div>
-          <biblio-work-list></biblio-work-list>
+          <biblio-work-list
+            [langEntries]="langEntries"
+            [roleEntries]="roleEntries"
+          ></biblio-work-list>
         </div>
       </mat-tab>
     </mat-tab-group>

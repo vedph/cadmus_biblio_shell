@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ClipboardModule } from '@angular/cdk/clipboard'
 import { CadmusCoreModule } from '@myrmidon/cadmus-core';
 import { CadmusMaterialModule } from '@myrmidon/cadmus-material';
 import { WorkPickerComponent } from './components/work-picker/work-picker.component';
@@ -36,6 +37,7 @@ import { WorkListComponent } from './components/work-list/work-list.component';
     FormsModule,
     RouterModule,
     ReactiveFormsModule,
+    ClipboardModule,
     // cadmus
     CadmusCoreModule,
     CadmusMaterialModule,

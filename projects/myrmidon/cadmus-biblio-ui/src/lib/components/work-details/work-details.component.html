@@ -8,7 +8,7 @@
     <span class="key">{{ work.key }}</span>
   </div>
   <!-- authors, title -->
-  <div style="margin:4px">
+  <div style="margin: 4px">
     <span class="authors" *ngIf="work.authors?.length">
       {{ authorsToString(work.authors) }}
     </span>
@@ -17,20 +17,18 @@
     <span *ngIf="work.edition" class="sup">&nbsp;{{ work.edition }}</span>
   </div>
   <!-- container title, container number -->
-  <div style="margin:4px" *ngIf="w?.container">
+  <div style="margin: 4px" *ngIf="w?.container">
     in <span class="title">{{ w?.container?.title }}</span>
     <span *ngIf="w?.container?.number">&nbsp;{{ w?.container?.number }}</span>
   </div>
   <!-- place, number, year, page - page, publisher -->
-  <div style="margin:4px">
-    {{ work.placePub }} {{c?.number}} {{ work.yearPub }}
-    <span *ngIf="w?.firstPage"
-      >p. {{ w?.firstPage }} - {{ w?.lastPage }}</span
-    >
+  <div style="margin: 4px">
+    {{ work.placePub }} {{ c?.number }} {{ work.yearPub }}
+    <span *ngIf="w?.firstPage">p. {{ w?.firstPage }} - {{ w?.lastPage }}</span>
     <span *ngIf="work.publisher">&nbsp;({{ work.publisher }})</span>
   </div>
   <!-- location, access -->
-  <div style="margin:4px">
+  <div style="margin: 4px">
     {{ work.location }}
     <span *ngIf="work.accessDate">accessed: {{ work.accessDate | date }}</span>
   </div>
@@ -41,8 +39,8 @@
     </ul>
   </div>
   <!-- id -->
-  <div style="margin:4px">
-    <span class="literal"></span>
+  <div style="margin: 4px">
+    <span class="literal">{{ work.id }}</span>
   </div>
   <!-- note -->
   <div *ngIf="work.note" class="note">{{ work.note }}</div>

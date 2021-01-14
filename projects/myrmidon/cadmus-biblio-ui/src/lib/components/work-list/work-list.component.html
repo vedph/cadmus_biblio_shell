@@ -54,6 +54,14 @@
           <button
             type="button"
             mat-icon-button
+            matTooltip="Copy ID"
+            (click)="copyId(e.id)"
+          >
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button
+            type="button"
+            mat-icon-button
             matTooltip="Remove this work from list"
             color="warn"
             (click)="removeEntry(i)"

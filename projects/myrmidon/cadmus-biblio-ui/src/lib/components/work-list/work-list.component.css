@@ -1,6 +1,3 @@
-tbody tr:nth-child(odd) {
-  background-color: #eaeaea;
-}
 th {
   text-align: left;
   font-weight: normal;

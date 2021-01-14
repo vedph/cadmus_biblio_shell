@@ -5,6 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import {Clipboard} from '@angular/cdk/clipboard';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import {
   BiblioUtilService,
@@ -75,6 +76,7 @@ export class WorkListComponent implements OnInit {
 
   constructor(
     formBuilder: FormBuilder,
+    private _clipboard: Clipboard,
     private _dialogService: DialogService,
     private _biblioService: BiblioService,
     private _utilService: BiblioUtilService
@@ -90,6 +92,10 @@ export class WorkListComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  public copyId(id: string): void {
+    this._clipboard.copy(id);
+  }
 
   private viewDetails(id: string, container: boolean): void {
     this.loadingDetailWork = true;
@@ -150,7 +156,7 @@ export class WorkListComponent implements OnInit {
       return;
     }
     const item = this._entries[index];
-    this._entries.splice(index, 0, item);
+    this._entries.splice(index, 1);
     this._entries.splice(index - 1, 0, item);
     this.form.markAsDirty();
   }
