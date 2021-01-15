@@ -54,7 +54,7 @@
           <th>authors</th>
           <th>title</th>
           <th fxHide.lt-md *ngIf="!isContainer?.value">container</th>
-          <th fxHide.lt-md *ngIf="isContainer?.value">number</th>
+          <th fxHide.lt-md>number</th>
           <th fxHide.lt-md>year</th>
         </tr>
       </thead>
@@ -114,7 +114,7 @@
           <td fxHide.lt-md *ngIf="!isContainer?.value">
             {{ w.container?.title }}
           </td>
-          <td fxHide.lt-md *ngIf="isContainer?.value">
+          <td fxHide.lt-md>
             {{ w.number }}
           </td>
           <td fxHide.lt-md>

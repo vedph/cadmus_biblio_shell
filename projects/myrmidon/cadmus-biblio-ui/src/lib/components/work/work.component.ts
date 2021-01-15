@@ -10,7 +10,6 @@ import {
   EditedWork,
   Keyword,
   WorkAuthor,
-  WorkBase,
   WorkType,
   WorkKeyService,
   BiblioUtilService,
@@ -244,7 +243,7 @@ export class WorkComponent implements OnInit {
     this.container = container;
   }
 
-  public workToString(work?: WorkBase): string {
+  public workToString(work?: Container): string {
     return this._biblioUtil.workToString(work);
   }
 

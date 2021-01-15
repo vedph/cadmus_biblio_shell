@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WorkBase, WorkAuthor, Container } from '../models';
+import { Container, WorkAuthor } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,7 @@ export class WorkKeyService {
    * @param work The work or container to build the key for.
    * @returns The key.
    */
-  public buildKey(work: WorkBase): string {
+  public buildKey(work: Container): string {
     if (!work) {
       return '';
     }
@@ -45,9 +45,9 @@ export class WorkKeyService {
     }
 
     // number if any
-    if ((work as Container)?.number) {
+    if (work?.number) {
       sb.push(' ');
-      sb.push((work as Container).number || '');
+      sb.push(work.number || '');
     }
 
     // year

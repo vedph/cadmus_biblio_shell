@@ -33,7 +33,7 @@
       </mat-tab>
 
       <!-- author picker -->
-      <mat-tab label="author">
+      <mat-tab label="author picker">
         <biblio-author-picker
           (authorChange)="onAuthorChange($event)"
         ></biblio-author-picker>
@@ -75,6 +75,7 @@
         </div>
       </mat-tab>
 
+      <!-- work -->
       <mat-tab label="work">
         <biblio-work
           [langEntries]="langEntries"

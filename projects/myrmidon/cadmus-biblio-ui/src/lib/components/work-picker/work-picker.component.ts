@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
-import { BiblioUtilService, WorkBase } from '@myrmidon/cadmus-biblio-core';
+import { BiblioUtilService, Container, Work } from '@myrmidon/cadmus-biblio-core';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import { Observable, of } from 'rxjs';
 import {
@@ -44,12 +44,12 @@ export class WorkPickerComponent implements OnInit {
    * Fired when a work or container is selected.
    */
   @Output()
-  public workChange: EventEmitter<WorkBase>;
+  public workChange: EventEmitter<Container | Work>;
 
   public form: FormGroup;
   public lookup: FormControl;
-  public works$: Observable<WorkBase[]> | undefined;
-  public work: WorkBase | undefined;
+  public works$: Observable<Container[]> | undefined;
+  public work: Container | Work | undefined;
 
   constructor(formBuilder: FormBuilder,
     private _biblioService: BiblioService,
@@ -57,7 +57,7 @@ export class WorkPickerComponent implements OnInit {
     this.limit = 10;
     this.label = 'work';
     this.container = false;
-    this.workChange = new EventEmitter<WorkBase>();
+    this.workChange = new EventEmitter<Container | Work>();
     // form
     this.lookup = formBuilder.control(null);
     this.form = formBuilder.group({
@@ -82,18 +82,18 @@ export class WorkPickerComponent implements OnInit {
     this.works$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((value: WorkBase | string) => {
+      switchMap((value: Container | string) => {
         if (typeof value === 'string') {
           const filter = this.getFilter(value);
           return this.container
             ? this._biblioService.getContainers(filter).pipe(
                 switchMap((p) => {
-                  return of(p.items as WorkBase[]);
+                  return of(p.items as Container[]);
                 })
               )
             : this._biblioService.getWorks(filter).pipe(
                 switchMap((p) => {
-                  return of(p.items as WorkBase[]);
+                  return of(p.items as Container[]);
                 })
               );
         } else {
@@ -108,11 +108,11 @@ export class WorkPickerComponent implements OnInit {
     this.lookup.setValue(null);
   }
 
-  public workToString(work: WorkBase): string {
+  public workToString(work: Container | Work): string {
     return this._biblioUtil?.workToString(work);
   }
 
-  public pickWork(work: WorkBase): void {
+  public pickWork(work: Container | Work): void {
     this.workChange.emit(work);
     this.clear();
   }

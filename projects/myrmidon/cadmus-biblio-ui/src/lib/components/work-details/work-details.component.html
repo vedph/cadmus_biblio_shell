@@ -23,7 +23,7 @@
   </div>
   <!-- place, number, year, page - page, publisher -->
   <div style="margin: 4px">
-    {{ work.placePub }} {{ c?.number }} {{ work.yearPub }}
+    {{ work.placePub }} {{ w?.number }} {{ work.yearPub }}
     <span *ngIf="w?.firstPage">p. {{ w?.firstPage }} - {{ w?.lastPage }}</span>
     <span *ngIf="work.publisher">&nbsp;({{ work.publisher }})</span>
   </div>

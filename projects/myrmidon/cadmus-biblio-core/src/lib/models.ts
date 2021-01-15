@@ -1,3 +1,6 @@
+/**
+ * An author.
+ */
 export interface Author {
   id?: string;
   first: string;
@@ -5,17 +8,26 @@ export interface Author {
   suffix?: string;
 }
 
+/**
+ * An author assigned to a work.
+ */
 export interface WorkAuthor extends Author {
   role?: string;
   ordinal?: number;
 }
 
+/**
+ * A keyword.
+ */
 export interface Keyword {
   language: string;
   value: string;
 }
 
-export interface WorkBase {
+/**
+ * A work container.
+ */
+export interface Container {
   id?: string;
   key: string;
   authors: WorkAuthor[];
@@ -24,6 +36,7 @@ export interface WorkBase {
   language: string;
   edition?: number;
   publisher?: string;
+  number?: string;
   yearPub?: number;
   placePub?: string;
   location?: string;
@@ -32,21 +45,25 @@ export interface WorkBase {
   keywords?: Keyword[];
 }
 
-export interface Container extends WorkBase {
-  number?: string;
-}
-
-export interface Work extends WorkBase {
+/**
+ * A work.
+ */
+export interface Work extends Container {
   container?: Container;
   firstPage?: number;
   lastPage?: number;
 }
 
+/**
+ * A work being edited in the UI.
+ */
 export interface EditedWork extends Work {
   isContainer?: boolean;
-  number?: string;
 }
 
+/**
+ * Essential information about a work or container.
+ */
 export interface WorkInfo {
   isContainer: boolean;
   id: string;
@@ -65,16 +82,33 @@ export interface WorkInfo {
   container?: Container;
 }
 
+/**
+ * Server paging options.
+ */
 export interface PagingOptions {
   pageNumber: number;
   pageSize: number;
 }
 
+/**
+ * Work's type.
+ */
 export interface WorkType {
   id: string;
   name: string;
 }
 
+/**
+ * An entry in a list of selected works.
+ * This is a generic model which does not imply the usage
+ * of the models in this library. Each entry just has a
+ * string ID (here corresponding to a GUID) for the work,
+ * a human-readable label for it, and a general purpose
+ * payload string to carry additional information which
+ * might be useful in the context of the external database.
+ * In our library, the payload is equal to "c" for
+ * containers, and undefined or null for works.
+ */
 export interface WorkListEntry {
   id: string;
   label: string;
