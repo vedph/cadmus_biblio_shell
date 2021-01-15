@@ -35,7 +35,7 @@ services:
     networks:
       - cadmus-biblio-network
 
-  cadmus-api:
+  cadmus-biblio-api:
     image: vedph2020/cadmus_biblio_api:1.0.0
     ports:
       # https://stackoverflow.com/questions/48669548/why-does-aspnet-core-start-on-port-80-from-within-docker
@@ -44,12 +44,12 @@ services:
       - cadmus-mongo
       - cadmus-mysql
     # wait for mongo before starting: https://github.com/vishnubob/wait-for-it
-    command: ["./wait-for-it.sh", "cadmus-mongo:27017", "--", "dotnet", "Cadmus.Biblio.Api.dll"]
+    command: ["./wait-for-it.sh", "cadmus-mongo:27017", "--", "dotnet", "CadmusBiblioApi.dll"]
     environment:
       # for Windows use : as separator, for non Windows use __
       # (see https://github.com/aspnet/Configuration/issues/469)
       - CONNECTIONSTRINGS__DEFAULT=mongodb://cadmus-mongo:27017/{0}
-      - CONNECTIONSTRINGS__INDEX=Server=cadmus-mysql;port=3306;Database={0};Uid=root;Pwd=mysql
+      - CONNECTIONSTRINGS__BIBLIO=Server=cadmus-mysql;port=3306;Database={0};Uid=root;Pwd=mysql
       - SEED__INDEXDELAY=50
       - SERILOG__CONNECTIONSTRING=mongodb://cadmus-mongo:27017/cadmus-biblio-log
       - STOCKUSERS__0__PASSWORD=P4ss-W0rd!
@@ -61,7 +61,7 @@ services:
     ports:
       - 4200:80
     depends_on:
-      - cadmus-api
+      - cadmus-biblio-api
     networks:
       - cadmus-biblio-network
 
