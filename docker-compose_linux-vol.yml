@@ -1,7 +1,7 @@
 # Modified compose version using volumes in a Linux-based host.
 # MongoDB: localhost:27017, host folder: /var/db/mongo
 # MySql: localhost:3306, host folder: /var/db/mysql
-# API: localhost:54183
+# API: localhost:61691
 # web: localhost:4200
 
 version: '3.7'
@@ -26,9 +26,9 @@ services:
   # https://github.com/docker-library/docs/tree/master/mysql#mysql_database
   # https://docs.docker.com/samples/library/mysql/#environment-variables
   # https://github.com/docker-library/mysql/issues/275 (troubleshooting connection)
-  cadmus-mysql:
+  cadmus-index:
     image: mysql
-    container_name: cadmus-mysql
+    container_name: cadmus-index
     # https://github.com/docker-library/mysql/issues/454
     command: --default-authentication-plugin=mysql_native_password
     environment:
@@ -46,27 +46,27 @@ services:
       - cadmus-biblio-network
 
   cadmus-biblio-api:
-    image: vedph2020/cadmus_biblio_api:1.0.0
+    image: vedph2020/cadmus_biblio_api:1.0.1
     ports:
       # https://stackoverflow.com/questions/48669548/why-does-aspnet-core-start-on-port-80-from-within-docker
       - 61691:80
     depends_on:
       - cadmus-mongo
-      - cadmus-mysql
+      - cadmus-index
     # wait for mongo before starting: https://github.com/vishnubob/wait-for-it
     command: ["./wait-for-it.sh", "cadmus-mongo:27017", "--", "dotnet", "CadmusBiblioApi.dll"]
     environment:
       # for Windows use : as separator, for non Windows use __
       # (see https://github.com/aspnet/Configuration/issues/469)
       - CONNECTIONSTRINGS__DEFAULT=mongodb://cadmus-mongo:27017/{0}
-      - CONNECTIONSTRINGS__BIBLIO=Server=cadmus-mysql;port=3306;Database={0};Uid=root;Pwd=mysql
-      - SEED__INDEXDELAY=50
+      - CONNECTIONSTRINGS__BIBLIO=Server=cadmus-index;port=3306;Database={0};Uid=root;Pwd=mysql
+      - SEED__BIBLIODELAY=50
       - SERILOG__CONNECTIONSTRING=mongodb://cadmus-mongo:27017/cadmus-biblio-log
       - STOCKUSERS__0__PASSWORD=P4ss-W0rd!
     networks:
       - cadmus-biblio-network
 
-  cadmus-web:
+  cadmus-biblio-app:
     image: vedph2020/cadmus-biblio-shell:1.0.0
     ports:
       - 4200:80
