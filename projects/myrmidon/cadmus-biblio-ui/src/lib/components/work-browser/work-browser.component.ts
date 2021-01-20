@@ -40,6 +40,8 @@ export class WorkBrowserComponent implements OnInit {
   @Output()
   public workPick: EventEmitter<WorkInfo>;
   @Output()
+  public workAdd: EventEmitter<boolean>;
+  @Output()
   public workEdit: EventEmitter<WorkInfo>;
   @Output()
   public workDelete: EventEmitter<WorkInfo>;
@@ -66,6 +68,7 @@ export class WorkBrowserComponent implements OnInit {
     this.detailsOpen = false;
     this.signals$ = new BehaviorSubject<string>('');
     this.workPick = new EventEmitter<WorkInfo>();
+    this.workAdd = new EventEmitter<boolean>();
     this.workEdit = new EventEmitter<WorkInfo>();
     this.workDelete = new EventEmitter<WorkInfo>();
     this.pageSize = 20;
@@ -149,6 +152,10 @@ export class WorkBrowserComponent implements OnInit {
 
   public pickWork(work: WorkInfo): void {
     this.workPick.emit(work);
+  }
+
+  public addWork(): void {
+    this.workAdd.emit(this.isContainer.value);
   }
 
   public editWork(work: WorkInfo): void {

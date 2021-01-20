@@ -5,7 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import {Clipboard} from '@angular/cdk/clipboard';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import {
   BiblioUtilService,
@@ -121,21 +121,31 @@ export class WorkListComponent implements OnInit {
     }
   }
 
-  private edit(id: string, container: boolean): void {
-    if (container) {
-      this._biblioService
-        .getContainer(id)
-        .pipe(take(1))
-        .subscribe((c) => {
-          this.editedWork = c;
-        });
+  private edit(id: string | null, container: boolean): void {
+    if (id) {
+      if (container) {
+        this._biblioService
+          .getContainer(id)
+          .pipe(take(1))
+          .subscribe((c) => {
+            this.editedWork = c;
+          });
+      } else {
+        this._biblioService
+          .getWork(id)
+          .pipe(take(1))
+          .subscribe((w) => {
+            this.editedWork = w;
+          });
+      }
     } else {
-      this._biblioService
-        .getWork(id)
-        .pipe(take(1))
-        .subscribe((w) => {
-          this.editedWork = w;
-        });
+      this.editedWork = {
+        key: '',
+        authors: [],
+        type: '',
+        title: '',
+        language: ''
+      };
     }
   }
 
@@ -188,6 +198,10 @@ export class WorkListComponent implements OnInit {
     this.edit(entry.id, entry.payload === 'c');
   }
   //#endregion
+
+  public addWork(container: boolean): void {
+    this.edit(null, container);
+  }
 
   /**
    * Edit the specified work from the browser.
