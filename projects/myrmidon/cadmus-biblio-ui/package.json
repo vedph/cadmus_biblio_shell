@@ -1,6 +1,19 @@
 {
   "name": "@myrmidon/cadmus-biblio-ui",
   "version": "0.0.1",
+  "description": "Cadmus - bibliographic API UI components",
+  "keywords": [
+    "Cadmus",
+    "bibliography"
+  ],
+  "homepage": "https://github.com/vedph/cadmus_biblio_shell",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vedph/cadmus_biblio_shell"
+  },
+  "author": {
+    "name": "Daniele Fusi"
+  },
   "peerDependencies": {
     "@angular/common": "^11.0.5",
     "@angular/core": "^11.0.5"
