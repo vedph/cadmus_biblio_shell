@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 @Component({
@@ -9,8 +10,13 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 export class WorkPageComponent implements OnInit {
   public roleEntries: ThesaurusEntry[];
   public langEntries: ThesaurusEntry[];
+  public workTagEntries: ThesaurusEntry[];
+
+  public entries: WorkListEntry[];
 
   constructor() {
+    this.entries = [];
+
     this.roleEntries = [
       { id: '-', value: '---' },
       { id: 'trs', value: 'translator' },
@@ -24,9 +30,18 @@ export class WorkPageComponent implements OnInit {
       { id: 'fra', value: 'French' },
       { id: 'spa', value: 'Spanish' },
     ];
+
+    this.workTagEntries = [
+      { id: 'history', value: 'history of studies' },
+      { id: 'method', value: 'methodology' },
+      { id: 'algorithm', value: 'algorithms' },
+    ];
   }
 
   ngOnInit(): void {
   }
 
+  public onEntriesChange(entries: WorkListEntry[]): void {
+    this.entries = entries;
+  }
 }

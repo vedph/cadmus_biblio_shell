@@ -113,4 +113,6 @@ export interface WorkListEntry {
   id: string;
   label: string;
   payload?: string;
+  tag?: string;
+  note?: string;
 }

@@ -8,6 +8,11 @@
     <biblio-work-list
       [langEntries]="langEntries"
       [roleEntries]="roleEntries"
+      [workTagEntries]="workTagEntries"
+      (entriesChange)="onEntriesChange($event)"
     ></biblio-work-list>
+    <div *ngIf="entries?.length">
+      <pre>{{ entries | json}}</pre>
+    </div>
   </mat-card-content>
 </mat-card>

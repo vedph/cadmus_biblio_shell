@@ -1,80 +1,113 @@
 <form [formGroup]="form">
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-        <th>work</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        *ngFor="
-          let e of entries;
-          let first = first;
-          let last = last;
-          let i = index
-        "
-      >
-        <td>
-          <button
-            type="button"
-            mat-icon-button
-            matTooltip="View work"
-            color="primary"
-            (click)="viewEntryDetails(e)"
+  <div formArrayName="works">
+    <div
+      *ngFor="
+        let item of works.controls;
+        let i = index;
+        let first = first;
+        let last = last
+      "
+    >
+      <!-- child form -->
+      <div [formGroupName]="i">
+        <!-- child actions -->
+        {{ i + 1 }}.
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="View work"
+          color="primary"
+          (click)="viewWorkDetails(entries[i])"
+        >
+          <mat-icon>article</mat-icon>
+        </button>
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="Edit this work"
+          (click)="editWork(entries[i])"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          type="button"
+          matTooltip="Remove this work from list"
+          color="warn"
+          (click)="removeWork(i)"
+        >
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+        <button
+          [disabled]="first"
+          mat-icon-button
+          type="button"
+          matTooltip="Move work up"
+          (click)="moveWorkUp(i)"
+        >
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <button
+          [disabled]="last"
+          mat-icon-button
+          type="button"
+          matTooltip="Move work down"
+          (click)="moveWorkDown(i)"
+        >
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="Copy work's ID"
+          (click)="copyId(entries[i].id)"
+        >
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <!-- label -->
+        &nbsp;
+        {{ entries[i].label }}
+        <div class="work-controls">
+          <!-- tag (bound) -->
+          <mat-form-field
+            style="grid-area: tag"
+            appearance="fill"
+            *ngIf="workTagEntries?.length"
           >
-            <mat-icon>article</mat-icon>
-          </button>
-          <button
-            type="button"
-            mat-icon-button
-            matTooltip="Edit this work"
-            (click)="editEntry(e)"
+            <mat-select formControlName="tag" placeholder="tag">
+              <mat-option *ngFor="let e of workTagEntries" [value]="e.id">{{
+                e.value
+              }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="groupHasError(item, 'required')"
+              >tag required</mat-error
+            >
+          </mat-form-field>
+
+          <!-- tag (free) -->
+          <mat-form-field
+            style="grid-area: tag"
+            appearance="fill"
+            *ngIf="!workTagEntries?.length"
           >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            [disabled]="first"
-            mat-icon-button
-            type="button"
-            matTooltip="Move work up"
-            (click)="moveEntryUp(i)"
-          >
-            <mat-icon>arrow_upward</mat-icon>
-          </button>
-          <button
-            [disabled]="last"
-            mat-icon-button
-            type="button"
-            matTooltip="Move work down"
-            (click)="moveEntryDown(i)"
-          >
-            <mat-icon>arrow_downward</mat-icon>
-          </button>
-          <button
-            type="button"
-            mat-icon-button
-            matTooltip="Copy ID"
-            (click)="copyId(e.id)"
-          >
-            <mat-icon>content_copy</mat-icon>
-          </button>
-          <button
-            type="button"
-            mat-icon-button
-            matTooltip="Remove this work from list"
-            color="warn"
-            (click)="removeEntry(i)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-        <td>
-          {{ e.label }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+            <input matInput formControlName="tag" placeholder="tag" />
+            <mat-error *ngIf="groupHasError(item, 'maxLength')"
+              >tag too long</mat-error
+            >
+          </mat-form-field>
+
+          &nbsp;
+          <!-- note -->
+          <mat-form-field appearance="fill" style="grid-area: note">
+            <input matInput formControlName="note" placeholder="note" />
+            <mat-error *ngIf="groupHasError(item, 'maxLength')"
+              >note too long</mat-error
+            >
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- details -->
   <div gdArea="details" *ngIf="detailWork">
@@ -95,19 +128,27 @@
     [langEntries]="langEntries"
     [signals$]="browserSignals$"
     [pageSize]="10"
-    (workPick)="pickWork($event)"
-    (workAdd)="addWork($event)"
-    (workEdit)="editWork($event)"
-    (workDelete)="deleteWork($event)"
+    (workPick)="pickBrowserWork($event)"
+    (workAdd)="addBrowserWork($event)"
+    (workEdit)="editBrowserWork($event)"
+    (workDelete)="deleteBrowserWork($event)"
   ></biblio-work-browser>
 
   <!-- editor -->
-  <biblio-work
-    *ngIf="editedWork"
-    [model]="editedWork"
-    [langEntries]="langEntries"
-    [roleEntries]="roleEntries"
-    (modelChange)="onWorkChange($event)"
-    (editorClose)="onEditorClose()"
-  ></biblio-work>
+  <mat-card *ngIf="editedWork">
+    <mat-card-header>
+      <mat-card-title>
+        {{editedWork?.title || '(untitled work)'}}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <biblio-work
+        [model]="editedWork"
+        [langEntries]="langEntries"
+        [roleEntries]="roleEntries"
+        (modelChange)="onWorkChange($event)"
+        (editorClose)="onEditorClose()"
+      ></biblio-work>
+    </mat-card-content>
+  </mat-card>
 </form>

@@ -1,5 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import {
+  AbstractControl,
+  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -18,12 +20,14 @@ import {
 } from '@myrmidon/cadmus-biblio-core';
 import { DialogService } from '@myrmidon/cadmus-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { debounceTime, take } from 'rxjs/operators';
 
 /**
  * A list of picked bibliographic entries.
- * This allows users to pick, edit, add or delete works.
+ * This allows users to pick, edit, add or delete works. Also,
+ * the user can add an optional tag and note to each picked
+ * work.
  * The list of works picked is a list of generic WorkListEntry.
  * Users can add new entries to the list using the works browser,
  * edit any work from the browser, and see the details of a work
@@ -34,8 +38,9 @@ import { take } from 'rxjs/operators';
   templateUrl: './work-list.component.html',
   styleUrls: ['./work-list.component.css'],
 })
-export class WorkListComponent implements OnInit {
+export class WorkListComponent implements OnDestroy {
   private _entries: WorkListEntry[];
+  private _subscriptions: Subscription[];
 
   /**
    * The work entries.
@@ -46,9 +51,8 @@ export class WorkListComponent implements OnInit {
   }
   public set entries(value: WorkListEntry[]) {
     this._entries = value || [];
-    this.count.setValue(this._entries.length);
+    this.updateForm(this._entries);
   }
-
   /**
    * Authors roles entries.
    */
@@ -59,9 +63,20 @@ export class WorkListComponent implements OnInit {
    */
   @Input()
   public langEntries: ThesaurusEntry[] | undefined;
+  /**
+   * Selected works tags entries.
+   */
+  @Input()
+  public workTagEntries: ThesaurusEntry[] | undefined;
+  /**
+   * Emitted when entries have been changed.
+   */
+  @Output()
+  public entriesChange: EventEmitter<WorkListEntry[]>;
 
   public form: FormGroup;
-  public count: FormControl;
+  // this array is kept in synch with entries:
+  public works: FormArray;
 
   public detailWork: Work | Container | undefined;
   public loadingDetailWork: boolean | undefined;
@@ -75,23 +90,57 @@ export class WorkListComponent implements OnInit {
   public deletingWork: boolean | undefined;
 
   constructor(
-    formBuilder: FormBuilder,
+    private _formBuilder: FormBuilder,
     private _clipboard: Clipboard,
     private _dialogService: DialogService,
     private _biblioService: BiblioService,
     private _utilService: BiblioUtilService
   ) {
     this._entries = [];
+    this._subscriptions = [];
     this.detailsOpen = false;
     this.browserSignals$ = new BehaviorSubject<string>('');
+    this.entriesChange = new EventEmitter<WorkListEntry[]>();
     // form
-    this.count = formBuilder.control(0, Validators.min(1));
-    this.form = formBuilder.group({
-      count: this.count,
+    this.works = _formBuilder.array([]);
+    this.form = _formBuilder.group({
+      works: this.works
     });
   }
 
-  ngOnInit(): void {}
+  ngOnDestroy(): void {
+    this.cleanup();
+  }
+
+  public groupHasError(group: AbstractControl, name: string): boolean {
+    const c = (group as FormGroup)?.controls[name] as FormControl;
+    if (!c) {
+      return false;
+    }
+    return c.errors && c.errors[name] && (c.dirty || c.touched);
+  }
+
+  private updateForm(entries: WorkListEntry[]): void {
+    this.works.clear();
+    this.cleanup();
+    for (let e of entries) {
+      this.works.controls.push(this.getWorkGroup(e));
+    }
+    this.form.markAsPristine();
+  }
+
+  private updateEntries(): void {
+    for (let i = 0; i < this.works.length; i++) {
+      const g = this.works.at(i) as FormGroup;
+      this._entries[i].tag = g.controls.tag.value?.trim();
+      this._entries[i].note = g.controls.note.value?.trim();
+    }
+  }
+
+  private emitEntriesChange(): void {
+    this.updateEntries();
+    this.entriesChange.emit(this._entries);
+  }
 
   public copyId(id: string): void {
     this._clipboard.copy(id);
@@ -144,12 +193,39 @@ export class WorkListComponent implements OnInit {
         authors: [],
         type: '',
         title: '',
-        language: ''
+        language: '',
       };
     }
   }
 
   //#region Entries
+  private moveEntryUp(index: number): void {
+    if (index < 1) {
+      return;
+    }
+    const item = this._entries[index];
+    this._entries.splice(index, 1);
+    this._entries.splice(index - 1, 0, item);
+  }
+
+  private moveEntryDown(index: number): void {
+    if (index + 1 >= this._entries.length) {
+      return;
+    }
+    const item = this._entries[index];
+    this._entries.splice(index, 1);
+    this._entries.splice(index + 1, 0, item);
+  }
+
+  private removeEntry(index: number): void {
+    this._entries.splice(index, 1);
+    if (!this._entries.length) {
+      this.detailWork = undefined;
+    }
+  }
+  //#endregion
+
+  //#region Works
   public authorsToString(authors: WorkAuthor[] | undefined): string {
     if (!authors) {
       return '';
@@ -161,56 +237,101 @@ export class WorkListComponent implements OnInit {
     return this._utilService.workToString(work);
   }
 
-  public moveEntryUp(index: number): void {
+  private cleanup(): void {
+    this._subscriptions.forEach(s => {
+      s.unsubscribe();
+    });
+  }
+
+  private getWorkGroup(work?: WorkListEntry): FormGroup {
+    return this._formBuilder.group({
+      tag: this._formBuilder.control(work?.tag, Validators.maxLength(50)),
+      note: this._formBuilder.control(work?.note, Validators.maxLength(500)),
+    });
+  }
+
+  public removeWork(index: number): void {
+    this.works.removeAt(index);
+    this.removeEntry(index);
+    this.works.markAsDirty();
+  }
+
+  public moveWorkUp(index: number): void {
     if (index < 1) {
       return;
     }
-    const item = this._entries[index];
-    this._entries.splice(index, 1);
-    this._entries.splice(index - 1, 0, item);
-    this.form.markAsDirty();
+    const work = this.works.controls[index];
+    this.works.removeAt(index);
+    this.works.insert(index - 1, work);
+    this.moveEntryUp(index);
+    this.works.markAsDirty();
   }
 
-  public moveEntryDown(index: number): void {
-    if (index + 1 >= this._entries.length) {
+  public moveWorkDown(index: number): void {
+    if (index + 1 >= this.works.length) {
       return;
     }
-    const item = this._entries[index];
-    this._entries.splice(index, 1);
-    this._entries.splice(index + 1, 0, item);
-    this.form.markAsDirty();
+    const work = this.works.controls[index];
+    this.works.removeAt(index);
+    this.works.insert(index + 1, work);
+    this.moveEntryDown(index);
+    this.works.markAsDirty();
   }
 
-  public removeEntry(index: number): void {
-    this._entries.splice(index, 1);
-    this.count.setValue(this._entries.length);
-    if (!this._entries.length) {
-      this.detailWork = undefined;
-    }
-    this.form.markAsDirty();
-  }
-
-  public viewEntryDetails(entry: WorkListEntry): void {
+  public viewWorkDetails(entry: WorkListEntry): void {
     this.viewDetails(entry.id, entry.payload === 'c');
   }
 
-  public editEntry(entry: WorkListEntry): void {
+  public editWork(entry: WorkListEntry): void {
     this.edit(entry.id, entry.payload === 'c');
   }
   //#endregion
 
-  public addWork(container: boolean): void {
+  //#region Works Browser
+  /**
+   * Add the specified work to the list of entries.
+   * @param work The work to add.
+   */
+  public pickBrowserWork(work: WorkInfo): void {
+    if (this._entries.find((w) => w.id === work.id)) {
+      return;
+    }
+    const entry: WorkListEntry = {
+      id: work.id,
+      label: this._utilService.workInfoToString(work),
+      payload: work.isContainer ? 'c' : undefined,
+    };
+    this._entries.push(entry);
+    const g = this.getWorkGroup(entry);
+    this._subscriptions.push(
+      g.valueChanges.pipe(debounceTime(300)).subscribe(() => {
+        this.form.markAsDirty();
+        this.emitEntriesChange();
+      })
+    );
+    this.works.controls.push(g);
+    this.form.markAsDirty();
+    this.emitEntriesChange();
+  }
+
+  /**
+   * Add a new work to the database.
+   */
+  public addBrowserWork(container: boolean): void {
     this.edit(null, container);
   }
 
   /**
    * Edit the specified work from the browser.
    */
-  public editWork(work: WorkInfo): void {
+  public editBrowserWork(work: WorkInfo): void {
     this.edit(work.id, work.isContainer);
   }
 
-  public deleteWork(work: WorkInfo): void {
+  /**
+   * Delete work from the database.
+   */
+  public deleteBrowserWork(work: WorkInfo): void {
     this._dialogService
       .confirm('Confirmation', 'Delete work from database?')
       .pipe(take(1))
@@ -228,15 +349,18 @@ export class WorkListComponent implements OnInit {
               // remove the entry from list if it was deleted
               const index = this._entries.findIndex((e) => e.id === work.id);
               if (index > -1) {
+                this.works.removeAt(index);
                 this._entries.splice(index, 1);
-                this.count.setValue(this._entries.length);
                 this.form.markAsDirty();
+                this.emitEntriesChange();
               }
             });
         }
       });
   }
+  //#endregion
 
+  // #region Work editor
   /**
    * Save the edited work.
    * @param work The work to be saved.
@@ -256,8 +380,10 @@ export class WorkListComponent implements OnInit {
           label: this.workToString(w),
           payload: work.isContainer ? 'c' : undefined,
         };
+        // (no change for works)
         this._entries.splice(index, 1, entry);
         this.form.markAsDirty();
+        this.emitEntriesChange();
       }
       this.savingWork = false;
     });
@@ -269,19 +395,5 @@ export class WorkListComponent implements OnInit {
   public onEditorClose(): void {
     this.editedWork = undefined;
   }
-
-  /**
-   * Add the specified work to the list of entries.
-   * @param work The work to add.
-   */
-  public pickWork(work: WorkInfo): void {
-    if (this._entries.find((w) => w.id === work.id)) {
-      return;
-    }
-    this._entries.push({
-      id: work.id,
-      label: this._utilService.workInfoToString(work),
-      payload: work.isContainer ? 'c' : undefined,
-    });
-  }
+  //#endregion
 }
