@@ -29,8 +29,13 @@
   </div>
   <!-- location, access -->
   <div style="margin: 4px">
-    {{ work.location }}
-    <span *ngIf="work.accessDate">accessed: {{ work.accessDate | date }}</span>
+    <ng-container [ngSwitch]="work.location?.startsWith('http')">
+      <a *ngSwitchCase="true" [href]="work.location" target="_blank">{{
+        work.location
+      }}</a>
+      <span *ngSwitchDefault>{{ work.location }}</span>
+    </ng-container>
+    <span *ngIf="work.accessDate">&nbsp;accessed: {{ work.accessDate | date }}</span>
   </div>
   <!-- keywords -->
   <div *ngIf="work.keywords?.length" class="keywords">
