@@ -16,4 +16,12 @@ cd .\dist\myrmidon\cadmus-biblio-ui
 call npm publish --access=public
 cd ..\..\..
 pause
+cd .\dist\myrmidon\cadmus-part-biblio-ui
+call npm publish --access=public
+cd ..\..\..
+pause
+cd .\dist\myrmidon\cadmus-part-biblio-pg
+call npm publish --access=public
+cd ..\..\..
+pause
 echo ALL DONE

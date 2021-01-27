@@ -116,6 +116,7 @@ export class ExtBibliographyPartComponent
 
   public onEntriesChange(entries: WorkListEntry[]): void {
     this.works.setValue(entries || []);
+    this.count.setValue(entries?.length || 0);
     this.form.markAsDirty();
   }
 }

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ClipboardModule } from '@angular/cdk/clipboard'
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -15,16 +15,26 @@ import { AuthInterceptor } from '@myrmidon/cadmus-api';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { DemoComponent } from './demo/demo.component';
+import { WorkPageComponent } from './work-page/work-page.component';
+import { PartPageComponent } from './part-page/part-page.component';
+// import from projects for faster debug, not to be done in production:
 import { CadmusBiblioCoreModule } from 'projects/myrmidon/cadmus-biblio-core/src/public-api';
 import { CadmusBiblioApiModule } from 'projects/myrmidon/cadmus-biblio-api/src/public-api';
 import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
-import { WorkPageComponent } from './work-page/work-page.component';
+import { CadmusPartBiblioUiModule } from 'projects/myrmidon/cadmus-part-biblio-ui/src/public-api';
 // import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
 // import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
 // import { CadmusBiblioUiModule } from '@myrmidon/cadmus-biblio-ui';
+// import { CadmusPartBiblioUiModule } from '@myrmidon/cadmus-part-biblio-ui';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, DemoComponent, WorkPageComponent],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    DemoComponent,
+    WorkPageComponent,
+    PartPageComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -36,6 +46,7 @@ import { WorkPageComponent } from './work-page/work-page.component';
         { path: 'home', component: HomeComponent },
         { path: 'demo', component: DemoComponent },
         { path: 'works', component: WorkPageComponent },
+        { path: 'part', component: PartPageComponent },
         {
           path: 'login',
           loadChildren: () =>
@@ -63,6 +74,7 @@ import { WorkPageComponent } from './work-page/work-page.component';
     CadmusBiblioCoreModule,
     CadmusBiblioApiModule,
     CadmusBiblioUiModule,
+    CadmusPartBiblioUiModule,
   ],
   providers: [
     EnvServiceProvider,

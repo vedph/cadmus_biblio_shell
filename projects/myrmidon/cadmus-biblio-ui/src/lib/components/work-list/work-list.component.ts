@@ -286,6 +286,7 @@ export class WorkListComponent implements OnDestroy {
   public removeWork(index: number): void {
     this.works.removeAt(index);
     this.removeEntry(index);
+    this.emitEntriesChange();
     this.works.markAsDirty();
   }
 
@@ -297,6 +298,7 @@ export class WorkListComponent implements OnDestroy {
     this.works.removeAt(index);
     this.works.insert(index - 1, work);
     this.moveEntryUp(index);
+    this.emitEntriesChange();
     this.works.markAsDirty();
   }
 
@@ -308,6 +310,7 @@ export class WorkListComponent implements OnDestroy {
     this.works.removeAt(index);
     this.works.insert(index + 1, work);
     this.moveEntryDown(index);
+    this.emitEntriesChange();
     this.works.markAsDirty();
   }
 
