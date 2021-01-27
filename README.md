@@ -2,7 +2,7 @@
 
 Quick Docker image build:
 
-1. `npm run build-lib`
+1. `npm run build-all`
 2. `ng build --prod`
 3. `docker build . -t vedph2020/cadmus-biblio-shell:1.0.4 -t vedph2020/cadmus-biblio-shell:latest` (replace with the current version).
 

@@ -1,0 +1,24 @@
+{
+  "name": "@myrmidon/cadmus-part-biblio-pg",
+  "version": "0.0.1",
+  "description": "Cadmus - external bibliography part wrapper",
+  "keywords": [
+    "Cadmus",
+    "bibliography"
+  ],
+  "homepage": "https://github.com/vedph/cadmus_biblio_shell",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vedph/cadmus_biblio_shell"
+  },
+  "author": {
+    "name": "Daniele Fusi"
+  },
+  "peerDependencies": {
+    "@angular/common": "^11.1.0",
+    "@angular/core": "^11.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
+}

@@ -8,7 +8,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-lib": "ng build @myrmidon/cadmus-biblio-core --prod && ng build @myrmidon/cadmus-biblio-api --prod && ng build @myrmidon/cadmus-biblio-ui --prod"
+    "build-core": "ng build @myrmidon/cadmus-biblio-core --prod && ng build @myrmidon/cadmus-biblio-api --prod && ng build @myrmidon/cadmus-biblio-ui --prod",
+    "build-part": "ng build @myrmidon/cadmus-part-biblio-ui --prod && ng build @myrmidon/cadmus-part-biblio-pg --prod",
+    "build-all": "npm run-script build-core && npm run-script build-part"
   },
   "private": true,
   "dependencies": {
@@ -30,6 +32,7 @@
     "@myrmidon/cadmus-core": "0.0.14",
     "@myrmidon/cadmus-login": "0.0.5",
     "@myrmidon/cadmus-material": "0.0.5",
+    "@myrmidon/cadmus-state": "0.0.10",
     "@myrmidon/cadmus-ui": "0.0.25",
     "gravatar": "^1.8.1",
     "ngx-monaco-editor": "^9.0.0",

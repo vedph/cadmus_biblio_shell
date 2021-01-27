@@ -31,6 +31,14 @@
       "@myrmidon/cadmus-biblio-api": [
         "dist/myrmidon/cadmus-biblio-api/myrmidon-cadmus-biblio-api",
         "dist/myrmidon/cadmus-biblio-api"
+      ],
+      "@myrmidon/cadmus-part-biblio-pg": [
+        "dist/myrmidon/cadmus-part-biblio-pg/myrmidon-cadmus-part-biblio-pg",
+        "dist/myrmidon/cadmus-part-biblio-pg"
+      ],
+      "@myrmidon/cadmus-part-biblio-ui": [
+        "dist/myrmidon/cadmus-part-biblio-ui/myrmidon-cadmus-part-biblio-ui",
+        "dist/myrmidon/cadmus-part-biblio-ui"
       ]
     }
   },
