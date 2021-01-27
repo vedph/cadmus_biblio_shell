@@ -135,7 +135,7 @@
   ></biblio-work-browser>
 
   <!-- editor -->
-  <mat-card *ngIf="editedWork">
+  <mat-card *ngIf="editedWork" #editor [@drawer]="editorState">
     <mat-card-header>
       <mat-card-title>
         {{editedWork?.title || '(untitled work)'}}

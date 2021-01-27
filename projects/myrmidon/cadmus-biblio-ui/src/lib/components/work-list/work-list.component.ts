@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -22,6 +30,13 @@ import { DialogService } from '@myrmidon/cadmus-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { debounceTime, take } from 'rxjs/operators';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 
 /**
  * A list of picked bibliographic entries.
@@ -37,10 +52,21 @@ import { debounceTime, take } from 'rxjs/operators';
   selector: 'biblio-work-list',
   templateUrl: './work-list.component.html',
   styleUrls: ['./work-list.component.css'],
+  animations: [
+    trigger('drawer', [
+      state('closed', style({ height: 0, overflow: 'hidden' })),
+      state('open', style({ height: '300px', overflow: 'auto' })),
+      transition('closed <=> open', [animate('300ms ease-in')]),
+    ]),
+  ],
 })
 export class WorkListComponent implements OnDestroy {
   private _entries: WorkListEntry[];
   private _subscriptions: Subscription[];
+
+  @ViewChild('editor', { static: false })
+  public editorRef: ElementRef | undefined;
+  public editorState: string;
 
   /**
    * The work entries.
@@ -101,10 +127,11 @@ export class WorkListComponent implements OnDestroy {
     this.detailsOpen = false;
     this.browserSignals$ = new BehaviorSubject<string>('');
     this.entriesChange = new EventEmitter<WorkListEntry[]>();
+    this.editorState = 'closed';
     // form
     this.works = _formBuilder.array([]);
     this.form = _formBuilder.group({
-      works: this.works
+      works: this.works,
     });
   }
 
@@ -178,6 +205,8 @@ export class WorkListComponent implements OnDestroy {
           .pipe(take(1))
           .subscribe((c) => {
             this.editedWork = c;
+            this.editorRef?.nativeElement.scrollIntoView();
+            this.editorState = 'open';
           });
       } else {
         this._biblioService
@@ -185,6 +214,8 @@ export class WorkListComponent implements OnDestroy {
           .pipe(take(1))
           .subscribe((w) => {
             this.editedWork = w;
+            this.editorRef?.nativeElement.scrollIntoView();
+            this.editorState = 'open';
           });
       }
     } else {
@@ -195,6 +226,8 @@ export class WorkListComponent implements OnDestroy {
         title: '',
         language: '',
       };
+      this.editorRef?.nativeElement.scrollIntoView();
+      this.editorState = 'open';
     }
   }
 
@@ -238,7 +271,7 @@ export class WorkListComponent implements OnDestroy {
   }
 
   private cleanup(): void {
-    this._subscriptions.forEach(s => {
+    this._subscriptions.forEach((s) => {
       s.unsubscribe();
     });
   }
@@ -394,6 +427,7 @@ export class WorkListComponent implements OnDestroy {
    */
   public onEditorClose(): void {
     this.editedWork = undefined;
+    this.editorState = 'closed';
   }
   //#endregion
 }
