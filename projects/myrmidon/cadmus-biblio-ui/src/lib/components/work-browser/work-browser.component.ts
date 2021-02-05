@@ -163,14 +163,7 @@ export class WorkBrowserComponent implements OnInit {
   }
 
   public deleteWork(work: WorkInfo): void {
-    this._dialogService
-      .confirm('Confirmation', 'Delete work?')
-      .pipe(take(1))
-      .subscribe((yes) => {
-        if (yes) {
-          this.workDelete.emit(work);
-        }
-      });
+    this.workDelete.emit(work);
   }
 
   public viewDetails(work: WorkInfo): void {

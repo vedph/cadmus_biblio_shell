@@ -110,7 +110,7 @@ export class WorkListComponent implements OnDestroy {
 
   public browserSignals$: BehaviorSubject<string>;
 
-  public editedWork: Work | Container | undefined;
+  public editedWork: EditedWork | undefined;
   public savingWork: boolean | undefined;
 
   public deletingWork: boolean | undefined;
@@ -205,6 +205,7 @@ export class WorkListComponent implements OnDestroy {
           .pipe(take(1))
           .subscribe((c) => {
             this.editedWork = c;
+            this.editedWork.isContainer = true;
             this.editorRef?.nativeElement?.scrollIntoView();
             this.editorState = 'open';
           });
@@ -214,12 +215,14 @@ export class WorkListComponent implements OnDestroy {
           .pipe(take(1))
           .subscribe((w) => {
             this.editedWork = w;
+            this.editedWork.isContainer = false;
             this.editorRef?.nativeElement?.scrollIntoView();
             this.editorState = 'open';
           });
       }
     } else {
       this.editedWork = {
+        isContainer: container,
         key: '',
         authors: [],
         type: '',
@@ -397,6 +400,25 @@ export class WorkListComponent implements OnDestroy {
   //#endregion
 
   // #region Work editor
+  private onWorkSaved(container: boolean, work: Work): void {
+    // signal browser to refresh itself
+    this.browserSignals$.next('refresh');
+
+    // refresh the entry in list if it was edited
+    const index = this._entries.findIndex((e) => e.id === work.id);
+    if (index > -1) {
+      const entry = {
+        id: work.id || '',
+        label: this.workToString(work),
+        payload: container ? 'c' : undefined,
+      };
+      // (no change for works)
+      this._entries.splice(index, 1, entry);
+      this.form.markAsDirty();
+      this.emitEntriesChange();
+    }
+  }
+
   /**
    * Save the edited work.
    * @param work The work to be saved.
@@ -404,25 +426,18 @@ export class WorkListComponent implements OnDestroy {
   public onWorkChange(work: EditedWork): void {
     // save
     this.savingWork = true;
-    this._biblioService.addWork(work).subscribe((w) => {
-      // signal browser to refresh itself
-      this.browserSignals$.next('refresh');
 
-      // refresh the entry in list if it was edited
-      const index = this._entries.findIndex((e) => e.id === work.id);
-      if (index > -1) {
-        const entry = {
-          id: w.id || '',
-          label: this.workToString(w),
-          payload: work.isContainer ? 'c' : undefined,
-        };
-        // (no change for works)
-        this._entries.splice(index, 1, entry);
-        this.form.markAsDirty();
-        this.emitEntriesChange();
-      }
-      this.savingWork = false;
-    });
+    if (work.isContainer) {
+      this._biblioService.addContainer(work).subscribe((w) => {
+        this.onWorkSaved(true, w);
+        this.savingWork = false;
+      });
+    } else {
+      this._biblioService.addWork(work).subscribe((w) => {
+        this.onWorkSaved(false, w);
+        this.savingWork = false;
+      });
+    }
   }
 
   /**
