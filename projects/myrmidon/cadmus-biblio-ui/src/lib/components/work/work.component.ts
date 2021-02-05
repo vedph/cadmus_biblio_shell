@@ -211,6 +211,7 @@ export class WorkComponent implements OnInit {
   private getModel(): EditedWork {
     return {
       isContainer: this.isContainer.value,
+      id: this._model?.id,
       type: this.type.value,
       key: this.key.value?.trim(),
       authors: this.authors.value?.length ? this.authors.value : undefined,
