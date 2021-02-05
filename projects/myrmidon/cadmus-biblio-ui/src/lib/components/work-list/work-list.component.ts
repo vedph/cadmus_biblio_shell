@@ -205,7 +205,7 @@ export class WorkListComponent implements OnDestroy {
           .pipe(take(1))
           .subscribe((c) => {
             this.editedWork = c;
-            this.editorRef?.nativeElement.scrollIntoView();
+            this.editorRef?.nativeElement?.scrollIntoView();
             this.editorState = 'open';
           });
       } else {
@@ -214,7 +214,7 @@ export class WorkListComponent implements OnDestroy {
           .pipe(take(1))
           .subscribe((w) => {
             this.editedWork = w;
-            this.editorRef?.nativeElement.scrollIntoView();
+            this.editorRef?.nativeElement?.scrollIntoView();
             this.editorState = 'open';
           });
       }
@@ -226,7 +226,7 @@ export class WorkListComponent implements OnDestroy {
         title: '',
         language: '',
       };
-      this.editorRef?.nativeElement.scrollIntoView();
+      this.editorRef?.nativeElement?.scrollIntoView();
       this.editorState = 'open';
     }
   }

@@ -125,6 +125,8 @@ export class WorkKeywordsComponent implements OnInit {
     this.keywords.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
       this.current = this.buildCurrent();
     });
+
+    this.current = this.buildCurrent();
   }
 
   private updateForm(model: Keyword[] | undefined): void {

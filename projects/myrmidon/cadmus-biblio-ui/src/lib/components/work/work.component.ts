@@ -91,7 +91,7 @@ export class WorkComponent implements OnInit {
     this.isContainer = formBuilder.control(false);
     this.type = formBuilder.control(null, Validators.required);
     this.key = formBuilder.control(null, Validators.maxLength(300));
-    this.authors = formBuilder.control([], Validators.required);
+    this.authors = formBuilder.control([]);
     this.title = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(200),

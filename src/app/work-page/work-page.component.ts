@@ -24,6 +24,7 @@ export class WorkPageComponent implements OnInit {
     ];
 
     this.langEntries = [
+      { id: '-', value: '---' },
       { id: 'eng', value: 'English' },
       { id: 'deu', value: 'German' },
       { id: 'ita', value: 'Italian' },

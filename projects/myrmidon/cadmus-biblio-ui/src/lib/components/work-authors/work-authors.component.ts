@@ -130,6 +130,8 @@ export class WorkAuthorsComponent implements OnInit {
     this.authors.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
       this.current = this.buildCurrent();
     });
+
+    this.current = this.buildCurrent();
   }
 
   private updateForm(model: WorkAuthor[] | undefined): void {
@@ -192,6 +194,7 @@ export class WorkAuthorsComponent implements OnInit {
   //#region Authors
   private getAuthorGroup(author?: WorkAuthor): FormGroup {
     return this._formBuilder.group({
+      id: this._formBuilder.control(author?.id),
       last: this._formBuilder.control(author?.last, [
         Validators.required,
         Validators.maxLength(50),
@@ -248,6 +251,7 @@ export class WorkAuthorsComponent implements OnInit {
     for (let i = 0; i < this.authors.length; i++) {
       const g = this.authors.at(i) as FormGroup;
       entries.push({
+        id: g.controls.id.value,
         last: g.controls.last.value?.trim(),
         first: g.controls.first.value?.trim(),
         suffix: g.controls.suffix.value?.trim(),
