@@ -36,7 +36,7 @@ services:
       - cadmus-biblio-network
 
   cadmus-biblio-api:
-    image: vedph2020/cadmus_biblio_api:1.0.6
+    image: vedph2020/cadmus_biblio_api:1.0.8
     ports:
       # https://stackoverflow.com/questions/48669548/why-does-aspnet-core-start-on-port-80-from-within-docker
       - 61691:80
@@ -57,7 +57,7 @@ services:
       - cadmus-biblio-network
 
   cadmus-biblio-app:
-    image: vedph2020/cadmus-biblio-shell:1.0.6
+    image: vedph2020/cadmus-biblio-shell:1.0.7
     ports:
       - 4200:80
     depends_on:
