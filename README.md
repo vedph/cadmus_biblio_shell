@@ -3,8 +3,8 @@
 Quick Docker image build:
 
 1. `npm run build-all`
-2. `ng build --prod`
-3. `docker build . -t vedph2020/cadmus-biblio-shell:1.0.7 -t vedph2020/cadmus-biblio-shell:latest` (replace with the current version).
+2. `ng build --configuration=production`
+3. `docker build . -t vedph2020/cadmus-biblio-shell:1.0.8 -t vedph2020/cadmus-biblio-shell:latest` (replace with the current version).
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
 
