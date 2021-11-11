@@ -6,6 +6,8 @@ import { ExtBibliographyPartFeatureComponent } from './ext-bibliography-part-fea
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CadmusUiModule } from '@myrmidon/cadmus-ui';
+import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 
 // https://github.com/ng-packagr/ng-packagr/issues/778
 export const RouterModuleForChild = RouterModule.forChild([
@@ -25,6 +27,7 @@ export const RouterModuleForChild = RouterModule.forChild([
     ReactiveFormsModule,
     RouterModuleForChild,
     // Cadmus
+    CadmusUiPgModule,
     CadmusStateModule,
     CadmusPartBiblioUiModule
   ],

@@ -22,6 +22,7 @@ import { CadmusBiblioCoreModule } from 'projects/myrmidon/cadmus-biblio-core/src
 import { CadmusBiblioApiModule } from 'projects/myrmidon/cadmus-biblio-api/src/public-api';
 import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
 import { CadmusPartBiblioUiModule } from 'projects/myrmidon/cadmus-part-biblio-ui/src/public-api';
+import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 // import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
 // import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
 // import { CadmusBiblioUiModule } from '@myrmidon/cadmus-biblio-ui';
@@ -70,6 +71,7 @@ import { CadmusPartBiblioUiModule } from 'projects/myrmidon/cadmus-part-biblio-u
     CadmusCoreModule,
     CadmusMaterialModule,
     CadmusUiModule,
+    CadmusUiPgModule,
     // Biblio
     CadmusBiblioCoreModule,
     CadmusBiblioApiModule,

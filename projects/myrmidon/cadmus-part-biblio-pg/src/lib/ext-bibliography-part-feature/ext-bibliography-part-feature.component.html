@@ -2,7 +2,7 @@
 <biblio-ext-bibliography-part
   [itemId]="itemId"
   [roleId]="roleId || ''"
-  [model]="part$ | async"
+  [model]="$any(part$ | async)"
   (modelChange)="save($event)"
   [thesauri]="thesauri$ | async"
   (editorClose)="close()"
