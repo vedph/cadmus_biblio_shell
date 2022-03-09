@@ -26,7 +26,6 @@ import {
   WorkInfo,
   WorkListEntry,
 } from '@myrmidon/cadmus-biblio-core';
-import { DialogService } from '@myrmidon/cadmus-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { debounceTime, take } from 'rxjs/operators';
@@ -37,6 +36,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { DialogService } from '@myrmidon/ng-mat-tools';
 
 /**
  * A list of picked bibliographic entries.

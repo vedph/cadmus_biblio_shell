@@ -13,7 +13,10 @@
     <span class="tb-fill-remaining-space"></span>
 
     <div *ngIf="logged" fxLayout="row" fxLayoutAlign="start center">
-      <img [src]="getGravatarUrl(user?.email, 32)" [alt]="user?.userName" />
+      <img
+        [src]="getGravatarUrl(user?.email || '', 32)"
+        [alt]="user?.userName"
+      />
       <mat-icon
         class="small-icon"
         *ngIf="user && user?.roles?.includes('admin')"

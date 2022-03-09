@@ -2,14 +2,15 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
 
 import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { AuthService } from '@myrmidon/cadmus-api';
-import { ThesaurusEntry, deepCopy } from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   ExtBibliographyPart,
   EXT_BIBLIOGRAPHY_PART_TYPEID,
 } from '../ext-bibliography-part';
 import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
+import { AuthJwtService } from '@myrmidon/auth-jwt-login';
+import { deepCopy } from '@myrmidon/ng-tools';
 
 /**
  * ExtBibliography editor component.
@@ -23,7 +24,8 @@ import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
 })
 export class ExtBibliographyPartComponent
   extends ModelEditorComponentBase<ExtBibliographyPart>
-  implements OnInit {
+  implements OnInit
+{
   public works: FormControl;
   public count: FormControl;
 
@@ -43,7 +45,7 @@ export class ExtBibliographyPartComponent
   @Input()
   public workTagEntries: ThesaurusEntry[] | undefined;
 
-  constructor(authService: AuthService, formBuilder: FormBuilder) {
+  constructor(authService: AuthJwtService, formBuilder: FormBuilder) {
     super(authService);
     // form
     this.count = formBuilder.control(0, Validators.min(1));
@@ -60,12 +62,12 @@ export class ExtBibliographyPartComponent
 
   private updateForm(model: ExtBibliographyPart): void {
     if (!model) {
-      this.form.reset();
+      this.form!.reset();
       return;
     }
     this.works.setValue(model.entries || []);
     this.count.setValue(model.entries?.length || 0);
-    this.form.markAsPristine();
+    this.form!.markAsPristine();
   }
 
   protected onModelSet(model: ExtBibliographyPart): void {
@@ -99,7 +101,7 @@ export class ExtBibliographyPartComponent
     let part = this.model;
     if (!part) {
       part = {
-        itemId: this.itemId,
+        itemId: this.itemId || '',
         id: '',
         typeId: EXT_BIBLIOGRAPHY_PART_TYPEID,
         roleId: this.roleId,
@@ -117,6 +119,6 @@ export class ExtBibliographyPartComponent
   public onEntriesChange(entries: WorkListEntry[]): void {
     this.works.setValue(entries || []);
     this.count.setValue(entries?.length || 0);
-    this.form.markAsDirty();
+    this.form!.markAsDirty();
   }
 }

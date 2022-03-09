@@ -12,4 +12,4 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ### 1.1.1
 
-- updated Angular.
+- updated Angular and Cadmus related packages.

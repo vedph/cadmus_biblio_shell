@@ -10,10 +10,11 @@ import {
   WorkAuthor,
   WorkInfo,
 } from '@myrmidon/cadmus-biblio-core';
-import { DataPage, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { DialogService } from '@myrmidon/cadmus-ui';
+import { DataPage } from '@myrmidon/ng-tools';
+import { DialogService } from '@myrmidon/ng-mat-tools';
 
 @Component({
   selector: 'biblio-work-browser',

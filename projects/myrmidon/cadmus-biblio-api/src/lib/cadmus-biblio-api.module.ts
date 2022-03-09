@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
-import { EnvServiceProvider } from '@myrmidon/cadmus-core';
+import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
 
 @NgModule({
   declarations: [],
-  imports: [],
+  imports: [
+    NgToolsModule
+  ],
   exports: [],
   providers: [
     EnvServiceProvider

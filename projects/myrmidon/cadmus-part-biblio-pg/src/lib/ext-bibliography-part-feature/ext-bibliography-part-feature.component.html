@@ -4,7 +4,7 @@
   [roleId]="roleId || ''"
   [model]="$any(part$ | async)"
   (modelChange)="save($event)"
-  [thesauri]="thesauri$ | async"
+  [thesauri]="(thesauri$ | async) || undefined"
   (editorClose)="close()"
   (dirtyChange)="onDirtyChange($event)"
 ></biblio-ext-bibliography-part>

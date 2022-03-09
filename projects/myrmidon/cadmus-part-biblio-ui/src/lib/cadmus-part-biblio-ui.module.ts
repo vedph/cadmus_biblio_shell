@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { AuthJwtLoginModule } from '@myrmidon/auth-jwt-login';
 import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
 import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
 import { CadmusBiblioUiModule } from '@myrmidon/cadmus-biblio-ui';
@@ -17,6 +19,7 @@ import { ExtBibliographyPartComponent } from './ext-bibliography-part/ext-biblio
     FormsModule,
     ReactiveFormsModule,
     // Cadmus
+    AuthJwtLoginModule,
     CadmusMaterialModule,
     CadmusUiModule,
     CadmusBiblioCoreModule,

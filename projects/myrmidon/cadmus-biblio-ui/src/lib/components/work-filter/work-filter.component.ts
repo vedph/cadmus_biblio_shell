@@ -7,7 +7,8 @@ import {
   Container,
   WorkType,
 } from '@myrmidon/cadmus-biblio-core';
-import { LocalStorageService, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { LocalStorageService } from '@myrmidon/ng-tools';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 

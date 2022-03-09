@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ErrorService, DataPage, EnvService } from '@myrmidon/cadmus-core';
 import { Observable } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import {
@@ -12,6 +11,7 @@ import {
   Work,
   WorkInfo,
 } from '@myrmidon/cadmus-biblio-core';
+import { DataPage, EnvService, ErrorService } from '@myrmidon/ng-tools';
 
 export interface AuthorFilter extends PagingOptions {
   last?: string;
