@@ -5,4 +5,5 @@
   // environment-dependent settings
   window.__env.apiUrl = 'http://localhost:61691/api/';
   window.__env.biblioApiUrl = 'http://localhost:61691/api/';
+  window.__env.version = '1.1.1';
 }(this));
