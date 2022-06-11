@@ -1,9 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormBuilder,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { BiblioService, WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   Author,
@@ -123,13 +119,13 @@ export class WorkFilterComponent implements OnInit {
   private updateForm(filter: WorkFilter): void {
     this.matchAny.setValue(filter.matchAny ? true : false);
     this.type.setValue(filter.type ? filter.type : null);
-    this.lastName.setValue(filter.lastName ||  null);
+    this.lastName.setValue(filter.lastName || null);
     this.language.setValue(filter.language ? filter.language : null);
-    this.title.setValue(filter.title ||  null);
+    this.title.setValue(filter.title || null);
     this.yearMin.setValue(filter.yearPubMin || 0);
     this.yearMax.setValue(filter.yearPubMax || 0);
-    this.key.setValue(filter.key ||  null);
-    this.keyword.setValue(filter.keyword ||  null);
+    this.key.setValue(filter.key || null);
+    this.keyword.setValue(filter.keyword || null);
 
     // load the author from his ID if any
     if (filter.authorId) {
@@ -190,11 +186,11 @@ export class WorkFilterComponent implements OnInit {
     this.container.setValue(null);
   }
 
-  public authorToString(author: Author): string {
+  public authorToString(author: Author | null): string {
     return this._biblioUtil.authorToString(author);
   }
 
-  public workToString(work: Container): string {
+  public workToString(work: Container | null): string {
     return this._biblioUtil.workToString(work);
   }
 

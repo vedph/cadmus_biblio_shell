@@ -10,7 +10,7 @@
     "e2e": "ng e2e",
     "build-core": "ng build @myrmidon/cadmus-biblio-core --configuration=production && ng build @myrmidon/cadmus-biblio-api --configuration=production && ng build @myrmidon/cadmus-biblio-ui --configuration=production",
     "build-part": "ng build @myrmidon/cadmus-part-biblio-ui --configuration=production && ng build @myrmidon/cadmus-part-biblio-pg --configuration=production",
-    "build-all": "npm run-script build-core --configuration=production && npm run-script build-part --configuration=production"
+    "build-lib": "npm run-script build-core --configuration=production && npm run-script build-part --configuration=production"
   },
   "private": true,
   "dependencies": {
@@ -32,7 +32,6 @@
     "@myrmidon/auth-jwt-login": "^0.1.0",
     "@myrmidon/cadmus-api": "1.0.1",
     "@myrmidon/cadmus-core": "1.0.1",
-    "@myrmidon/cadmus-material": "0.1.0",
     "@myrmidon/cadmus-state": "1.0.2",
     "@myrmidon/cadmus-ui": "3.0.0",
     "@myrmidon/cadmus-ui-pg": "^1.0.1",

@@ -47,7 +47,7 @@ export class BiblioUtilService {
    * @param work Work info.
    * @returns String.
    */
-  public workInfoToString(work?: WorkInfo): string {
+  public workInfoToString(work?: WorkInfo | null): string {
     if (!work) {
       return '';
     }
@@ -83,7 +83,7 @@ export class BiblioUtilService {
    * @param author Author or work's author.
    * @returns String.
    */
-  public authorToString(author: Author | WorkAuthor): string {
+  public authorToString(author: Author | WorkAuthor | null): string {
     if (!author) {
       return '';
     }

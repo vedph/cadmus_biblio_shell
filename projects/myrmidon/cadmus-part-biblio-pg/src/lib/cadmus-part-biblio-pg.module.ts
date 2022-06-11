@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Route } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { PendingChangesGuard } from '@myrmidon/cadmus-core';
 import { CadmusPartBiblioUiModule, EXT_BIBLIOGRAPHY_PART_TYPEID } from '@myrmidon/cadmus-part-biblio-ui';
 import { ExtBibliographyPartFeatureComponent } from './ext-bibliography-part-feature/ext-bibliography-part-feature.component';
@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 
 // https://github.com/ng-packagr/ng-packagr/issues/778
-export const RouterModuleForChild: Route = RouterModule.forChild([
+export const RouterModuleForChild = RouterModule.forChild([
   {
     path: `${EXT_BIBLIOGRAPHY_PART_TYPEID}/:pid`,
     pathMatch: 'full',
