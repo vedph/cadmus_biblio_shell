@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { BiblioService, AuthorFilter } from '@myrmidon/cadmus-biblio-api';
 import { Author, BiblioUtilService } from '@myrmidon/cadmus-biblio-core';
 import { Observable, of } from 'rxjs';
@@ -28,13 +28,13 @@ export class AuthorPickerComponent implements OnInit {
    */
   @Output()
   public authorChange: EventEmitter<Author>;
-  public form: FormGroup;
-  public lookup: FormControl;
+  public form: UntypedFormGroup;
+  public lookup: UntypedFormControl;
   public authors$: Observable<Author[]> | undefined;
   public author: Author | undefined;
 
   constructor(
-    formBuilder: FormBuilder,
+    formBuilder: UntypedFormBuilder,
     private _biblioService: BiblioService,
     private _utilService: BiblioUtilService
   ) {

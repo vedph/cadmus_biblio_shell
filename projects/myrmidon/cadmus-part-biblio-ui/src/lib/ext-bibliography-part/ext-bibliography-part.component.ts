@@ -26,7 +26,7 @@ export class ExtBibliographyPartComponent
   extends ModelEditorComponentBase<ExtBibliographyPart>
   implements OnInit
 {
-  public works: FormControl;
+  public works: FormControl<WorkListEntry[]>;
   public count: FormControl;
 
   /**
@@ -49,7 +49,7 @@ export class ExtBibliographyPartComponent
     super(authService);
     // form
     this.count = formBuilder.control(0, Validators.min(1));
-    this.works = formBuilder.control([]);
+    this.works = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       count: this.count,
       works: this.works,

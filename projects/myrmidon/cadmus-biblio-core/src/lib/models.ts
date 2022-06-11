@@ -30,7 +30,7 @@ export interface Keyword {
 export interface Container {
   id?: string;
   key: string;
-  authors: WorkAuthor[];
+  authors?: WorkAuthor[];
   type: string;
   title: string;
   language: string;

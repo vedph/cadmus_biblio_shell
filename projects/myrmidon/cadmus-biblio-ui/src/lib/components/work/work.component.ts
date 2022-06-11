@@ -56,27 +56,26 @@ export class WorkComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public form: FormGroup;
-  public isContainer: FormControl;
-  public type: FormControl;
-  public key: FormControl;
-  public authors: FormControl;
-  public title: FormControl;
-  public language: FormControl;
-  public placePub: FormControl;
-  public yearPub: FormControl;
-  public publisher: FormControl;
-  public containerId: FormControl;
-  public firstPage: FormControl;
-  public lastPage: FormControl;
-  public number: FormControl;
-  public note: FormControl;
-  public location: FormControl;
-  public hasAccessDate: FormControl;
-  public accessDate: FormControl;
-  public keywords: FormControl;
+  public isContainer: FormControl<boolean>;
+  public type: FormControl<string | null>;
+  public key: FormControl<string | null>;
+  public authors: FormControl<WorkAuthor[]>;
+  public title: FormControl<string | null>;
+  public language: FormControl<string | null>;
+  public placePub: FormControl<string | null>;
+  public yearPub: FormControl<number>;
+  public publisher: FormControl<string | null>;
+  public container: FormControl<Container | null>;
+  public firstPage: FormControl<number>;
+  public lastPage: FormControl<number>;
+  public number: FormControl<string | null>;
+  public note: FormControl<string | null>;
+  public location: FormControl<string | null>;
+  public hasAccessDate: FormControl<boolean>;
+  public accessDate: FormControl<Date | null>;
+  public keywords: FormControl<Keyword[]>;
 
   public types$: Observable<WorkType[]> | undefined;
-  public container: Container | undefined;
 
   constructor(
     formBuilder: FormBuilder,
@@ -88,10 +87,10 @@ export class WorkComponent implements OnInit {
     this.editorClose = new EventEmitter<any>();
 
     // form
-    this.isContainer = formBuilder.control(false);
+    this.isContainer = formBuilder.control(false, { nonNullable: true });
     this.type = formBuilder.control(null, Validators.required);
     this.key = formBuilder.control(null, Validators.maxLength(300));
-    this.authors = formBuilder.control([]);
+    this.authors = formBuilder.control([], { nonNullable: true });
     this.title = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(200),
@@ -101,17 +100,17 @@ export class WorkComponent implements OnInit {
       Validators.pattern('^[a-z]{3}$'),
     ]);
     this.placePub = formBuilder.control(null, Validators.maxLength(100));
-    this.yearPub = formBuilder.control(0);
+    this.yearPub = formBuilder.control(0, { nonNullable: true });
     this.publisher = formBuilder.control(null, Validators.maxLength(50));
-    this.containerId = formBuilder.control(null);
-    this.firstPage = formBuilder.control(0);
-    this.lastPage = formBuilder.control(0);
+    this.container = formBuilder.control(null);
+    this.firstPage = formBuilder.control(0, { nonNullable: true });
+    this.lastPage = formBuilder.control(0, { nonNullable: true });
     this.number = formBuilder.control(null, Validators.maxLength(50));
     this.note = formBuilder.control(null, Validators.maxLength(500));
     this.location = formBuilder.control(null, Validators.maxLength(500));
-    this.hasAccessDate = formBuilder.control(false);
+    this.hasAccessDate = formBuilder.control(false, { nonNullable: true });
     this.accessDate = formBuilder.control(null);
-    this.keywords = formBuilder.control([]);
+    this.keywords = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       isContainer: this.isContainer,
       type: this.type,
@@ -122,7 +121,7 @@ export class WorkComponent implements OnInit {
       placePub: this.placePub,
       yearPub: this.yearPub,
       publisher: this.publisher,
-      containerId: this.containerId,
+      container: this.container,
       firstPage: this.firstPage,
       lastPage: this.lastPage,
       number: this.number,
@@ -180,25 +179,24 @@ export class WorkComponent implements OnInit {
       return;
     }
 
-    this.isContainer.setValue(model.isContainer);
+    this.isContainer.setValue(model.isContainer || false);
     this.type.setValue(model.type);
     this.key.setValue(model.key);
     this.authors.setValue(model.authors || []);
     this.title.setValue(model.title);
     this.language.setValue(model.language);
-    this.placePub.setValue(model.placePub);
-    this.yearPub.setValue(model.yearPub);
-    this.publisher.setValue(model.publisher);
-    this.containerId.setValue(model.container?.id);
-    this.container = model.container;
-    this.firstPage.setValue(model.firstPage);
-    this.lastPage.setValue(model.lastPage);
-    this.number.setValue(model.number);
-    this.note.setValue(model.note);
-    this.location.setValue(model.location);
+    this.placePub.setValue(model.placePub || null);
+    this.yearPub.setValue(model.yearPub || 0);
+    this.publisher.setValue(model.publisher || null);
+    this.container.setValue(model.container || null);
+    this.firstPage.setValue(model.firstPage || 0);
+    this.lastPage.setValue(model.lastPage || 0);
+    this.number.setValue(model.number || null);
+    this.note.setValue(model.note || null);
+    this.location.setValue(model.location || null);
     this.hasAccessDate.setValue(model.accessDate ? true : false);
-    this.accessDate.setValue(model.accessDate);
-    this.keywords.setValue(model.keywords);
+    this.accessDate.setValue(model.accessDate || null);
+    this.keywords.setValue(model.keywords || []);
 
     // if it has a container it can't be a container
     if (model.container) {
@@ -212,21 +210,21 @@ export class WorkComponent implements OnInit {
     return {
       isContainer: this.isContainer.value,
       id: this._model?.id,
-      type: this.type.value,
-      key: this.key.value?.trim(),
+      type: this.type.value || '',
+      key: this.key.value?.trim() || '',
       authors: this.authors.value?.length ? this.authors.value : undefined,
-      title: this.title.value?.trim(),
-      language: this.language.value,
+      title: this.title.value?.trim() || '',
+      language: this.language.value || '',
       placePub: this.placePub.value?.trim(),
       yearPub: this.yearPub.value,
       publisher: this.publisher.value?.trim(),
-      container: this.containerId.value,
+      container: this.container.value || undefined,
       firstPage: this.firstPage.value,
       lastPage: this.lastPage.value,
       number: this.number.value?.trim(),
       note: this.note.value?.trim(),
       location: this.location.value?.trim(),
-      accessDate: this.hasAccessDate.value ? this.accessDate.value : undefined,
+      accessDate: this.hasAccessDate.value ? this.accessDate.value! : undefined,
       keywords: this.keywords.value?.length ? this.keywords.value : undefined,
     };
   }
@@ -240,11 +238,10 @@ export class WorkComponent implements OnInit {
   }
 
   public onContainerChange(container: Container | undefined): void {
-    this.containerId.setValue(container?.id);
-    this.container = container;
+    this.container.setValue(container || null);
   }
 
-  public workToString(work?: Container): string {
+  public workToString(work?: Container | null): string {
     return this._biblioUtil.workToString(work);
   }
 

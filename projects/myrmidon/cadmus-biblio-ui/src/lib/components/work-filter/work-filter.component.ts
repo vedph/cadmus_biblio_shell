@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormBuilder,
+} from '@angular/forms';
 import { BiblioService, WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   Author,
@@ -32,17 +36,17 @@ export class WorkFilterComponent implements OnInit {
   public filterChange: EventEmitter<WorkFilter>;
 
   public form: FormGroup;
-  public matchAny: FormControl;
-  public type: FormControl;
-  public author: FormControl;
-  public lastName: FormControl;
-  public language: FormControl;
-  public title: FormControl;
-  public container: FormControl;
-  public yearMin: FormControl;
-  public yearMax: FormControl;
-  public key: FormControl;
-  public keyword: FormControl;
+  public matchAny: FormControl<boolean>;
+  public type: FormControl<string | null>;
+  public author: FormControl<Author | null>;
+  public lastName: FormControl<string | null>;
+  public language: FormControl<string | null>;
+  public title: FormControl<string | null>;
+  public container: FormControl<Container | null>;
+  public yearMin: FormControl<number>;
+  public yearMax: FormControl<number>;
+  public key: FormControl<string | null>;
+  public keyword: FormControl<string | null>;
 
   public types: WorkType[];
 
@@ -60,15 +64,15 @@ export class WorkFilterComponent implements OnInit {
     this.types = [];
     this.filterChange = new EventEmitter<WorkFilter>();
     // form
-    this.matchAny = formBuilder.control(false);
+    this.matchAny = formBuilder.control(false, { nonNullable: true });
     this.type = formBuilder.control(null);
     this.author = formBuilder.control(null);
     this.lastName = formBuilder.control(null);
     this.language = formBuilder.control(null);
     this.title = formBuilder.control(null);
     this.container = formBuilder.control(null); // container
-    this.yearMin = formBuilder.control(0);
-    this.yearMax = formBuilder.control(0);
+    this.yearMin = formBuilder.control(0, { nonNullable: true });
+    this.yearMax = formBuilder.control(0, { nonNullable: true });
     this.key = formBuilder.control(null);
     this.keyword = formBuilder.control(null); // prefix:value
 
@@ -119,13 +123,13 @@ export class WorkFilterComponent implements OnInit {
   private updateForm(filter: WorkFilter): void {
     this.matchAny.setValue(filter.matchAny ? true : false);
     this.type.setValue(filter.type ? filter.type : null);
-    this.lastName.setValue(filter.lastName);
+    this.lastName.setValue(filter.lastName ||  null);
     this.language.setValue(filter.language ? filter.language : null);
-    this.title.setValue(filter.title);
+    this.title.setValue(filter.title ||  null);
     this.yearMin.setValue(filter.yearPubMin || 0);
     this.yearMax.setValue(filter.yearPubMax || 0);
-    this.key.setValue(filter.key);
-    this.keyword.setValue(filter.keyword);
+    this.key.setValue(filter.key ||  null);
+    this.keyword.setValue(filter.keyword ||  null);
 
     // load the author from his ID if any
     if (filter.authorId) {
@@ -157,15 +161,15 @@ export class WorkFilterComponent implements OnInit {
       pageNumber: 1,
       pageSize: 10,
       matchAny: this.matchAny.value,
-      type: this.type.value,
+      type: this.type.value || undefined,
       authorId: this.author.value?.id,
-      lastName: this.lastName.value,
-      language: this.language.value,
-      title: this.title.value,
+      lastName: this.lastName.value || undefined,
+      language: this.language.value || undefined,
+      title: this.title.value || undefined,
       yearPubMin: this.yearMin.value,
       yearPubMax: this.yearMax.value,
-      key: this.key.value,
-      keyword: this.keyword.value,
+      key: this.key.value || undefined,
+      keyword: this.keyword.value || undefined,
       containerId: this.container.value?.id,
     };
   }

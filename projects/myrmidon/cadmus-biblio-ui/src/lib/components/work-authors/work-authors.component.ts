@@ -4,6 +4,7 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  UntypedFormControl,
   Validators,
 } from '@angular/forms';
 import { Observable, of } from 'rxjs';
@@ -60,7 +61,7 @@ export class WorkAuthorsComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public lookup: FormControl;
+  public lookup: UntypedFormControl;
   public search: FormGroup;
   public authors: FormArray;
   public form: FormGroup;

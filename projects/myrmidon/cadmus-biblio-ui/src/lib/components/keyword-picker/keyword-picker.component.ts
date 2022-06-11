@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { BiblioService, KeywordFilter } from '@myrmidon/cadmus-biblio-api';
 import { Keyword } from '@myrmidon/cadmus-biblio-core';
 import { Observable, of } from 'rxjs';
@@ -28,12 +28,12 @@ export class KeywordPickerComponent implements OnInit {
    */
   @Output()
   public keywordChange: EventEmitter<Keyword>;
-  public form: FormGroup;
-  public lookup: FormControl;
+  public form: UntypedFormGroup;
+  public lookup: UntypedFormControl;
   public keywords$: Observable<Keyword[]> | undefined;
   public keyword: Keyword | undefined;
 
-  constructor(formBuilder: FormBuilder, private _biblioService: BiblioService) {
+  constructor(formBuilder: UntypedFormBuilder, private _biblioService: BiblioService) {
     this.limit = 10;
     this.label = 'keyword/lang:keyword';
     this.keywordChange = new EventEmitter<Keyword>();

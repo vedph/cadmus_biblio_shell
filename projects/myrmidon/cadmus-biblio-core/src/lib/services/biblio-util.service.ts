@@ -11,7 +11,7 @@ export class BiblioUtilService {
    * @param work Work or container.
    * @returns String.
    */
-  public workToString(work?: Work | Container): string {
+  public workToString(work?: Work | Container | null): string {
     if (!work) {
       return '';
     }

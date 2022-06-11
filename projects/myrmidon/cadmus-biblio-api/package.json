@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-biblio-api",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Cadmus - bibliographic API services",
   "keywords": [
     "Cadmus",
@@ -15,9 +15,9 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^13.0.0",
-    "@angular/core": "^13.0.0",
-    "@myrmidon/cadmus-core": "^0.1.0"
+    "@angular/common": "^14.0.0",
+    "@angular/core": "^14.0.0",
+    "@myrmidon/cadmus-core": "^1.0.1"
   },
   "dependencies": {
     "tslib": "^2.0.0"

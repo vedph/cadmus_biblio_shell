@@ -14,7 +14,6 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { DataPage } from '@myrmidon/ng-tools';
-import { DialogService } from '@myrmidon/ng-mat-tools';
 
 @Component({
   selector: 'biblio-work-browser',
@@ -47,7 +46,7 @@ export class WorkBrowserComponent implements OnInit {
   @Output()
   public workDelete: EventEmitter<WorkInfo>;
 
-  public isContainer: FormControl;
+  public isContainer: FormControl<boolean>;
 
   public page$: BehaviorSubject<DataPage<WorkInfo>>;
   public loading: boolean | undefined;
@@ -59,8 +58,7 @@ export class WorkBrowserComponent implements OnInit {
   constructor(
     formBuilder: FormBuilder,
     private _biblioService: BiblioService,
-    private _utilService: BiblioUtilService,
-    private _dialogService: DialogService
+    private _utilService: BiblioUtilService
   ) {
     this.pickEnabled = true;
     this.editEnabled = true;
@@ -85,7 +83,7 @@ export class WorkBrowserComponent implements OnInit {
       pageSize: this.pageSize,
     };
     // form
-    this.isContainer = formBuilder.control(false);
+    this.isContainer = formBuilder.control(false, { nonNullable: true });
   }
 
   private loadPage(): void {

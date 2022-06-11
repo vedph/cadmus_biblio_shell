@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import { BiblioUtilService, Container, Work } from '@myrmidon/cadmus-biblio-core';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
@@ -46,12 +46,12 @@ export class WorkPickerComponent implements OnInit {
   @Output()
   public workChange: EventEmitter<Container | Work>;
 
-  public form: FormGroup;
-  public lookup: FormControl;
+  public form: UntypedFormGroup;
+  public lookup: UntypedFormControl;
   public works$: Observable<Container[]> | undefined;
   public work: Container | Work | undefined;
 
-  constructor(formBuilder: FormBuilder,
+  constructor(formBuilder: UntypedFormBuilder,
     private _biblioService: BiblioService,
     private _biblioUtil: BiblioUtilService) {
     this.limit = 10;
