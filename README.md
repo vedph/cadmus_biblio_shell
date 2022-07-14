@@ -10,6 +10,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+- 2022-07-14: upgraded Angular.
+
 ### 1.2.0
 
 - 2022-06-11: upgraded to Angular 14 and dropped legacy dependency from CadmusMaterial.
