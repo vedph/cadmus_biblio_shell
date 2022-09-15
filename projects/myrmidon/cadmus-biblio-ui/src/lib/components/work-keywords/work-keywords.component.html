@@ -6,7 +6,7 @@
         &nbsp;
         <span class="current"> {{ current || "(no keywords)" }}</span>
       </mat-panel-title>
-      <mat-panel-description>{{ keywords?.length || 0 }}</mat-panel-description>
+      <mat-panel-description>{{ keywords.length || 0 }}</mat-panel-description>
     </mat-expansion-panel-header>
 
     <form [formGroup]="search">
