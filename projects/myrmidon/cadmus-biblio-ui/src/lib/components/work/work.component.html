@@ -1,8 +1,8 @@
 <form [formGroup]="form" (submit)="save()">
-  <div>
+  <div class="form-row">
     <!-- isContainer -->
     <mat-checkbox [formControl]="isContainer">container</mat-checkbox>
-    &nbsp;
+
     <!-- type (bound) -->
     <mat-form-field style="width: 8em">
       <mat-select [formControl]="type" placeholder="type">
@@ -15,9 +15,8 @@
       >
     </mat-form-field>
 
-    &nbsp;
     <!-- key -->
-    <mat-form-field style="width: 585px">
+    <mat-form-field style="flex: 1 0 auto;max-width: 400px;">
       <input matInput [formControl]="key" placeholder="key" />
       <button type="button" mat-icon-button matSuffix (click)="buildKey()">
         <mat-icon>redo</mat-icon>
@@ -28,7 +27,7 @@
     </mat-form-field>
   </div>
 
-  <div style="margin-bottom: 8px;">
+  <div style="margin-bottom: 8px">
     <!-- authors -->
     <biblio-work-authors
       [roleEntries]="roleEntries"
@@ -52,7 +51,7 @@
     </mat-form-field>
   </div>
 
-  <div>
+  <div class="form-row">
     <!-- language (bound) -->
     <mat-form-field *ngIf="langEntries?.length" style="width: 8em">
       <mat-select [formControl]="language" placeholder="language">
@@ -81,7 +80,6 @@
         >invalid language</mat-error
       >
     </mat-form-field>
-    &nbsp;
 
     <!-- placePub -->
     <mat-form-field>
@@ -93,7 +91,6 @@
         >place too long</mat-error
       >
     </mat-form-field>
-    &nbsp;
 
     <!-- yearPub -->
     <mat-form-field style="width: 5em">
@@ -109,7 +106,6 @@
         >yearPub too long</mat-error
       >
     </mat-form-field>
-    &nbsp;
 
     <!-- publisher -->
     <mat-form-field>
@@ -125,7 +121,7 @@
 
   <!-- container -->
   <div *ngIf="!isContainer?.value">
-    <div>
+    <div class="form-row">
       <biblio-work-picker
         [container]="true"
         (workChange)="onContainerChange($event)"
@@ -133,6 +129,15 @@
       <span class="container">
         {{ workToString(container.value) }}
       </span>
+      <button *ngIf="container.value"
+        type="button"
+        mat-icon-button
+        color="warn"
+        matTooltip="Remove the work's container"
+        (click)="removeContainer()"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
     </div>
     <div>
       <!-- firstPage -->
@@ -202,13 +207,9 @@
     <mat-checkbox [formControl]="hasAccessDate">access date</mat-checkbox>
     &nbsp;
     <!-- accessDate -->
-    <mat-form-field style="width: 12em;">
+    <mat-form-field style="width: 12em">
       <mat-label>access date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker"
-        [formControl]="accessDate"
-      />
+      <input matInput [matDatepicker]="picker" [formControl]="accessDate" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>

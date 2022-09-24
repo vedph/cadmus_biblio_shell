@@ -13,6 +13,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 - 2022-09-24:
   - scroll to work info/editor.
   - added container deletion capability to work list.
+  - scroll work editor into view.
 - 2022-09-15: updated Angular and Cadmus packages.
 - 2022-07-14: upgraded Angular.
 

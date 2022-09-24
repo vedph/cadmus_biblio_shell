@@ -158,6 +158,8 @@ export class WorkComponent implements OnInit {
         this.lastPage.value < this.firstPage.value
       ) {
         this.lastPage.setValue(this.firstPage.value);
+        this.lastPage.updateValueAndValidity();
+        this.lastPage.markAsDirty();
       }
     });
 
@@ -231,14 +233,24 @@ export class WorkComponent implements OnInit {
 
   public onAuthorsChange(authors: WorkAuthor[]): void {
     this.authors.setValue(authors || []);
+    this.authors.updateValueAndValidity();
+    this.authors.markAsDirty();
   }
 
   public onKeywordsChange(keywords: Keyword[]): void {
     this.keywords.setValue(keywords || []);
+    this.keywords.updateValueAndValidity();
+    this.keywords.markAsDirty();
   }
 
   public onContainerChange(container: Container | undefined): void {
     this.container.setValue(container || null);
+    this.container.updateValueAndValidity();
+    this.container.markAsDirty();
+  }
+
+  public removeContainer() : void {
+    this.container.reset();
   }
 
   public workToString(work?: Container | null): string {
@@ -247,6 +259,8 @@ export class WorkComponent implements OnInit {
 
   public buildKey(): void {
     this.key.setValue(this._workKeyService.buildKey(this.getModel()));
+    this.key.updateValueAndValidity();
+    this.key.markAsDirty();
   }
 
   public cancel(): void {

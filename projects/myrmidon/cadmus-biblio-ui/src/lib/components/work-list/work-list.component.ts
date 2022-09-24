@@ -1,11 +1,9 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   Output,
-  ViewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -16,6 +14,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { ViewportScroller } from '@angular/common';
+
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import {
   BiblioUtilService,
@@ -63,10 +63,6 @@ import { DialogService } from '@myrmidon/ng-mat-tools';
 export class WorkListComponent implements OnDestroy {
   private _entries: WorkListEntry[];
   private _subscriptions: Subscription[];
-
-  @ViewChild('editor', { static: false })
-  public editorRef: ElementRef | undefined;
-  public editorState: string;
 
   /**
    * The work entries.
@@ -120,14 +116,14 @@ export class WorkListComponent implements OnDestroy {
     private _clipboard: Clipboard,
     private _dialogService: DialogService,
     private _biblioService: BiblioService,
-    private _utilService: BiblioUtilService
+    private _utilService: BiblioUtilService,
+    private _scroller: ViewportScroller
   ) {
     this._entries = [];
     this._subscriptions = [];
     this.detailsOpen = false;
     this.browserSignals$ = new BehaviorSubject<string>('');
     this.entriesChange = new EventEmitter<WorkListEntry[]>();
-    this.editorState = 'closed';
     // form
     this.works = _formBuilder.array([]);
     this.form = _formBuilder.group({
@@ -206,8 +202,7 @@ export class WorkListComponent implements OnDestroy {
           .subscribe((c) => {
             this.editedWork = c;
             this.editedWork.isContainer = true;
-            this.editorRef?.nativeElement?.scrollIntoView();
-            this.editorState = 'open';
+            setTimeout(() => this._scroller.scrollToAnchor('work-editor'), 0);
           });
       } else {
         this._biblioService
@@ -216,8 +211,7 @@ export class WorkListComponent implements OnDestroy {
           .subscribe((w) => {
             this.editedWork = w;
             this.editedWork.isContainer = false;
-            this.editorRef?.nativeElement?.scrollIntoView();
-            this.editorState = 'open';
+            setTimeout(() => this._scroller.scrollToAnchor('work-editor'), 0);
           });
       }
     } else {
@@ -229,8 +223,6 @@ export class WorkListComponent implements OnDestroy {
         title: '',
         language: '',
       };
-      this.editorRef?.nativeElement?.scrollIntoView();
-      this.editorState = 'open';
     }
   }
 
@@ -463,7 +455,6 @@ export class WorkListComponent implements OnDestroy {
    */
   public onEditorClose(): void {
     this.editedWork = undefined;
-    this.editorState = 'closed';
   }
   //#endregion
 }
