@@ -1,9 +1,11 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   Output,
+  ViewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -13,7 +15,6 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ViewportScroller } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import {
@@ -63,6 +64,8 @@ export class WorkListComponent implements OnDestroy {
   private _entries: WorkListEntry[];
   private _subscriptions: Subscription[];
 
+  @ViewChild('editor', { static: false })
+  public editorRef: ElementRef | undefined;
   public editorState: string;
 
   /**
@@ -117,8 +120,7 @@ export class WorkListComponent implements OnDestroy {
     private _clipboard: Clipboard,
     private _dialogService: DialogService,
     private _biblioService: BiblioService,
-    private _utilService: BiblioUtilService,
-    private _scroller: ViewportScroller
+    private _utilService: BiblioUtilService
   ) {
     this._entries = [];
     this._subscriptions = [];
@@ -204,10 +206,8 @@ export class WorkListComponent implements OnDestroy {
           .subscribe((c) => {
             this.editedWork = c;
             this.editedWork.isContainer = true;
+            this.editorRef?.nativeElement?.scrollIntoView();
             this.editorState = 'open';
-            setTimeout(() => {
-              this._scroller.scrollToAnchor('work-editor');
-            }, 0);
           });
       } else {
         this._biblioService
@@ -216,6 +216,7 @@ export class WorkListComponent implements OnDestroy {
           .subscribe((w) => {
             this.editedWork = w;
             this.editedWork.isContainer = false;
+            this.editorRef?.nativeElement?.scrollIntoView();
             this.editorState = 'open';
           });
       }
@@ -228,10 +229,8 @@ export class WorkListComponent implements OnDestroy {
         title: '',
         language: '',
       };
+      this.editorRef?.nativeElement?.scrollIntoView();
       this.editorState = 'open';
-      setTimeout(() => {
-        this._scroller.scrollToAnchor('work-editor');
-      }, 0);
     }
   }
 
@@ -368,33 +367,51 @@ export class WorkListComponent implements OnDestroy {
     this.edit(work.id, work.isContainer);
   }
 
+  private removeDeletedWork(work: WorkInfo): void {
+    // remove the entry from list if it was deleted
+    const index = this._entries.findIndex((e) => e.id === work.id);
+    if (index > -1) {
+      this.works.removeAt(index);
+      this._entries.splice(index, 1);
+      this.form.markAsDirty();
+      this.emitEntriesChange();
+    }
+  }
+
   /**
    * Delete work from the database.
    */
   public deleteBrowserWork(work: WorkInfo): void {
     this._dialogService
-      .confirm('Confirmation', 'Delete work from database?')
+      .confirm(
+        'Confirmation',
+        `Delete ${work.isContainer ? 'container' : 'work'} from database?`
+      )
       .pipe(take(1))
       .subscribe((yes) => {
         this.deletingWork = true;
         if (yes) {
-          this._biblioService
-            .deleteWork(work.id)
-            .pipe(take(1))
-            .subscribe((_) => {
-              this.deletingWork = false;
-              // signal browser to refresh itself
-              this.browserSignals$.next('refresh');
-
-              // remove the entry from list if it was deleted
-              const index = this._entries.findIndex((e) => e.id === work.id);
-              if (index > -1) {
-                this.works.removeAt(index);
-                this._entries.splice(index, 1);
-                this.form.markAsDirty();
-                this.emitEntriesChange();
-              }
-            });
+          if (work.isContainer) {
+            this._biblioService
+              .deleteContainer(work.id)
+              .pipe(take(1))
+              .subscribe((_) => {
+                this.deletingWork = false;
+                // signal browser to refresh itself
+                this.browserSignals$.next('refresh');
+                this.removeDeletedWork(work);
+              });
+          } else {
+            this._biblioService
+              .deleteWork(work.id)
+              .pipe(take(1))
+              .subscribe((_) => {
+                this.deletingWork = false;
+                // signal browser to refresh itself
+                this.browserSignals$.next('refresh');
+                this.removeDeletedWork(work);
+              });
+          }
         }
       });
   }
