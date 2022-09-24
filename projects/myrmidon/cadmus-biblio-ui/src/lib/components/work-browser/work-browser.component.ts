@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { ViewportScroller } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
+
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   BiblioUtilService,
@@ -58,7 +60,8 @@ export class WorkBrowserComponent implements OnInit {
   constructor(
     formBuilder: FormBuilder,
     private _biblioService: BiblioService,
-    private _utilService: BiblioUtilService
+    private _utilService: BiblioUtilService,
+    private _scroller: ViewportScroller
   ) {
     this.pickEnabled = true;
     this.editEnabled = true;
@@ -176,6 +179,9 @@ export class WorkBrowserComponent implements OnInit {
           this.work = w;
           this.loadingWork = false;
           this.detailsOpen = true;
+          setTimeout(() => {
+            this._scroller.scrollToAnchor('work-details');
+          }, 0);
         });
     } else {
       this._biblioService
@@ -185,6 +191,9 @@ export class WorkBrowserComponent implements OnInit {
           this.work = w;
           this.loadingWork = false;
           this.detailsOpen = true;
+          setTimeout(() => {
+            this._scroller.scrollToAnchor('work-details');
+          }, 0);
         });
     }
   }

@@ -10,6 +10,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+- 2022-09-24: scroll to work info/editor.
 - 2022-09-15: updated Angular and Cadmus packages.
 - 2022-07-14: upgraded Angular.
 

@@ -11,3 +11,6 @@ th {
   grid-template-areas: "tag note";
   column-gap: 8px;
 }
+#work-editor {
+  border: 1px solid silver;
+}

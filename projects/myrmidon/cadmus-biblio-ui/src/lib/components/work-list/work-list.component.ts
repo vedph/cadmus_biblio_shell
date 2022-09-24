@@ -1,11 +1,9 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   Output,
-  ViewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -15,6 +13,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { ViewportScroller } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import {
@@ -64,8 +63,6 @@ export class WorkListComponent implements OnDestroy {
   private _entries: WorkListEntry[];
   private _subscriptions: Subscription[];
 
-  @ViewChild('editor', { static: false })
-  public editorRef: ElementRef | undefined;
   public editorState: string;
 
   /**
@@ -120,7 +117,8 @@ export class WorkListComponent implements OnDestroy {
     private _clipboard: Clipboard,
     private _dialogService: DialogService,
     private _biblioService: BiblioService,
-    private _utilService: BiblioUtilService
+    private _utilService: BiblioUtilService,
+    private _scroller: ViewportScroller
   ) {
     this._entries = [];
     this._subscriptions = [];
@@ -206,8 +204,10 @@ export class WorkListComponent implements OnDestroy {
           .subscribe((c) => {
             this.editedWork = c;
             this.editedWork.isContainer = true;
-            this.editorRef?.nativeElement?.scrollIntoView();
             this.editorState = 'open';
+            setTimeout(() => {
+              this._scroller.scrollToAnchor('work-editor');
+            }, 0);
           });
       } else {
         this._biblioService
@@ -216,7 +216,6 @@ export class WorkListComponent implements OnDestroy {
           .subscribe((w) => {
             this.editedWork = w;
             this.editedWork.isContainer = false;
-            this.editorRef?.nativeElement?.scrollIntoView();
             this.editorState = 'open';
           });
       }
@@ -229,8 +228,10 @@ export class WorkListComponent implements OnDestroy {
         title: '',
         language: '',
       };
-      this.editorRef?.nativeElement?.scrollIntoView();
       this.editorState = 'open';
+      setTimeout(() => {
+        this._scroller.scrollToAnchor('work-editor');
+      }, 0);
     }
   }
 

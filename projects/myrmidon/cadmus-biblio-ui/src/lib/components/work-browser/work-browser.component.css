@@ -6,3 +6,10 @@ th {
   font-weight: normal;
   color: silver;
 }
+td.fit-width {
+  width: 1px;
+  white-space: nowrap;
+}
+table#work-list {
+  width: 100%;
+}
