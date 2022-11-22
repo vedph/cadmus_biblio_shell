@@ -10,6 +10,10 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+- 2022-11-22:
+  - upgraded to Angular 15
+  - removed `@angular/flex-layout`
+  - library versions bumped to 1.0.0
 - 2022-09-24:
   - scroll to work info/editor.
   - added container deletion capability to work list.

@@ -1,16 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  Validators,
+  UntypedFormGroup,
+  FormGroup,
+} from '@angular/forms';
 
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+
+import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
+import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
 import {
   ExtBibliographyPart,
   EXT_BIBLIOGRAPHY_PART_TYPEID,
 } from '../ext-bibliography-part';
-import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { deepCopy } from '@myrmidon/ng-tools';
 
 /**
  * ExtBibliography editor component.
@@ -46,72 +52,70 @@ export class ExtBibliographyPartComponent
   public workTagEntries: ThesaurusEntry[] | undefined;
 
   constructor(authService: AuthJwtService, formBuilder: FormBuilder) {
-    super(authService);
+    super(authService, formBuilder);
     // form
     this.count = formBuilder.control(0, Validators.min(1));
     this.works = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+  }
+
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
       count: this.count,
       works: this.works,
     });
   }
 
-  public ngOnInit(): void {
-    this.initEditor();
-  }
-
-  private updateForm(model: ExtBibliographyPart): void {
-    if (!model) {
-      this.form!.reset();
-      return;
-    }
-    this.works.setValue(model.entries || []);
-    this.count.setValue(model.entries?.length || 0);
-    this.form!.markAsPristine();
-  }
-
-  protected onModelSet(model: ExtBibliographyPart): void {
-    this.updateForm(deepCopy(model));
-  }
-
-  protected onThesauriSet(): void {
+  private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'ext-biblio-author-roles';
-    if (this.thesauri && this.thesauri[key]) {
-      this.roleEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.roleEntries = thesauri[key].entries;
     } else {
       this.roleEntries = undefined;
     }
 
     key = 'ext-biblio-languages';
-    if (this.thesauri && this.thesauri[key]) {
-      this.langEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.langEntries = thesauri[key].entries;
     } else {
       this.langEntries = undefined;
     }
 
     key = 'ext-biblio-work-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.workTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.workTagEntries = thesauri[key].entries;
     } else {
       this.workTagEntries = undefined;
     }
   }
 
-  protected getModelFromForm(): ExtBibliographyPart {
-    let part = this.model;
+  private updateForm(part?: ExtBibliographyPart): void {
     if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: EXT_BIBLIOGRAPHY_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        entries: [],
-      };
+      this.form.reset();
+      return;
     }
+    this.works.setValue(part.entries || []);
+    this.count.setValue(part.entries?.length || 0);
+    this.form.markAsPristine();
+  }
+
+  protected override onDataSet(data?: EditedObject<ExtBibliographyPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
+  }
+
+  protected getValue(): ExtBibliographyPart {
+    let part = this.getEditedPart(
+      EXT_BIBLIOGRAPHY_PART_TYPEID
+    ) as ExtBibliographyPart;
     part.entries = this.works.value;
     return part;
   }
@@ -119,6 +123,6 @@ export class ExtBibliographyPartComponent
   public onEntriesChange(entries: WorkListEntry[]): void {
     this.works.setValue(entries || []);
     this.count.setValue(entries?.length || 0);
-    this.form!.markAsDirty();
+    this.form.markAsDirty();
   }
 }

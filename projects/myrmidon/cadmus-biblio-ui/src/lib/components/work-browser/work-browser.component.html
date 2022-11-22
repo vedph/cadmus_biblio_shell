@@ -1,22 +1,11 @@
-<div
-  gdAreas="spinner spinner | filters list | . paginator | details details"
-  gdAreas.lt-md="spinner | list | paginator | details | filters"
-  gdColumns="210px 1fr"
-  gdColumns.lt-md="1fr"
-  gdGap="8px"
->
+<div id="container">
   <!-- SPINNER -->
-  <div
-    *ngIf="loading"
-    gdArea="spinner"
-    gdAlignColumns="center"
-    gdAlignRows="center"
-  >
+  <div *ngIf="loading">
     <mat-spinner [diameter]="48" [strokeWidth]="4"></mat-spinner>
   </div>
 
   <!-- FILTERS -->
-  <div gdArea="filters" gdAlignRows.lt-md="center">
+  <div style="grid-area: filters">
     <biblio-work-filter
       [langEntries]="langEntries"
       [persisted]="true"
@@ -25,7 +14,7 @@
   </div>
 
   <!-- WORKS -->
-  <div gdArea="list">
+  <div style="grid-area: list">
     <!-- toolbar -->
     <div>
       <!-- isContainer -->
@@ -41,7 +30,6 @@
         (click)="addWork()"
       >
         <mat-icon>add_circle</mat-icon>
-        add
       </button>
     </div>
 
@@ -78,7 +66,7 @@
               *ngIf="pickEnabled"
               (click)="pickWork(w)"
             >
-              <mat-icon style="color:#3fb5a3">check_circle</mat-icon>
+              <mat-icon style="color: #3fb5a3">check_circle</mat-icon>
             </button>
             <button
               type="button"
@@ -126,12 +114,7 @@
     </table>
 
     <!-- pager -->
-    <div
-      *ngIf="page$ | async as page"
-      gdArea="pagination"
-      gdAlignColumns="center"
-      gdAlignRows="start"
-    >
+    <div *ngIf="page$ | async as page" style="grid-area: pagination">
       <mat-paginator
         [length]="page.total"
         [pageSize]="pageSize"
@@ -143,7 +126,7 @@
     </div>
 
     <!-- details -->
-    <div gdArea="details" *ngIf="work" id="work-details">
+    <div style="grid-area: details" *ngIf="work" id="work-details">
       <div *ngIf="loadingWork">
         <mat-spinner [diameter]="24" [strokeWidth]="4"></mat-spinner>
       </div>

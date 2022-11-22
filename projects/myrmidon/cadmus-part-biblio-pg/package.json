@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-biblio-pg",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Cadmus - external bibliography part wrapper",
   "keywords": [
     "Cadmus",
@@ -15,10 +15,10 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0"
+    "@angular/common": "^15.0.0",
+    "@angular/core": "^15.0.0"
   },
   "dependencies": {
-    "tslib": "^2.0.0"
+    "tslib": "^2.4.0"
   }
 }

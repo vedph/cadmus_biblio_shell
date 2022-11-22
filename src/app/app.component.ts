@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Thesaurus, ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { AppService, AppQuery } from '@myrmidon/cadmus-state';
+import { AppRepository } from '@myrmidon/cadmus-state';
 import { Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import {
@@ -24,8 +24,7 @@ export class AppComponent implements OnInit {
   constructor(
     private _authService: AuthJwtService,
     private _gravatarService: GravatarService,
-    private _appService: AppService,
-    private _appQuery: AppQuery,
+    private _repository: AppRepository,
     private _router: Router,
     env: EnvService
   ) {
@@ -41,15 +40,15 @@ export class AppComponent implements OnInit {
       this.user = user || undefined;
       // load the general app state just once
       if (user) {
-        this._appService.load();
+        this._repository.load();
       }
     });
 
-    this._appQuery
-      .selectItemBrowserThesaurus()
-      .subscribe((thesaurus: Thesaurus | undefined) => {
+    this._repository.itemBrowserThesaurus$.subscribe(
+      (thesaurus: Thesaurus | undefined) => {
         this.itemBrowsers = thesaurus ? thesaurus.entries : undefined;
-      });
+      }
+    );
   }
 
   public getGravatarUrl(email: string, size = 80): string | null {

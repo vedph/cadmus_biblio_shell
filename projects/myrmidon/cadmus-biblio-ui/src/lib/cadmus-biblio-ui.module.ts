@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ClipboardModule } from '@angular/cdk/clipboard'
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 // material
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -65,7 +64,6 @@ import { WorkListComponent } from './components/work-list/work-list.component';
     RouterModule,
     ReactiveFormsModule,
     ClipboardModule,
-    FlexLayoutModule,
     // material
     MatAutocompleteModule,
     MatButtonModule,

@@ -32,11 +32,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CadmusCoreModule } from '@myrmidon/cadmus-core';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
-import { DemoComponent } from './demo/demo.component';
-import { WorkPageComponent } from './work-page/work-page.component';
-import { PartPageComponent } from './part-page/part-page.component';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
 import {
@@ -45,10 +40,7 @@ import {
 } from '@myrmidon/auth-jwt-login';
 import { AuthJwtAdminModule } from '@myrmidon/auth-jwt-admin';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
-
-import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { LoginPageComponent } from './login-page/login-page.component';
+import { NgxDirtyCheckModule } from '@myrmidon/ngx-dirty-check';
 
 // import from projects for faster debug, not to be done in production:
 import { CadmusBiblioCoreModule } from 'projects/myrmidon/cadmus-biblio-core/src/public-api';
@@ -56,10 +48,13 @@ import { CadmusBiblioApiModule } from 'projects/myrmidon/cadmus-biblio-api/src/p
 import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
 import { CadmusPartBiblioUiModule } from 'projects/myrmidon/cadmus-part-biblio-ui/src/public-api';
 
-// import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
-// import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
-// import { CadmusBiblioUiModule } from '@myrmidon/cadmus-biblio-ui';
-// import { CadmusPartBiblioUiModule } from '@myrmidon/cadmus-part-biblio-ui';
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { LoginPageComponent } from './login-page/login-page.component';
+import { DemoComponent } from './demo/demo.component';
+import { WorkPageComponent } from './work-page/work-page.component';
+import { PartPageComponent } from './part-page/part-page.component';
+import { CadmusItemEditorModule } from '@myrmidon/cadmus-item-editor';
 
 @NgModule({
   declarations: [
@@ -89,7 +84,6 @@ import { CadmusPartBiblioUiModule } from 'projects/myrmidon/cadmus-part-biblio-u
       {
         initialNavigation: 'enabledBlocking',
         useHash: true,
-        relativeLinkResolution: 'legacy',
       }
     ),
     // material
@@ -115,17 +109,15 @@ import { CadmusPartBiblioUiModule } from 'projects/myrmidon/cadmus-part-biblio-u
     MatTabsModule,
     MatTooltipModule,
     MatToolbarModule,
-    // flex
-    FlexLayoutModule,
-    // Akita
-    AkitaNgDevtools.forRoot(),
     // myrmidon
     NgToolsModule,
     NgMatToolsModule,
+    NgxDirtyCheckModule,
     AuthJwtLoginModule,
     AuthJwtAdminModule,
     // Cadmus
     CadmusCoreModule,
+    CadmusItemEditorModule,
     CadmusUiModule,
     CadmusUiPgModule,
     // Biblio

@@ -24,10 +24,10 @@
       </mat-autocomplete>
 
       <mat-form-field>
+        <mat-label>last name</mat-label>
         <input
           matInput
           type="text"
-          placeholder="last name"
           [formControl]="lookup"
           [matAutocomplete]="lookupAuto"
         />
@@ -99,7 +99,8 @@
           <!-- child controls -->
           <!-- last -->
           <mat-form-field>
-            <input matInput formControlName="last" placeholder="last" />
+            <mat-label>last</mat-label>
+            <input matInput formControlName="last" />
             <mat-error
               *ngIf="
                 item['controls'].last.errors?.required &&
@@ -119,7 +120,8 @@
           &nbsp;
           <!-- first -->
           <mat-form-field>
-            <input matInput formControlName="first" placeholder="first" />
+            <mat-label>first</mat-label>
+            <input matInput formControlName="first" />
             <mat-error
               *ngIf="
                 item['controls'].first.errors?.required &&
@@ -139,7 +141,8 @@
           <div class="indented">
             <!-- suffix -->
             <mat-form-field>
-              <input matInput formControlName="suffix" placeholder="suffix" />
+              <mat-label>suffix</mat-label>
+              <input matInput formControlName="suffix" />
               <mat-error
                 *ngIf="
                   item['controls'].suffix.errors?.maxLength &&
@@ -153,7 +156,8 @@
             &nbsp;
             <!-- role (bound) -->
             <mat-form-field *ngIf="roleEntries?.length" style="width: 8em">
-              <mat-select formControlName="role" placeholder="role">
+              <mat-label>role</mat-label>
+              <mat-select formControlName="role">
                 <mat-option *ngFor="let e of roleEntries" [value]="e.id">{{
                   e.value
                 }}</mat-option>
@@ -162,7 +166,8 @@
 
             <!-- role (free) -->
             <mat-form-field *ngIf="!roleEntries?.length" style="width: 8em">
-              <input matInput formControlName="role" placeholder="role" />
+              <mat-label>role</mat-label>
+              <input matInput formControlName="role" />
               <mat-error
                 *ngIf="
                   item['controls'].role.errors?.maxLength &&

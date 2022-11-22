@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-biblio-ui",
-  "version": "0.2.3",
+  "version": "1.0.0",
   "description": "Cadmus - bibliographic API UI components",
   "keywords": [
     "Cadmus",
@@ -15,10 +15,10 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0"
+    "@angular/common": "^15.0.0",
+    "@angular/core": "^15.0.0"
   },
   "dependencies": {
-    "tslib": "^2.0.0"
+    "tslib": "^2.4.0"
   }
 }

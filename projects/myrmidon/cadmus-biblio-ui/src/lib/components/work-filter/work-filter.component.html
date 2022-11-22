@@ -5,7 +5,8 @@
     &nbsp;
     <!-- type -->
     <mat-form-field style="width: 8em">
-      <mat-select [formControl]="type" placeholder="type">
+      <mat-label>type</mat-label>
+      <mat-select [formControl]="type">
         <mat-option [value]="null">(any)</mat-option>
         <mat-option *ngFor="let t of types" [value]="t.id">{{
           t.name
@@ -17,7 +18,8 @@
   <div>
     <!-- language (bound) -->
     <mat-form-field *ngIf="langEntries?.length" style="width: 8em">
-      <mat-select [formControl]="language" placeholder="language">
+      <mat-label>language</mat-label>
+      <mat-select [formControl]="language">
         <mat-option [value]="null">(any)</mat-option>
         <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
           e.value
@@ -27,7 +29,8 @@
 
     <!-- language (free) -->
     <mat-form-field *ngIf="!langEntries?.length" style="width: 4em">
-      <input matInput [formControl]="language" placeholder="language" />
+      <mat-label>language</mat-label>
+      <input matInput [formControl]="language" />
     </mat-form-field>
   </div>
 
@@ -53,52 +56,47 @@
   <!-- lastName -->
   <div>
     <mat-form-field>
-      <input matInput [formControl]="lastName" placeholder="last name" />
+      <mat-label>last name</mat-label>
+      <input matInput [formControl]="lastName" />
     </mat-form-field>
   </div>
 
   <!-- title -->
   <div>
     <mat-form-field>
-      <input matInput [formControl]="title" placeholder="title" />
+      <mat-label>title</mat-label>
+      <input matInput [formControl]="title" />
     </mat-form-field>
   </div>
 
   <div>
     <!-- yearMin -->
-    <mat-form-field style="width: 5em">
-      <input
-        matInput
-        type="number"
-        min="0"
-        [formControl]="yearMin"
-        placeholder="yr.min"
-      />
+    <mat-form-field style="width: 7em">
+      <mat-label>yr.min.</mat-label>
+      <input matInput type="number" min="0" [formControl]="yearMin" />
     </mat-form-field>
     -
     <!-- yearMax -->
-    <mat-form-field style="width: 5em">
-      <input
-        matInput
-        type="number"
-        min="0"
-        [formControl]="yearMax"
-        placeholder="yr.max"
-      />
+    <mat-form-field style="width: 7em">
+      <mat-label>yr.max.</mat-label>
+      <input matInput type="number" min="0" [formControl]="yearMax" />
     </mat-form-field>
   </div>
 
   <!-- key -->
   <div>
     <mat-form-field>
-      <input matInput [formControl]="key" placeholder="key" />
+      <mat-label>key</mat-label>
+      <input matInput [formControl]="key" />
     </mat-form-field>
   </div>
 
   <!-- keyword -->
   <div>
     <mat-form-field>
-      <input matInput [formControl]="keyword" placeholder="lng:keyword" />
+      <mat-label>keyword</mat-label>
+      <input matInput [formControl]="keyword" />
+      <mat-hint>lng:keyword</mat-hint>
     </mat-form-field>
   </div>
 

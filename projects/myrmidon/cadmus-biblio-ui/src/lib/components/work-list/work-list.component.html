@@ -74,7 +74,8 @@
             appearance="fill"
             *ngIf="workTagEntries?.length"
           >
-            <mat-select formControlName="tag" placeholder="tag">
+            <mat-label>tag</mat-label>
+            <mat-select formControlName="tag">
               <mat-option *ngFor="let e of workTagEntries" [value]="e.id">{{
                 e.value
               }}</mat-option>
@@ -90,7 +91,8 @@
             appearance="fill"
             *ngIf="!workTagEntries?.length"
           >
-            <input matInput formControlName="tag" placeholder="tag" />
+            <mat-label>tag</mat-label>
+            <input matInput formControlName="tag" />
             <mat-error *ngIf="groupHasError(item, 'maxLength')"
               >tag too long</mat-error
             >
@@ -99,7 +101,8 @@
           &nbsp;
           <!-- note -->
           <mat-form-field appearance="fill" style="grid-area: note">
-            <input matInput formControlName="note" placeholder="note" />
+            <mat-label>note</mat-label>
+            <input matInput formControlName="note" />
             <mat-error *ngIf="groupHasError(item, 'maxLength')"
               >note too long</mat-error
             >

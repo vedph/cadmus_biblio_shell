@@ -5,7 +5,8 @@
 
     <!-- type (bound) -->
     <mat-form-field style="width: 8em">
-      <mat-select [formControl]="type" placeholder="type">
+      <mat-label>type</mat-label>
+      <mat-select [formControl]="type">
         <mat-option *ngFor="let t of types$ | async" [value]="t.id">{{
           t.name
         }}</mat-option>
@@ -16,8 +17,9 @@
     </mat-form-field>
 
     <!-- key -->
-    <mat-form-field style="flex: 1 0 auto;max-width: 400px;">
-      <input matInput [formControl]="key" placeholder="key" />
+    <mat-form-field style="flex: 1 0 auto; max-width: 400px">
+      <mat-label>key</mat-label>
+      <input matInput [formControl]="key" />
       <button type="button" mat-icon-button matSuffix (click)="buildKey()">
         <mat-icon>redo</mat-icon>
       </button>
@@ -39,7 +41,8 @@
   <div>
     <!-- title -->
     <mat-form-field class="long-text">
-      <input matInput [formControl]="title" placeholder="title" />
+      <mat-label>title</mat-label>
+      <input matInput [formControl]="title" />
       <mat-error
         *ngIf="title.errors?.required && (title.dirty || title.touched)"
         >title required</mat-error
@@ -54,7 +57,8 @@
   <div class="form-row">
     <!-- language (bound) -->
     <mat-form-field *ngIf="langEntries?.length" style="width: 8em">
-      <mat-select [formControl]="language" placeholder="language">
+      <mat-label>language</mat-label>
+      <mat-select [formControl]="language">
         <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -68,7 +72,8 @@
     </mat-form-field>
     <!-- language (free) -->
     <mat-form-field *ngIf="!langEntries?.length" style="width: 8em">
-      <input matInput [formControl]="language" placeholder="language" />
+      <mat-label>language</mat-label>
+      <input matInput [formControl]="language" />
       <mat-error
         *ngIf="
           language.errors?.required && (language.dirty || language.touched)
@@ -83,7 +88,8 @@
 
     <!-- placePub -->
     <mat-form-field>
-      <input matInput [formControl]="placePub" placeholder="place" />
+      <mat-label>place</mat-label>
+      <input matInput [formControl]="placePub" />
       <mat-error
         *ngIf="
           placePub.errors?.maxLength && (placePub.dirty || placePub.touched)
@@ -94,13 +100,8 @@
 
     <!-- yearPub -->
     <mat-form-field style="width: 5em">
-      <input
-        matInput
-        type="number"
-        min="0"
-        [formControl]="yearPub"
-        placeholder="year"
-      />
+      <mat-label>year</mat-label>
+      <input matInput type="number" min="0" [formControl]="yearPub" />
       <mat-error
         *ngIf="yearPub.errors?.maxLength && (yearPub.dirty || yearPub.touched)"
         >yearPub too long</mat-error
@@ -109,7 +110,8 @@
 
     <!-- publisher -->
     <mat-form-field>
-      <input matInput [formControl]="publisher" placeholder="publisher" />
+      <mat-label>publisher</mat-label>
+      <input matInput [formControl]="publisher" />
       <mat-error
         *ngIf="
           publisher.errors?.maxLength && (publisher.dirty || publisher.touched)
@@ -129,7 +131,8 @@
       <span class="container">
         {{ workToString(container.value) }}
       </span>
-      <button *ngIf="container.value"
+      <button
+        *ngIf="container.value"
         type="button"
         mat-icon-button
         color="warn"
@@ -141,25 +144,15 @@
     </div>
     <div>
       <!-- firstPage -->
-      <mat-form-field style="width: 4em">
-        <input
-          matInput
-          type="number"
-          min="0"
-          [formControl]="firstPage"
-          placeholder="from"
-        />
+      <mat-form-field style="width: 6em">
+        <mat-label>from</mat-label>
+        <input matInput type="number" min="0" [formControl]="firstPage" />
       </mat-form-field>
       -
       <!-- lastPage -->
-      <mat-form-field style="width: 4em">
-        <input
-          matInput
-          type="number"
-          min="0"
-          [formControl]="lastPage"
-          placeholder="to"
-        />
+      <mat-form-field style="width: 6em">
+        <mat-label>to</mat-label>
+        <input matInput type="number" min="0" [formControl]="lastPage" />
       </mat-form-field>
     </div>
   </div>
@@ -167,7 +160,8 @@
   <div>
     <!-- number -->
     <mat-form-field>
-      <input matInput [formControl]="number" placeholder="number" />
+      <mat-label>number</mat-label>
+      <input matInput [formControl]="number" />
       <mat-error
         *ngIf="number.errors?.maxLength && (number.dirty || number.touched)"
         >number too long</mat-error
@@ -178,12 +172,8 @@
   <div>
     <!-- note -->
     <mat-form-field class="long-text">
-      <textarea
-        rows="2"
-        matInput
-        [formControl]="note"
-        placeholder="note"
-      ></textarea>
+      <mat-label>note</mat-label>
+      <textarea rows="2" matInput [formControl]="note"></textarea>
       <mat-error *ngIf="note.errors?.maxLength && (note.dirty || note.touched)"
         >note too long</mat-error
       >
@@ -193,7 +183,8 @@
   <div>
     <!-- location -->
     <mat-form-field class="long-text">
-      <input matInput [formControl]="location" placeholder="location" />
+      <mat-label>location</mat-label>
+      <input matInput [formControl]="location" />
       <mat-error
         *ngIf="
           location.errors?.maxLength && (location.dirty || location.touched)
