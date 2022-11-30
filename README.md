@@ -10,6 +10,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+- 2022-11-30: updated packages.
 - 2022-11-22:
   - upgraded to Angular 15 adjusting UI
   - removed `@angular/flex-layout`
