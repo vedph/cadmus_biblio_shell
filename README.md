@@ -10,6 +10,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+- 2022-12-22: updated Monaco editor (changing glob as specified [here](https://github.com/atularen/ngx-monaco-editor)).
 - 2022-12-21: updated Angular and packages.
 - 2022-11-30: updated packages.
 - 2022-11-22:
