@@ -4,12 +4,15 @@ Quick Docker image build:
 
 1. `npm run build-lib`
 2. `ng build --configuration=production`
-3. `docker build . -t vedph2020/cadmus-biblio-shell:1.2.0 -t vedph2020/cadmus-biblio-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-biblio-shell:1.2.1 -t vedph2020/cadmus-biblio-shell:latest` (replace with the current version).
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
 
 ## History
 
+### 1.2.1
+
+- 2023-01-09: updated Angular and packages.
 - 2022-12-22: updated Monaco editor (changing glob as specified [here](https://github.com/atularen/ngx-monaco-editor)).
 - 2022-12-21: updated Angular and packages.
 - 2022-11-30: updated packages.
