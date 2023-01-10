@@ -139,19 +139,19 @@
 
   <!-- editor -->
   <mat-expansion-panel
-    *ngIf="editedWork"
-    id="work-editor"
+    [disabled]="!editedWork"
     [expanded]="editedWork"
+    id="work-editor"
   >
     <mat-expansion-panel-header>{{
-      editedWork.title || "(untitled work)"
+      editedWork?.title
     }}</mat-expansion-panel-header>
     <biblio-work
       [model]="editedWork"
       [langEntries]="langEntries"
       [roleEntries]="roleEntries"
       (modelChange)="onWorkChange($event)"
-      (editorClose)="onEditorClose()"
+      (editorClose)="closeEditor()"
     ></biblio-work>
   </mat-expansion-panel>
 </form>

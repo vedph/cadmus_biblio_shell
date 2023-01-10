@@ -441,11 +441,13 @@ export class WorkListComponent implements OnDestroy {
       this._biblioService.addContainer(work).subscribe((w) => {
         this.onWorkSaved(true, w);
         this.savingWork = false;
+        this.closeEditor();
       });
     } else {
       this._biblioService.addWork(work).subscribe((w) => {
         this.onWorkSaved(false, w);
         this.savingWork = false;
+        this.closeEditor();
       });
     }
   }
@@ -453,7 +455,7 @@ export class WorkListComponent implements OnDestroy {
   /**
    * Close the work being edited without saving.
    */
-  public onEditorClose(): void {
+  public closeEditor(): void {
     this.editedWork = undefined;
   }
   //#endregion

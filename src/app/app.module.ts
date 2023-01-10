@@ -42,6 +42,8 @@ import { AuthJwtAdminModule } from '@myrmidon/auth-jwt-admin';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 import { NgxDirtyCheckModule } from '@myrmidon/ngx-dirty-check';
 
+import { CadmusItemEditorModule } from '@myrmidon/cadmus-item-editor';
+
 // import from projects for faster debug, not to be done in production:
 import { CadmusBiblioCoreModule } from 'projects/myrmidon/cadmus-biblio-core/src/public-api';
 import { CadmusBiblioApiModule } from 'projects/myrmidon/cadmus-biblio-api/src/public-api';
@@ -54,7 +56,6 @@ import { LoginPageComponent } from './login-page/login-page.component';
 import { DemoComponent } from './demo/demo.component';
 import { WorkPageComponent } from './work-page/work-page.component';
 import { PartPageComponent } from './part-page/part-page.component';
-import { CadmusItemEditorModule } from '@myrmidon/cadmus-item-editor';
 
 @NgModule({
   declarations: [
