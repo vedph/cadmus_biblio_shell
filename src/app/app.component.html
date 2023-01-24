@@ -4,50 +4,95 @@
       ><img src="./assets/img/logo-white-40.png" alt="Fusisoft"
     /></span>
     <a mat-button routerLink="/home">Cadmus Biblio</a>
+    <!-- items menu -->
+    <button
+      mat-button
+      [matMenuTriggerFor]="itemMenu"
+      *ngIf="logged && itemBrowsers"
+    >
+      Items
+    </button>
+    <mat-menu #itemMenu>
+      <a mat-menu-item routerLink="/items">Items</a>
+      <a
+        mat-menu-item
+        *ngFor="let entry of itemBrowsers"
+        [routerLink]="'item-browser/' + getItemBrowserRoute(entry.id)"
+      ></a>
+    </mat-menu>
+    <!-- item menu -->
+    <ng-container *ngIf="logged && !itemBrowsers">
+
+      <button mat-button routerLink="/items">Items</button>
+    </ng-container>
+
+    <!-- search menu -->
+    <button mat-button routerLink="/search" *ngIf="logged">Search</button>
+    <!-- graph menu -->
+    <button mat-button routerLink="/graph" *ngIf="logged">Graph</button>
+    <!-- thesauri menu -->
+    <button
+      mat-button
+      routerLink="/thesauri"
+      *ngIf="
+        user && (user.roles.includes('admin') || user.roles.includes('editor'))
+      "
+    >
+      Thesauri
+    </button>
+
     <ng-container *ngIf="logged">
-      <a mat-button routerLink="/demo">Demo</a>
-      <a mat-button routerLink="/works">Works</a>
-      <a mat-button routerLink="/part">Part Editor</a>
+      <button mat-button routerLink="/demo">Demo</button>
+      <button mat-button routerLink="/works">Works</button>
     </ng-container>
 
     <span class="tb-fill-remaining-space"></span>
 
-    <div *ngIf="logged" fxLayout="row" fxLayoutAlign="start center">
-      <img
-        [src]="getGravatarUrl(user?.email || '', 32)"
-        [alt]="user?.userName"
-      />
+     <!-- user -->
+     <div *ngIf="user" fxLayout="row" fxLayoutAlign="start center">
+      <!-- indicators -->
+      <img [src]="getGravatarUrl(user.email, 32)" [alt]="user.userName" />
       <mat-icon
         class="small-icon"
-        *ngIf="user && user?.roles?.includes('admin')"
+        *ngIf="user && user.roles.includes('admin')"
         title="admin"
         >build</mat-icon
       >
       <mat-icon
         class="small-icon"
-        *ngIf="user && !user?.emailConfirmed"
-        title="You must verify your email address! Please check your mailbox {{
-          user.email
-        }}"
+        *ngIf="user && !user.emailConfirmed"
+        title="You must verify your email address! Please check your mailbox "
         >feedback</mat-icon
       >
-      <button mat-icon-button [mat-menu-trigger-for]="menu">
-        <mat-icon>more_vert</mat-icon>
+
+      <!-- user menu -->
+      <button mat-button [matMenuTriggerFor]="userMenu">User</button>
+      <mat-menu #userMenu>
+        <a mat-menu-item routerLink="/reset-password">Reset password</a>
+      </mat-menu>
+
+      <!-- admin menu -->
+      <button
+        *ngIf="user && user.roles.includes('admin')"
+        mat-button
+        [matMenuTriggerFor]="adminMenu"
+      >
+        Admin
       </button>
-      <mat-menu x-position="before" #menu="matMenu">
-        <a
-          mat-menu-item
-          *ngIf="user && user?.roles?.includes('admin')"
-          routerLink="/admin"
-          >Admin</a
-        >
-        <a mat-menu-item (click)="logout()">Logout</a>
+      <mat-menu #adminMenu>
+        <a mat-menu-item routerLink="/manage-users">Manage users</a>
+        <a mat-menu-item routerLink="/register-user">Register user</a>
       </mat-menu>
     </div>
 
-    <div *ngIf="!logged">
-      <a mat-button routerLink="/login">Login</a>
-    </div>
+    <!-- login -->
+    <button *ngIf="!logged" mat-icon-button routerLink="/login">
+      <mat-icon>login</mat-icon>
+    </button>
+    <!-- logout -->
+    <button *ngIf="logged" mat-icon-button (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
   </mat-toolbar>
 </header>
 
@@ -57,8 +102,10 @@
 
 <footer>
   <div layout="row" layout-align="center center">
-    Cadmus Biblio by
-    <a href="https://www.fusisoft.net" target="_blank">Daniele Fusi</a> at
-    <a href="https://www.unive.it/pag/39287" target="_blank">VeDPH</a>
+    <p>
+      Cadmus by
+      <a href="http://www.fusisoft.it" target="_blank">Daniele Fusi</a> -
+      version
+    </p>
   </div>
 </footer>
