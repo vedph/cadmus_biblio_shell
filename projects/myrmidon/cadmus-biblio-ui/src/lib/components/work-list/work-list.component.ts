@@ -72,6 +72,9 @@ export class WorkListComponent implements OnDestroy {
     return this._entries;
   }
   public set entries(value: WorkListEntry[]) {
+    if (this._entries === value) {
+      return;
+    }
     this._entries = value || [];
     this.updateForm(this._entries);
   }
@@ -272,10 +275,17 @@ export class WorkListComponent implements OnDestroy {
   }
 
   private getWorkGroup(work?: WorkListEntry): FormGroup {
-    return this._formBuilder.group({
+    const g = this._formBuilder.group({
       tag: this._formBuilder.control(work?.tag, Validators.maxLength(50)),
       note: this._formBuilder.control(work?.note, Validators.maxLength(500)),
     });
+    this._subscriptions.push(
+      g.valueChanges.pipe(debounceTime(300)).subscribe(() => {
+        this.form.markAsDirty();
+        this.emitEntriesChange();
+      })
+    );
+    return g;
   }
 
   public removeWork(index: number): void {
@@ -334,12 +344,6 @@ export class WorkListComponent implements OnDestroy {
     };
     this._entries.push(entry);
     const g = this.getWorkGroup(entry);
-    this._subscriptions.push(
-      g.valueChanges.pipe(debounceTime(300)).subscribe(() => {
-        this.form.markAsDirty();
-        this.emitEntriesChange();
-      })
-    );
     this.works.controls.push(g);
     this.form.markAsDirty();
     this.emitEntriesChange();
