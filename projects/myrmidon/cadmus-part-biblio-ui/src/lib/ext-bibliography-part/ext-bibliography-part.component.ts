@@ -17,6 +17,7 @@ import {
   ExtBibliographyPart,
   EXT_BIBLIOGRAPHY_PART_TYPEID,
 } from '../ext-bibliography-part';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 /**
  * ExtBibliography editor component.
@@ -33,7 +34,7 @@ export class ExtBibliographyPartComponent
   implements OnInit
 {
   public works: FormControl<WorkListEntry[]>;
-  public count: FormControl;
+  public initialWorks: WorkListEntry[];
 
   /**
    * Authors roles entries.
@@ -53,9 +54,12 @@ export class ExtBibliographyPartComponent
 
   constructor(authService: AuthJwtService, formBuilder: FormBuilder) {
     super(authService, formBuilder);
+    this.initialWorks = [];
     // form
-    this.count = formBuilder.control(0, Validators.min(1));
-    this.works = formBuilder.control([], { nonNullable: true });
+    this.works = formBuilder.control([], {
+      validators: [NgToolsValidators.strictMinLengthValidator(1)],
+      nonNullable: true,
+    });
   }
 
   public override ngOnInit(): void {
@@ -64,7 +68,6 @@ export class ExtBibliographyPartComponent
 
   protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
     return formBuilder.group({
-      count: this.count,
       works: this.works,
     });
   }
@@ -98,7 +101,7 @@ export class ExtBibliographyPartComponent
       return;
     }
     this.works.setValue(part.entries || []);
-    this.count.setValue(part.entries?.length || 0);
+    this.initialWorks = part.entries || [];
     this.form.markAsPristine();
   }
 
@@ -122,7 +125,8 @@ export class ExtBibliographyPartComponent
 
   public onEntriesChange(entries: WorkListEntry[]): void {
     this.works.setValue(entries || []);
-    this.count.setValue(entries?.length || 0);
+    this.works.updateValueAndValidity();
+    this.works.markAsDirty();
     this.form.markAsDirty();
   }
 }

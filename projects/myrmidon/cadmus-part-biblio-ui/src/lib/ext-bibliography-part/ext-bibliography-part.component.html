@@ -11,7 +11,7 @@
         [roleEntries]="roleEntries"
         [langEntries]="langEntries"
         [workTagEntries]="workTagEntries"
-        [entries]="works.value || []"
+        [entries]="initialWorks"
         (entriesChange)="onEntriesChange($event)"
       ></biblio-work-list>
     </mat-card-content>

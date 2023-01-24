@@ -10,6 +10,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+- 2023-01-24: minor refactorings in work entries list and part editor.
 - 2023-01-10: close work editor when saved in biblio UI.
 
 ### 1.2.1

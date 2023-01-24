@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { ExtBibliographyPart, EXT_BIBLIOGRAPHY_PART_TYPEID } from '@myrmidon/cadmus-part-biblio-ui';
+import { PartIdentity } from '@myrmidon/cadmus-ui';
 
 @Component({
   selector: 'biblio-part-page',
@@ -7,11 +9,19 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
   styleUrls: ['./part-page.component.css'],
 })
 export class PartPageComponent implements OnInit {
+  public identity: PartIdentity;
   public roleEntries: ThesaurusEntry[] | undefined;
   public langEntries: ThesaurusEntry[] | undefined;
   public workTagEntries: ThesaurusEntry[] | undefined;
+  public data?: ExtBibliographyPart;
 
   constructor() {
+    this.identity = {
+      itemId: 'aa5866f2-4b32-4867-a051-ee9b1b28736f',
+      partId: '6d484ec7-d4be-4b9c-a66a-bdc0f92e615b',
+      typeId: EXT_BIBLIOGRAPHY_PART_TYPEID,
+      roleId: null,
+    };
     this.roleEntries = [
       { id: '-', value: '---' },
       { id: 'trs', value: 'translator' },
@@ -35,4 +45,8 @@ export class PartPageComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  public onDataChange(part: ExtBibliographyPart): void {
+    this.data = part;
+  }
 }

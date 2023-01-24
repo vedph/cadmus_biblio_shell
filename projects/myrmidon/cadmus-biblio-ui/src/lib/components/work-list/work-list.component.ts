@@ -162,7 +162,7 @@ export class WorkListComponent implements OnDestroy {
 
   private emitEntriesChange(): void {
     this.updateEntries();
-    this.entriesChange.emit(this._entries);
+    this.entriesChange.emit([...this._entries]);
   }
 
   public copyId(id: string): void {

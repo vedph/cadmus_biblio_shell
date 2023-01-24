@@ -1,5 +1,10 @@
 <biblio-ext-bibliography-part
+  [identity]="identity"
   [roleEntries]="roleEntries"
   [langEntries]="langEntries"
   [workTagEntries]="workTagEntries"
+  (dataChange)="onDataChange($event)"
 ></biblio-ext-bibliography-part>
+<div *ngIf="data">
+  <pre>{{ data | json }}</pre>
+</div>
