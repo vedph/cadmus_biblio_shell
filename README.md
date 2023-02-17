@@ -10,6 +10,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+- 2023-02-17:
+  - updated Angular.
+  - added enabled properties to work list.
 - 2023-01-24:
   - minor refactorings in work entries list and part editor.
   - fix to work list subscriptions.

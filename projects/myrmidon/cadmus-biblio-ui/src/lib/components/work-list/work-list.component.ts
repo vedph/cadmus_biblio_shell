@@ -64,6 +64,15 @@ export class WorkListComponent implements OnDestroy {
   private _entries: WorkListEntry[];
   private _subscriptions: Subscription[];
 
+  @Input()
+  public pickEnabled: boolean;
+  @Input()
+  public editEnabled: boolean;
+  @Input()
+  public deleteEnabled: boolean;
+  @Input()
+  public addEnabled: boolean;
+
   /**
    * The work entries.
    */
@@ -122,6 +131,10 @@ export class WorkListComponent implements OnDestroy {
     private _utilService: BiblioUtilService,
     private _scroller: ViewportScroller
   ) {
+    this.pickEnabled = true;
+    this.editEnabled = true;
+    this.deleteEnabled = true;
+    this.addEnabled = true;
     this._entries = [];
     this._subscriptions = [];
     this.detailsOpen = false;

@@ -28,6 +28,9 @@ export class WorkKeywordsComponent implements OnInit {
     return this._model;
   }
   public set model(value: Keyword[] | undefined) {
+    if (this._model === value) {
+      return;
+    }
     this._model = value;
     this.updateForm(value);
   }
@@ -160,10 +163,6 @@ export class WorkKeywordsComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): Keyword[] | undefined {
-    return this.getKeywords();
-  }
-
   //#region Autocomplete
   public keywordToString(keyword: Keyword): string {
     if (!keyword) {
@@ -246,11 +245,8 @@ export class WorkKeywordsComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
     this.editing = false;
-    this.modelChange.emit(model);
+    this._model = this.getKeywords();
+    this.modelChange.emit(this._model);
   }
 }
