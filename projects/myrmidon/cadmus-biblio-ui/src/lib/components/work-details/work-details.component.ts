@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {
   BiblioUtilService,
   Container,
@@ -21,6 +21,9 @@ export class WorkDetailsComponent {
     return this._work;
   }
   public set work(value: Work | Container | undefined) {
+    if (this._work === value) {
+      return;
+    }
     this._work = value;
     this.w = value;
     this.c = value;

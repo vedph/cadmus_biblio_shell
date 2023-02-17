@@ -102,8 +102,6 @@ export class WorkKeywordsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.updateForm(this.model);
-
     // autocomplete
     this.keywords$ = this.lookup.valueChanges.pipe(
       debounceTime(300),

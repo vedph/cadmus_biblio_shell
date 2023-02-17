@@ -4,7 +4,7 @@
       <mat-panel-title>
         <mat-icon>account_circle</mat-icon>
         &nbsp;
-        <span class="current">{{ currentAuthors }}</span>
+        <span class="current">{{ currentAuthors || "(no authors)" }}</span>
       </mat-panel-title>
       <mat-panel-description>{{
         editedAuthors.length || 0
