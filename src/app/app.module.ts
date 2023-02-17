@@ -58,6 +58,7 @@ import { CadmusGraphUiModule } from '@myrmidon/cadmus-graph-ui';
 import { CadmusProfileCoreModule } from '@myrmidon/cadmus-profile-core';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
+import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { CadmusItemEditorModule } from '@myrmidon/cadmus-item-editor';
 import { CadmusItemListModule } from '@myrmidon/cadmus-item-list';
@@ -65,6 +66,7 @@ import { CadmusItemSearchModule } from '@myrmidon/cadmus-item-search';
 import { CadmusThesaurusEditorModule } from '@myrmidon/cadmus-thesaurus-editor';
 import { CadmusThesaurusListModule } from '@myrmidon/cadmus-thesaurus-list';
 import { CadmusThesaurusUiModule } from '@myrmidon/cadmus-thesaurus-ui';
+
 import { CadmusBiblioCoreModule } from 'projects/myrmidon/cadmus-biblio-core/src/public-api';
 import { CadmusBiblioApiModule } from 'projects/myrmidon/cadmus-biblio-api/src/public-api';
 import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
@@ -261,6 +263,7 @@ export function initElfDevTools(actions: Actions) {
     CadmusApiModule,
     CadmusCoreModule,
     CadmusProfileCoreModule,
+    CadmusRefsLookupModule,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,

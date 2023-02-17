@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
+import { take } from 'rxjs/operators';
+
 import { BiblioService, WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   Author,
@@ -9,8 +12,8 @@ import {
 } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { LocalStorageService } from '@myrmidon/ng-tools';
-import { BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
+
+import { AuthorRefLookupService } from '../../services/author-ref-lookup.service';
 
 const WORK_FILTER_KEY = 'cadmus-biblio-ui.work-filter';
 
@@ -48,6 +51,7 @@ export class WorkFilterComponent implements OnInit {
 
   constructor(
     formBuilder: FormBuilder,
+    public authorLookupService: AuthorRefLookupService,
     private _storageService: LocalStorageService,
     private _biblioService: BiblioService,
     private _biblioUtil: BiblioUtilService

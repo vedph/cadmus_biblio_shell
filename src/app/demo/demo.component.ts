@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
-import { Author, Container, Keyword, Work, WorkAuthor } from '@myrmidon/cadmus-biblio-core';
+import {
+  Author,
+  Container,
+  Keyword,
+  Work,
+  WorkAuthor,
+} from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { AuthorRefLookupService } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
 
 @Component({
   selector: 'biblio-demo',
@@ -28,7 +35,7 @@ export class DemoComponent implements OnInit {
 
   public detWork: Work | Container | undefined;
 
-  constructor() {
+  constructor(public authorLookupService: AuthorRefLookupService) {
     this.roleEntries = [
       { id: '-', value: '---' },
       { id: 'trs', value: 'translator' },

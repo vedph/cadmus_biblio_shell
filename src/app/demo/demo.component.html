@@ -34,9 +34,11 @@
 
       <!-- author picker -->
       <mat-tab label="author picker">
-        <biblio-author-picker
-          (authorChange)="onAuthorChange($event)"
-        ></biblio-author-picker>
+        <cadmus-ref-lookup
+          [service]="authorLookupService"
+          label="author"
+          (itemChange)="onAuthorChange($event)"
+        ></cadmus-ref-lookup>
         <div *ngIf="author">
           <pre>{{ author | json }}</pre>
         </div>

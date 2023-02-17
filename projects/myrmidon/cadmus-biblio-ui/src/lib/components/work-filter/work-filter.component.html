@@ -36,9 +36,11 @@
 
   <!-- author -->
   <div>
-    <biblio-author-picker
-      (authorChange)="onAuthorChange($event)"
-    ></biblio-author-picker>
+    <cadmus-ref-lookup
+      label="author"
+      [service]="authorLookupService"
+      (itemChange)="onAuthorChange($event)"
+    ></cadmus-ref-lookup>
   </div>
   <div *ngIf="author?.value">
     <span class="info">{{ authorToString(author.value) }}</span>
