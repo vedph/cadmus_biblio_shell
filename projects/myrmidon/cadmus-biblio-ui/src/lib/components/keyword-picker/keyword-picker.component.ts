@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { BiblioService, KeywordFilter } from '@myrmidon/cadmus-biblio-api';
-import { Keyword } from '@myrmidon/cadmus-biblio-core';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
+import { BiblioService, KeywordFilter } from '@myrmidon/cadmus-biblio-api';
+import { Keyword } from '@myrmidon/cadmus-biblio-core';
+
 
 @Component({
   selector: 'biblio-keyword-picker',
@@ -50,8 +52,8 @@ export class KeywordPickerComponent implements OnInit {
     let value = undefined;
     const i = filterText.indexOf(':');
     if (i > -1) {
-      language = filterText.substr(0, i);
-      value = filterText.substr(i + 1);
+      language = filterText.substring(0, i);
+      value = filterText.substring(i + 1);
     } else {
       value = filterText;
     }

@@ -48,7 +48,7 @@
       <mat-tab label="work authors">
         <biblio-work-authors
           [roleEntries]="roleEntries"
-          (modelChange)="onAuthorsChange($event)"
+          (authorsChange)="onAuthorsChange($event)"
         ></biblio-work-authors>
         <div *ngIf="authors">
           <pre>{{ authors | json }}</pre>
@@ -81,7 +81,7 @@
       <mat-tab label="work">
         <biblio-work
           [langEntries]="langEntries"
-          (modelChange)="onEditedWorkChange($event)"
+          (workChange)="onEditedWorkChange($event)"
         ></biblio-work>
         <div *ngIf="editedWork">
           <pre>{{ editedWork | json }}</pre>

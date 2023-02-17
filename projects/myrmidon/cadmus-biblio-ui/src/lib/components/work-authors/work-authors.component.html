@@ -6,56 +6,32 @@
         &nbsp;
         <span class="current">{{ currentAuthors }}</span>
       </mat-panel-title>
-      <mat-panel-description>{{ authors.length || 0 }}</mat-panel-description>
+      <mat-panel-description>{{
+        editedAuthors.length || 0
+      }}</mat-panel-description>
     </mat-expansion-panel-header>
 
-    <form [formGroup]="search">
-      <mat-autocomplete
-        #lookupAuto="matAutocomplete"
-        [displayWith]="authorToString"
+    <div class="form-row">
+      <cadmus-ref-lookup
+        [service]="authorLookupService"
+        label="author"
+        (itemChange)="pickAuthor($event)"
       >
-        <mat-option
-          *ngFor="let a of authors$ | async"
-          [value]="a"
-          (onSelectionChange)="pickAuthor(a)"
-        >
-          {{ authorToString(a) }}
-        </mat-option>
-      </mat-autocomplete>
+      </cadmus-ref-lookup>
 
-      <mat-form-field>
-        <mat-label>last name</mat-label>
-        <input
-          matInput
-          type="text"
-          [formControl]="lookup"
-          [matAutocomplete]="lookupAuto"
-        />
-        <button
-          type="button"
-          mat-icon-button
-          matSuffix
-          color="warn"
-          (click)="clearAuthor()"
-          [disabled]="!author"
-        >
-          <mat-icon>clear</mat-icon>
-        </button>
-      </mat-form-field>
-      &nbsp;
       <button
         type="button"
-        mat-icon-button
+        mat-flat-button
         color="primary"
         (click)="addAuthor()"
         matTooltip="Add a new author"
       >
-        <mat-icon>add_circle</mat-icon>
+        <mat-icon>add_circle</mat-icon> new
       </button>
-    </form>
+    </div>
 
     <!-- authors array -->
-    <div formArrayName="authors">
+    <div formArrayName="editedAuthors">
       <div
         *ngFor="
           let item of groups;
@@ -97,48 +73,49 @@
           </button>
 
           <!-- child controls -->
-          <!-- last -->
-          <mat-form-field>
-            <mat-label>last</mat-label>
-            <input matInput formControlName="last" />
-            <mat-error
-              *ngIf="
-                item['controls'].last.errors?.required &&
-                (item['controls'].last.dirty || item['controls'].last.touched)
-              "
-              >required</mat-error
-            >
-            <mat-error
-              *ngIf="
-                item['controls'].last.errors?.maxLength &&
-                (item['controls'].last.dirty || item['controls'].last.touched)
-              "
-              >too long</mat-error
-            >
-          </mat-form-field>
+          <div class="form-row">
+            <!-- last -->
+            <mat-form-field>
+              <mat-label>last</mat-label>
+              <input matInput formControlName="last" />
+              <mat-error
+                *ngIf="
+                  item['controls'].last.errors?.required &&
+                  (item['controls'].last.dirty || item['controls'].last.touched)
+                "
+                >required</mat-error
+              >
+              <mat-error
+                *ngIf="
+                  item['controls'].last.errors?.maxLength &&
+                  (item['controls'].last.dirty || item['controls'].last.touched)
+                "
+                >too long</mat-error
+              >
+            </mat-form-field>
 
-          &nbsp;
-          <!-- first -->
-          <mat-form-field>
-            <mat-label>first</mat-label>
-            <input matInput formControlName="first" />
-            <mat-error
-              *ngIf="
-                item['controls'].first.errors?.required &&
-                (item['controls'].first.dirty || item['controls'].first.touched)
-              "
-              >required</mat-error
-            >
-            <mat-error
-              *ngIf="
-                item['controls'].first.errors?.maxLength &&
-                (item['controls'].first.dirty || item['controls'].first.touched)
-              "
-              >too long</mat-error
-            >
-          </mat-form-field>
+            <!-- first -->
+            <mat-form-field>
+              <mat-label>first</mat-label>
+              <input matInput formControlName="first" />
+              <mat-error
+                *ngIf="
+                  item['controls'].first.errors?.required &&
+                  (item['controls'].first.dirty ||
+                    item['controls'].first.touched)
+                "
+                >required</mat-error
+              >
+              <mat-error
+                *ngIf="
+                  item['controls'].first.errors?.maxLength &&
+                  (item['controls'].first.dirty ||
+                    item['controls'].first.touched)
+                "
+                >too long</mat-error
+              >
+            </mat-form-field>
 
-          <div class="indented">
             <!-- suffix -->
             <mat-form-field>
               <mat-label>suffix</mat-label>
@@ -153,7 +130,6 @@
               >
             </mat-form-field>
 
-            &nbsp;
             <!-- role (bound) -->
             <mat-form-field *ngIf="roleEntries?.length" style="width: 8em">
               <mat-label>role</mat-label>

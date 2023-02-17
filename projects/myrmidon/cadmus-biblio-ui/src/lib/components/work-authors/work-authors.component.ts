@@ -1,18 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  UntypedFormControl,
-  Validators,
-} from '@angular/forms';
-import { Observable, of } from 'rxjs';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-
-import { AuthorFilter, BiblioService } from '@myrmidon/cadmus-biblio-api';
 import { Author, WorkAuthor } from '@myrmidon/cadmus-biblio-core';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
+import { AuthorRefLookupService } from '../../services/author-ref-lookup.service';
 
 /**
  * Work's authors editor. This lets users pick any author by
@@ -25,25 +19,20 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
   styleUrls: ['./work-authors.component.css'],
 })
 export class WorkAuthorsComponent implements OnInit {
-  private _model: WorkAuthor[] | undefined;
+  private _updating?: boolean;
+  private _authors: WorkAuthor[] | undefined;
 
   @Input()
-  public get model(): WorkAuthor[] | undefined {
-    return this._model;
+  public get authors(): WorkAuthor[] | undefined {
+    return this._authors;
   }
-  public set model(value: WorkAuthor[] | undefined) {
-    if (this._model === value) {
+  public set authors(value: WorkAuthor[] | undefined) {
+    if (this._authors === value) {
       return;
     }
-    this._model = value;
+    this._authors = value;
     this.updateForm(value);
   }
-
-  /**
-   * The maximum count of authors to retrieve. Default=10.
-   */
-  @Input()
-  public limit: number;
 
   /**
    * Author's roles thesaurus entries. When set, there
@@ -56,16 +45,14 @@ export class WorkAuthorsComponent implements OnInit {
    * Event fired when author(s) are set.
    */
   @Output()
-  public modelChange: EventEmitter<WorkAuthor[]>;
+  public authorsChange: EventEmitter<WorkAuthor[]>;
   /**
    * Event fired when this editor is discarded.
    */
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public lookup: UntypedFormControl;
-  public search: FormGroup;
-  public authors: FormArray;
+  public editedAuthors: FormArray;
   public form: FormGroup;
   public groups: FormGroup[];
 
@@ -76,121 +63,64 @@ export class WorkAuthorsComponent implements OnInit {
   public author: WorkAuthor | undefined;
 
   constructor(
-    private _formBuilder: FormBuilder,
-    private _biblioService: BiblioService
+    public authorLookupService: AuthorRefLookupService,
+    private _formBuilder: FormBuilder
   ) {
-    this.modelChange = new EventEmitter<WorkAuthor[]>();
+    this.authorsChange = new EventEmitter<WorkAuthor[]>();
     this.editorClose = new EventEmitter<any>();
     this.editing = false;
-    this.limit = 10;
-    // form
-    this.lookup = _formBuilder.control(null);
-    this.search = _formBuilder.group({
-      lookup: this.lookup,
-    });
-    this.authors = _formBuilder.array([], Validators.required);
-    this.groups = this.authors.controls as FormGroup[];
+    this.editedAuthors = _formBuilder.array([], Validators.required);
+    this.groups = this.editedAuthors.controls as FormGroup[];
     this.form = _formBuilder.group({
-      search: this.search,
-      authors: this.authors,
+      editedAuthors: this.editedAuthors,
     });
-  }
-
-  private getFilter(filterText: string): AuthorFilter {
-    // match either title or author's last name
-    return {
-      pageNumber: 1,
-      pageSize: this.limit,
-      last: filterText,
-    };
   }
 
   ngOnInit(): void {
-    this.updateForm(this.model);
-
-    // autocomplete
-    this.authors$ = this.lookup.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((value: WorkAuthor | string) => {
-        // the string comes from user typing
-        if (typeof value === 'string') {
-          // lookup and return results
-          const filter = this.getFilter(value);
-          return this._biblioService.getAuthors(filter).pipe(
-            switchMap((p) => {
-              return of(p.items);
-            })
-          );
-        } else {
-          // the authors come from results
-          return of([value]);
-        }
-      })
-    );
-
     // update current when authors change
-    this.authors.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
-      this.currentAuthors = this.buildCurrentAuthors();
+    this.editedAuthors.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
+      if (!this._updating) {
+        this.currentAuthors = this.buildCurrentAuthors();
+      }
     });
-
-    this.currentAuthors = this.buildCurrentAuthors();
   }
 
-  private updateForm(model: WorkAuthor[] | undefined): void {
-    if (!model) {
+  private updateForm(authors: WorkAuthor[] | undefined): void {
+    if (!authors) {
       this.form.reset();
+      this.currentAuthors = undefined;
       return;
     }
 
-    this.authors.clear();
-    if (model) {
+    this._updating = true;
+    this.editedAuthors.clear();
+    if (authors) {
       // when setting authors, we must ensure they are
       // sorted according to their ordinals if any;
       // otherwise, just stick with the received order.
-      const sorted = [...model];
+      const sorted = [...authors];
       sorted.sort((a: WorkAuthor, b: WorkAuthor) => {
         return (a.ordinal || 0) - (b.ordinal || 0);
       });
       for (let a of sorted) {
-        this.authors.controls.push(this.getAuthorGroup(a));
+        this.editedAuthors.controls.push(this.getAuthorGroup(a));
       }
     }
-
+    this.currentAuthors = this.buildCurrentAuthors();
     this.form.markAsPristine();
+    this._updating = false;
   }
-
-  //#region Autocomplete
-  public authorToString(author: Author): string {
-    if (!author) {
-      return '';
-    }
-
-    const sb: string[] = [];
-    sb.push(author.last);
-    if (author.first) {
-      sb.push(', ');
-      sb.push(author.first);
-    }
-    return sb.join('');
-  }
-
-  public clearAuthor(): void {
-    this.author = undefined;
-    this.lookup.setValue(null);
-  }
-
-  public pickAuthor(author: Author): void {
-    this.author = author;
-    const a: WorkAuthor = {
-      ...author,
-      ordinal: this.authors.length + 1,
-    };
-    this.addAuthor(a);
-  }
-  //#endregion
 
   //#region Authors
+  public pickAuthor(author: Author): void {
+    this.author = author;
+    const wa: WorkAuthor = {
+      ...author,
+      ordinal: this.editedAuthors.length + 1,
+    };
+    this.addAuthor(wa);
+  }
+
   private getAuthorGroup(author?: WorkAuthor): FormGroup {
     return this._formBuilder.group({
       id: this._formBuilder.control(author?.id),
@@ -211,44 +141,48 @@ export class WorkAuthorsComponent implements OnInit {
   }
 
   public addAuthor(item?: WorkAuthor): void {
-    this.authors.push(this.getAuthorGroup(item));
-    this.authors.markAsDirty();
-  }
-
-  public addAuthorBelow(index: number): void {
-    this.authors.insert(index + 1, this.getAuthorGroup());
-    this.authors.markAsDirty();
+    // do not an already existing author
+    if (item) {
+      for (let i = 0; i < this.editedAuthors.length; i++) {
+        const g = this.editedAuthors.at(i) as FormGroup;
+        if (g.controls['id'].value === item.id) {
+          return;
+        }
+      }
+    }
+    this.editedAuthors.push(this.getAuthorGroup(item));
+    this.editedAuthors.markAsDirty();
   }
 
   public removeAuthor(index: number): void {
-    this.authors.removeAt(index);
-    this.authors.markAsDirty();
+    this.editedAuthors.removeAt(index);
+    this.editedAuthors.markAsDirty();
   }
 
   public moveAuthorUp(index: number): void {
     if (index < 1) {
       return;
     }
-    const author = this.authors.controls[index];
-    this.authors.removeAt(index);
-    this.authors.insert(index - 1, author);
-    this.authors.markAsDirty();
+    const author = this.editedAuthors.controls[index];
+    this.editedAuthors.removeAt(index);
+    this.editedAuthors.insert(index - 1, author);
+    this.editedAuthors.markAsDirty();
   }
 
   public moveAuthorDown(index: number): void {
-    if (index + 1 >= this.authors.length) {
+    if (index + 1 >= this.editedAuthors.length) {
       return;
     }
-    const author = this.authors.controls[index];
-    this.authors.removeAt(index);
-    this.authors.insert(index + 1, author);
-    this.authors.markAsDirty();
+    const author = this.editedAuthors.controls[index];
+    this.editedAuthors.removeAt(index);
+    this.editedAuthors.insert(index + 1, author);
+    this.editedAuthors.markAsDirty();
   }
 
   private getAuthors(): WorkAuthor[] | undefined {
     const entries: WorkAuthor[] = [];
-    for (let i = 0; i < this.authors.length; i++) {
-      const g = this.authors.at(i) as FormGroup;
+    for (let i = 0; i < this.editedAuthors.length; i++) {
+      const g = this.editedAuthors.at(i) as FormGroup;
       entries.push({
         id: g.controls.id.value,
         last: g.controls.last.value?.trim(),
@@ -263,8 +197,8 @@ export class WorkAuthorsComponent implements OnInit {
 
   private buildCurrentAuthors(): string {
     const sb: string[] = [];
-    for (let i = 0; i < this.authors.length; i++) {
-      const g = this.authors.at(i) as FormGroup;
+    for (let i = 0; i < this.editedAuthors.length; i++) {
+      const g = this.editedAuthors.at(i) as FormGroup;
       if (i > 0) {
         sb.push('; ');
       }
@@ -290,7 +224,7 @@ export class WorkAuthorsComponent implements OnInit {
 
   public cancel(): void {
     this.editing = false;
-    this.updateForm(this._model);
+    this.updateForm(this._authors);
     this.editorClose.emit();
   }
 
@@ -298,8 +232,8 @@ export class WorkAuthorsComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._model = this.getAuthors();
+    this._authors = this.getAuthors();
     this.editing = false;
-    this.modelChange.emit(this._model);
+    this.authorsChange.emit(this._authors);
   }
 }

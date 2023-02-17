@@ -28,33 +28,33 @@ import { distinctUntilChanged, switchMap, take } from 'rxjs/operators';
   styleUrls: ['./work.component.css'],
 })
 export class WorkComponent implements OnInit {
-  private _model: EditedWork | undefined;
+  private _work: EditedWork | undefined;
 
   @Input()
-  public get model(): EditedWork | undefined {
-    return this._model;
+  public get work(): EditedWork | undefined {
+    return this._work;
   }
-  public set model(value: EditedWork | undefined) {
-    if (this._model === value) {
+  public set work(value: EditedWork | undefined) {
+    if (this._work === value) {
       return;
     }
-    this._model = value;
+    this._work = value;
     this.updateForm(value);
   }
 
   /**
-   * Authors roles entries.
+   * Authors roles entries: ext-biblio-author-roles.
    */
   @Input()
   public roleEntries: ThesaurusEntry[] | undefined;
   /**
-   * Keywords language entries.
+   * Keywords language entries: ext-biblio-languages.
    */
   @Input()
   public langEntries: ThesaurusEntry[] | undefined;
 
   @Output()
-  public modelChange: EventEmitter<EditedWork>;
+  public workChange: EventEmitter<EditedWork>;
   @Output()
   public editorClose: EventEmitter<any>;
 
@@ -86,7 +86,7 @@ export class WorkComponent implements OnInit {
     private _workKeyService: WorkKeyService,
     private _biblioUtil: BiblioUtilService
   ) {
-    this.modelChange = new EventEmitter<EditedWork>();
+    this.workChange = new EventEmitter<EditedWork>();
     this.editorClose = new EventEmitter<any>();
 
     // form
@@ -138,7 +138,6 @@ export class WorkComponent implements OnInit {
 
   ngOnInit(): void {
     this.accessDate.disable();
-    this.updateForm(this.model);
 
     // types are loaded once from backend
     this.types$ = this._biblioService
@@ -211,10 +210,10 @@ export class WorkComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): EditedWork {
+  private getWork(): EditedWork {
     return {
       isContainer: this.isContainer.value,
-      id: this._model?.id,
+      id: this._work?.id,
       type: this.type.value || '',
       key: this.key.value?.trim() || '',
       authors: this.authors.value?.length ? this.authors.value : undefined,
@@ -261,7 +260,7 @@ export class WorkComponent implements OnInit {
   }
 
   public buildKey(): void {
-    this.key.setValue(this._workKeyService.buildKey(this.getModel()));
+    this.key.setValue(this._workKeyService.buildKey(this.getWork()));
     this.key.updateValueAndValidity();
     this.key.markAsDirty();
   }
@@ -274,7 +273,7 @@ export class WorkComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._model = this.getModel();
-    this.modelChange.emit(this._model);
+    this._work = this.getWork();
+    this.workChange.emit(this._work);
   }
 }

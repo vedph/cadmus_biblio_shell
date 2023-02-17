@@ -151,10 +151,10 @@
       editedWork?.title
     }}</mat-expansion-panel-header>
     <biblio-work
-      [model]="editedWork"
+      [work]="editedWork"
       [langEntries]="langEntries"
       [roleEntries]="roleEntries"
-      (modelChange)="onWorkChange($event)"
+      (workChange)="onWorkChange($event)"
       (editorClose)="closeEditor()"
     ></biblio-work>
   </mat-expansion-panel>
