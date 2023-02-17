@@ -277,10 +277,6 @@ export class WorkListComponent implements OnDestroy {
     return authors.map((a) => this._utilService.authorToString(a)).join('; ');
   }
 
-  public workToString(work: Work | Container): string {
-    return this._utilService.workToString(work);
-  }
-
   private cleanup(): void {
     this._subscriptions.forEach((s) => {
       s.unsubscribe();
@@ -436,7 +432,7 @@ export class WorkListComponent implements OnDestroy {
     if (index > -1) {
       const entry = {
         id: work.id || '',
-        label: this.workToString(work),
+        label: this._utilService.workToString(work),
         payload: container ? 'c' : undefined,
       };
       // (no change for works)

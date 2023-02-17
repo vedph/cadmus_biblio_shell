@@ -104,10 +104,11 @@
 
   <!-- containerId -->
   <div>
-    <biblio-work-picker
-      [container]="true"
-      (workChange)="onContainerChange($event)"
-    ></biblio-work-picker>
+    <cadmus-ref-lookup
+      label="container"
+      [baseFilter]="{ container: true }"
+      (itemChange)="onContainerChange($event)"
+    ></cadmus-ref-lookup>
   </div>
   <div *ngIf="container?.value">
     <span class="info">{{ workToString(container.value) }}</span>

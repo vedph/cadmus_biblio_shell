@@ -5,6 +5,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { distinctUntilChanged, switchMap, take } from 'rxjs/operators';
+
 import {
   Container,
   EditedWork,
@@ -16,8 +19,8 @@ import {
 } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
-import { Observable, of } from 'rxjs';
-import { distinctUntilChanged, switchMap, take } from 'rxjs/operators';
+
+import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
 
 /**
  * Work or container editor.
@@ -82,6 +85,7 @@ export class WorkComponent implements OnInit {
 
   constructor(
     formBuilder: FormBuilder,
+    public lookupService: WorkRefLookupService,
     private _biblioService: BiblioService,
     private _workKeyService: WorkKeyService,
     private _biblioUtil: BiblioUtilService
@@ -177,33 +181,33 @@ export class WorkComponent implements OnInit {
       });
   }
 
-  private updateForm(model: EditedWork | undefined): void {
-    if (!model) {
+  private updateForm(work: EditedWork | undefined): void {
+    if (!work) {
       this.form.reset();
       return;
     }
 
-    this.isContainer.setValue(model.isContainer || false);
-    this.type.setValue(model.type);
-    this.key.setValue(model.key);
-    this.authors.setValue(model.authors || []);
-    this.title.setValue(model.title);
-    this.language.setValue(model.language);
-    this.placePub.setValue(model.placePub || null);
-    this.yearPub.setValue(model.yearPub || 0);
-    this.publisher.setValue(model.publisher || null);
-    this.container.setValue(model.container || null);
-    this.firstPage.setValue(model.firstPage || 0);
-    this.lastPage.setValue(model.lastPage || 0);
-    this.number.setValue(model.number || null);
-    this.note.setValue(model.note || null);
-    this.location.setValue(model.location || null);
-    this.hasAccessDate.setValue(model.accessDate ? true : false);
-    this.accessDate.setValue(model.accessDate || null);
-    this.keywords.setValue(model.keywords || []);
+    this.isContainer.setValue(work.isContainer || false);
+    this.type.setValue(work.type);
+    this.key.setValue(work.key);
+    this.authors.setValue(work.authors || []);
+    this.title.setValue(work.title);
+    this.language.setValue(work.language);
+    this.placePub.setValue(work.placePub || null);
+    this.yearPub.setValue(work.yearPub || 0);
+    this.publisher.setValue(work.publisher || null);
+    this.container.setValue(work.container || null);
+    this.firstPage.setValue(work.firstPage || 0);
+    this.lastPage.setValue(work.lastPage || 0);
+    this.number.setValue(work.number || null);
+    this.note.setValue(work.note || null);
+    this.location.setValue(work.location || null);
+    this.hasAccessDate.setValue(work.accessDate ? true : false);
+    this.accessDate.setValue(work.accessDate || null);
+    this.keywords.setValue(work.keywords || []);
 
     // if it has a container it can't be a container
-    if (model.container) {
+    if (work.container) {
       this.isContainer.setValue(false);
     }
 
@@ -251,7 +255,7 @@ export class WorkComponent implements OnInit {
     this.container.markAsDirty();
   }
 
-  public removeContainer() : void {
+  public removeContainer(): void {
     this.container.reset();
   }
 

@@ -124,12 +124,14 @@
   <!-- container -->
   <div *ngIf="!isContainer?.value">
     <div class="form-row">
-      <biblio-work-picker
-        [container]="true"
-        (workChange)="onContainerChange($event)"
-      ></biblio-work-picker>
+      <cadmus-ref-lookup
+        label="container"
+        [service]="lookupService"
+        [baseFilter]="{ container: true }"
+        (itemChange)="onContainerChange($event)"
+      ></cadmus-ref-lookup>
       <span class="container">
-        {{ workToString(container.value) }}
+        {{ container.value | biblioWork }}
       </span>
       <button
         *ngIf="container.value"

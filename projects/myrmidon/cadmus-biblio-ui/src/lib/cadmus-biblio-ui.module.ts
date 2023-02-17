@@ -40,7 +40,6 @@ import { WorkDetailsComponent } from './components/work-details/work-details.com
 import { KeywordPickerComponent } from './components/keyword-picker/keyword-picker.component';
 import { WorkFilterComponent } from './components/work-filter/work-filter.component';
 import { WorkBrowserComponent } from './components/work-browser/work-browser.component';
-import { WorkPickerComponent } from './components/work-picker/work-picker.component';
 import { WorkAuthorsComponent } from './components/work-authors/work-authors.component';
 import { WorkKeywordsComponent } from './components/work-keywords/work-keywords.component';
 import { WorkListComponent } from './components/work-list/work-list.component';
@@ -55,7 +54,6 @@ import { WorkListComponent } from './components/work-list/work-list.component';
     WorkFilterComponent,
     WorkKeywordsComponent,
     WorkListComponent,
-    WorkPickerComponent,
   ],
   imports: [
     CommonModule,
@@ -103,7 +101,6 @@ import { WorkListComponent } from './components/work-list/work-list.component';
     WorkFilterComponent,
     WorkKeywordsComponent,
     WorkListComponent,
-    WorkPickerComponent,
   ],
 })
 export class CadmusBiblioUiModule {}

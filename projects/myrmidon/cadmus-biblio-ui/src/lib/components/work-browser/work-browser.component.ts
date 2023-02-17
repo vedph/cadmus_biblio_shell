@@ -39,6 +39,7 @@ export class WorkBrowserComponent implements OnInit {
   public signals$: BehaviorSubject<string>;
   @Input()
   public pageSize: number;
+
   @Output()
   public workPick: EventEmitter<WorkInfo>;
   @Output()

@@ -10,9 +10,10 @@
       <mat-tab label="work picker">
         <div>
           <h3>Work</h3>
-          <biblio-work-picker
-            (workChange)="onWorkChange($event)"
-          ></biblio-work-picker>
+          <cadmus-ref-lookup
+            [service]="workLookupService"
+            (itemChange)="onWorkChange($event)"
+          ></cadmus-ref-lookup>
           <hr />
           <div *ngIf="work">
             <pre>{{ work | json }}</pre>
@@ -21,10 +22,12 @@
 
         <div>
           <h3>Container</h3>
-          <biblio-work-picker
-            [container]="true"
-            (workChange)="onContainerChange($event)"
-          ></biblio-work-picker>
+          <cadmus-ref-lookup
+            label="container"
+            [service]="workLookupService"
+            [baseFilter]="{ container: true }"
+            (itemChange)="onContainerChange($event)"
+          ></cadmus-ref-lookup>
           <hr />
           <div *ngIf="container">
             <pre>{{ container | json }}</pre>
@@ -103,9 +106,11 @@
       <!-- work details -->
       <mat-tab label="work details">
         <div>
-          <biblio-work-picker
-            (workChange)="onWorkChangeForDetails($event)"
-          ></biblio-work-picker>
+          <cadmus-ref-lookup
+            label="work"
+            [service]="workLookupService"
+            (itemChange)="onWorkChangeForDetails($event)"
+          ></cadmus-ref-lookup>
         </div>
         <biblio-work-details [work]="detWork"></biblio-work-details>
       </mat-tab>

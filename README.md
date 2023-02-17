@@ -14,7 +14,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
   - updated Angular.
   - added enabled properties to work list.
   - hide `number` field in work form when editing a non-container work.
-  - replaced author picker with brick lookup.
+  - replaced author picker and work picker with brick lookup.
+  - added pipes to display work/author.
 - 2023-01-24:
   - minor refactorings in work entries list and part editor.
   - fix to work list subscriptions.

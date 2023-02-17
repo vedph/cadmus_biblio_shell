@@ -119,7 +119,7 @@
     </div>
     <mat-expansion-panel [(expanded)]="detailsOpen">
       <mat-expansion-panel-header>
-        {{ workToString(detailWork) }}
+        {{ detailWork | biblioWork }}
       </mat-expansion-panel-header>
       <biblio-work-details [work]="detailWork"></biblio-work-details>
     </mat-expansion-panel>

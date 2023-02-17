@@ -14,6 +14,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { LocalStorageService } from '@myrmidon/ng-tools';
 
 import { AuthorRefLookupService } from '../../services/author-ref-lookup.service';
+import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
 
 const WORK_FILTER_KEY = 'cadmus-biblio-ui.work-filter';
 
@@ -52,6 +53,7 @@ export class WorkFilterComponent implements OnInit {
   constructor(
     formBuilder: FormBuilder,
     public authorLookupService: AuthorRefLookupService,
+    public workLookupService: WorkRefLookupService,
     private _storageService: LocalStorageService,
     private _biblioService: BiblioService,
     private _biblioUtil: BiblioUtilService
