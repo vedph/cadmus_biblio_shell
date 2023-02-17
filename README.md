@@ -13,6 +13,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 - 2023-02-17:
   - updated Angular.
   - added enabled properties to work list.
+  - hide `number` field in work form when editing a non-container work.
 - 2023-01-24:
   - minor refactorings in work entries list and part editor.
   - fix to work list subscriptions.

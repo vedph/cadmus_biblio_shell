@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   UntypedFormControl,
   Validators,
@@ -33,6 +32,9 @@ export class WorkAuthorsComponent implements OnInit {
     return this._model;
   }
   public set model(value: WorkAuthor[] | undefined) {
+    if (this._model === value) {
+      return;
+    }
     this._model = value;
     this.updateForm(value);
   }
@@ -67,7 +69,7 @@ export class WorkAuthorsComponent implements OnInit {
   public form: FormGroup;
   public groups: FormGroup[];
 
-  public current: string | undefined;
+  public currentAuthors: string | undefined;
   public editing: boolean;
 
   public authors$: Observable<Author[]> | undefined;
@@ -129,10 +131,10 @@ export class WorkAuthorsComponent implements OnInit {
 
     // update current when authors change
     this.authors.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
-      this.current = this.buildCurrent();
+      this.currentAuthors = this.buildCurrentAuthors();
     });
 
-    this.current = this.buildCurrent();
+    this.currentAuthors = this.buildCurrentAuthors();
   }
 
   private updateForm(model: WorkAuthor[] | undefined): void {
@@ -156,10 +158,6 @@ export class WorkAuthorsComponent implements OnInit {
     }
 
     this.form.markAsPristine();
-  }
-
-  private getModel(): WorkAuthor[] | undefined {
-    return this.getAuthors();
   }
 
   //#region Autocomplete
@@ -263,7 +261,7 @@ export class WorkAuthorsComponent implements OnInit {
     return entries.length ? entries : undefined;
   }
 
-  private buildCurrent(): string {
+  private buildCurrentAuthors(): string {
     const sb: string[] = [];
     for (let i = 0; i < this.authors.length; i++) {
       const g = this.authors.at(i) as FormGroup;
@@ -300,11 +298,8 @@ export class WorkAuthorsComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
+    this._model = this.getAuthors();
     this.editing = false;
-    this.modelChange.emit(model);
+    this.modelChange.emit(this._model);
   }
 }

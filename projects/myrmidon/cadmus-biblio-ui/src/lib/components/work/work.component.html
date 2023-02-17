@@ -157,8 +157,8 @@
     </div>
   </div>
 
-  <div>
-    <!-- number -->
+  <!-- number -->
+  <div *ngIf="isContainer?.value">
     <mat-form-field>
       <mat-label>number</mat-label>
       <input matInput [formControl]="number" />
