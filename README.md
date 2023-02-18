@@ -1,5 +1,7 @@
 # Cadmus Biblio Shell
 
+Cadmus frontend components for [external bibliography](https://github.com/vedph/cadmus_biblioapi).
+
 Quick Docker image build:
 
 1. update [env.js](src/env.js) version number and `npm run build-lib` (run [publish.bat](publish.bat) if required);
