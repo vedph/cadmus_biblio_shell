@@ -12,15 +12,13 @@ The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used t
 
 ## History
 
-- 2023-02-18:
-  - added optional `yearPub2` to work/container.
+- 2023-02-18: added optional `yearPub2` to work/container.
 
 ### 1.3.0
 
 - 2023-02-17:
   - updated Angular.
   - added enabled properties to work list.
-  - hide `number` field in work form when editing a non-container work.
   - replaced author picker and work picker with brick lookup.
   - added pipes to display work/author.
 - 2023-01-24:
