@@ -12,6 +12,9 @@ The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used t
 
 ## History
 
+- 2023-02-18:
+  - added optional `yearPub2` to work/container.
+
 ### 1.3.0
 
 - 2023-02-17:

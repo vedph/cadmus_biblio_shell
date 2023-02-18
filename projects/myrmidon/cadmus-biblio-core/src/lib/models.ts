@@ -38,6 +38,7 @@ export interface Container {
   publisher?: string;
   number?: string;
   yearPub?: number;
+  yearPub2?: number;
   placePub?: string;
   location?: string;
   accessDate?: Date;

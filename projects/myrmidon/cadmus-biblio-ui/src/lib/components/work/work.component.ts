@@ -70,6 +70,7 @@ export class WorkComponent implements OnInit {
   public language: FormControl<string | null>;
   public placePub: FormControl<string | null>;
   public yearPub: FormControl<number>;
+  public yearPub2: FormControl<number>;
   public publisher: FormControl<string | null>;
   public container: FormControl<Container | null>;
   public firstPage: FormControl<number>;
@@ -108,6 +109,7 @@ export class WorkComponent implements OnInit {
     ]);
     this.placePub = formBuilder.control(null, Validators.maxLength(100));
     this.yearPub = formBuilder.control(0, { nonNullable: true });
+    this.yearPub2 = formBuilder.control(0, { nonNullable: true });
     this.publisher = formBuilder.control(null, Validators.maxLength(50));
     this.container = formBuilder.control(null);
     this.firstPage = formBuilder.control(0, { nonNullable: true });
@@ -127,6 +129,7 @@ export class WorkComponent implements OnInit {
       language: this.language,
       placePub: this.placePub,
       yearPub: this.yearPub,
+      yearPub2: this.yearPub2,
       publisher: this.publisher,
       container: this.container,
       firstPage: this.firstPage,
@@ -195,6 +198,7 @@ export class WorkComponent implements OnInit {
     this.language.setValue(work.language);
     this.placePub.setValue(work.placePub || null);
     this.yearPub.setValue(work.yearPub || 0);
+    this.yearPub2.setValue(work.yearPub2 || 0);
     this.publisher.setValue(work.publisher || null);
     this.container.setValue(work.container || null);
     this.firstPage.setValue(work.firstPage || 0);
@@ -225,6 +229,7 @@ export class WorkComponent implements OnInit {
       language: this.language.value || '',
       placePub: this.placePub.value?.trim(),
       yearPub: this.yearPub.value,
+      yearPub2: this.yearPub2.value || undefined,
       publisher: this.publisher.value?.trim(),
       container: this.container.value || undefined,
       firstPage: this.firstPage.value,

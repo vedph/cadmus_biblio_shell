@@ -38,6 +38,9 @@ export class BiblioUtilService {
     if (work.yearPub) {
       sb.push(', ');
       sb.push(work.yearPub.toString());
+      if (work.yearPub2) {
+        sb.push(`-${work.yearPub2}`);
+      }
     }
     return sb.join('');
   }
