@@ -1,9 +1,4 @@
 <div id="container">
-  <!-- SPINNER -->
-  <div *ngIf="loading">
-    <mat-spinner [diameter]="48" [strokeWidth]="4"></mat-spinner>
-  </div>
-
   <!-- FILTERS -->
   <div style="grid-area: filters">
     <biblio-work-filter
@@ -30,6 +25,11 @@
       >
         <mat-icon>add_circle</mat-icon> new
       </button>
+    </div>
+
+    <!-- progress -->
+    <div *ngIf="loading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </div>
 
     <!-- table -->
@@ -91,7 +91,7 @@
             {{ w.type }}
           </td>
           <td>
-            {{ w.key }}
+            {{ w.key.startsWith("!") ? w.key.substring(1) : w.key }}
           </td>
           <td>
             {{ authorsToString(w.authors) }}

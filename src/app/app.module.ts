@@ -73,9 +73,10 @@ import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/pub
 import { CadmusPartBiblioUiModule } from 'projects/myrmidon/cadmus-part-biblio-ui/src/public-api';
 
 import { AppComponent } from './app.component';
+import { BiblioPageComponent } from './biblio-page/biblio-page.component';
+import { DemoComponent } from './demo/demo.component';
 import { HomeComponent } from './home/home.component';
 import { LoginPageComponent } from './login-page/login-page.component';
-import { DemoComponent } from './demo/demo.component';
 import { WorkPageComponent } from './work-page/work-page.component';
 import { PartPageComponent } from './part-page/part-page.component';
 import { ManageUsersPageComponent } from './manage-users-page/manage-users-page.component';
@@ -98,14 +99,15 @@ export function initElfDevTools(actions: Actions) {
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
+    BiblioPageComponent,
     DemoComponent,
-    WorkPageComponent,
-    PartPageComponent,
+    HomeComponent,
     LoginPageComponent,
     ManageUsersPageComponent,
+    PartPageComponent,
     RegisterUserPageComponent,
     ResetPasswordComponent,
+    WorkPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -114,7 +116,6 @@ export function initElfDevTools(actions: Actions) {
     ClipboardModule,
     RouterModule.forRoot(
       [
-        { path: '', redirectTo: 'home', pathMatch: 'full' },
         { path: 'home', component: HomeComponent },
         { path: 'demo', component: DemoComponent },
         { path: 'works', component: WorkPageComponent },
@@ -138,14 +139,6 @@ export function initElfDevTools(actions: Actions) {
         },
         // cadmus - items
         {
-          path: 'items',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-item-list').then(
-              (module) => module.CadmusItemListModule
-            ),
-          canActivate: [AuthJwtGuardService],
-        },
-        {
           path: 'items/:id',
           loadChildren: () =>
             import('@myrmidon/cadmus-item-editor').then(
@@ -153,6 +146,14 @@ export function initElfDevTools(actions: Actions) {
             ),
           canActivate: [AuthJwtGuardService],
           canDeactivate: [PendingChangesGuard],
+        },
+        {
+          path: 'items',
+          loadChildren: () =>
+            import('@myrmidon/cadmus-item-list').then(
+              (module) => module.CadmusItemListModule
+            ),
+          canActivate: [AuthJwtGuardService],
         },
         {
           path: 'search',
@@ -164,18 +165,18 @@ export function initElfDevTools(actions: Actions) {
         },
         // cadmus - thesauri
         {
-          path: 'thesauri',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-thesaurus-list').then(
-              (module) => module.CadmusThesaurusListModule
-            ),
-          canActivate: [EditorGuardService],
-        },
-        {
           path: 'thesauri/:id',
           loadChildren: () =>
             import('@myrmidon/cadmus-thesaurus-editor').then(
               (module) => module.CadmusThesaurusEditorModule
+            ),
+          canActivate: [EditorGuardService],
+        },
+        {
+          path: 'thesauri',
+          loadChildren: () =>
+            import('@myrmidon/cadmus-thesaurus-list').then(
+              (module) => module.CadmusThesaurusListModule
             ),
           canActivate: [EditorGuardService],
         },
@@ -215,6 +216,14 @@ export function initElfDevTools(actions: Actions) {
             ),
           canActivate: [AuthJwtGuardService],
         },
+        // biblio
+        {
+          path: 'biblio',
+          component: BiblioPageComponent,
+          canActivate: [AuthJwtAdminGuardService],
+        },
+        // home
+        { path: '', redirectTo: 'home', pathMatch: 'full' },
         // fallback
         { path: '**', component: HomeComponent },
       ],

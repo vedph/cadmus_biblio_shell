@@ -64,6 +64,7 @@ export class WorkComponent implements OnInit {
   public form: FormGroup;
   public isContainer: FormControl<boolean>;
   public type: FormControl<string | null>;
+  public isUserKey: FormControl<boolean>;
   public key: FormControl<string | null>;
   public authors: FormControl<WorkAuthor[]>;
   public title: FormControl<string | null>;
@@ -97,6 +98,7 @@ export class WorkComponent implements OnInit {
     // form
     this.isContainer = formBuilder.control(false, { nonNullable: true });
     this.type = formBuilder.control(null, Validators.required);
+    this.isUserKey = formBuilder.control(false, { nonNullable: true });
     this.key = formBuilder.control(null, Validators.maxLength(300));
     this.authors = formBuilder.control([], { nonNullable: true });
     this.title = formBuilder.control(null, [
@@ -123,6 +125,7 @@ export class WorkComponent implements OnInit {
     this.form = formBuilder.group({
       isContainer: this.isContainer,
       type: this.type,
+      isUserKey: this.isUserKey,
       key: this.key,
       authors: this.authors,
       title: this.title,
@@ -192,7 +195,13 @@ export class WorkComponent implements OnInit {
 
     this.isContainer.setValue(work.isContainer || false);
     this.type.setValue(work.type);
-    this.key.setValue(work.key);
+
+    // a user key starts with !, but here we show 2 controls,
+    // a checkbox for user and a textbox for value (without !)
+    const userKey = work.key.startsWith('!');
+    this.isUserKey.setValue(userKey);
+    this.key.setValue(userKey ? work.key.substring(1) : work.key);
+
     this.authors.setValue(work.authors || []);
     this.title.setValue(work.title);
     this.language.setValue(work.language);
@@ -219,11 +228,12 @@ export class WorkComponent implements OnInit {
   }
 
   private getWork(): EditedWork {
+    const key = this.key.value?.trim() || '';
     return {
       isContainer: this.isContainer.value,
       id: this._work?.id,
       type: this.type.value || '',
-      key: this.key.value?.trim() || '',
+      key: this.isUserKey.value ? '!' + key : key,
       authors: this.authors.value?.length ? this.authors.value : undefined,
       title: this.title.value?.trim() || '',
       language: this.language.value || '',

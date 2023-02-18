@@ -40,6 +40,16 @@
     >
       Thesauri
     </button>
+    <!-- bibliography menu -->
+    <button
+      mat-button
+      routerLink="/biblio"
+      *ngIf="
+        user && (user.roles.includes('admin') || user.roles.includes('editor'))
+      "
+    >
+      Bibliography
+    </button>
 
     <ng-container *ngIf="logged">
       <button mat-button routerLink="/demo">Demo</button>

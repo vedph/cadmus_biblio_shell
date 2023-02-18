@@ -4,7 +4,7 @@
     <mat-checkbox [formControl]="matchAny">match any</mat-checkbox>
     &nbsp;
     <!-- type -->
-    <mat-form-field style="width: 8em">
+    <mat-form-field>
       <mat-label>type</mat-label>
       <mat-select [formControl]="type">
         <mat-option [value]="null">(any)</mat-option>
@@ -17,7 +17,7 @@
 
   <div>
     <!-- language (bound) -->
-    <mat-form-field *ngIf="langEntries?.length" style="width: 8em">
+    <mat-form-field *ngIf="langEntries?.length">
       <mat-label>language</mat-label>
       <mat-select [formControl]="language">
         <mat-option [value]="null">(any)</mat-option>
@@ -28,7 +28,7 @@
     </mat-form-field>
 
     <!-- language (free) -->
-    <mat-form-field *ngIf="!langEntries?.length" style="width: 4em">
+    <mat-form-field *ngIf="!langEntries?.length" style="width: 5em">
       <mat-label>language</mat-label>
       <input matInput [formControl]="language" />
     </mat-form-field>

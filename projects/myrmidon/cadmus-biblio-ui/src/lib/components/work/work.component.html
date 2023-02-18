@@ -16,6 +16,9 @@
       >
     </mat-form-field>
 
+    <!-- user key -->
+    <mat-checkbox [formControl]="isUserKey">user key</mat-checkbox>
+
     <!-- key -->
     <mat-form-field style="flex: 1 0 auto; max-width: 400px">
       <mat-label>key</mat-label>
@@ -164,19 +167,19 @@
         <input matInput type="number" min="0" [formControl]="lastPage" />
       </mat-form-field>
     </div>
-  </fieldset>
 
-  <!-- number -->
-  <div>
-    <mat-form-field>
-      <mat-label>number</mat-label>
-      <input matInput [formControl]="number" />
-      <mat-error
-        *ngIf="number.errors?.maxLength && (number.dirty || number.touched)"
-        >number too long</mat-error
-      >
-    </mat-form-field>
-  </div>
+    <!-- number -->
+    <div>
+      <mat-form-field>
+        <mat-label>number</mat-label>
+        <input matInput [formControl]="number" />
+        <mat-error
+          *ngIf="number.errors?.maxLength && (number.dirty || number.touched)"
+          >number too long</mat-error
+        >
+      </mat-form-field>
+    </div>
+  </fieldset>
 
   <div>
     <!-- note -->
