@@ -101,7 +101,7 @@ export class WorkAuthorsComponent implements OnInit {
   }
 
   private updateForm(authors: WorkAuthor[] | undefined): void {
-    if (!authors) {
+    if (!authors?.length) {
       this.form.reset();
       this.currentAuthors = undefined;
       return;

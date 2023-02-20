@@ -14,7 +14,9 @@ The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used t
 
 ## History
 
-- 2023-02-20: updated key generation algorithm to reflect API counterpart.
+- 2023-02-20:
+  - updated key generation algorithm to reflect API counterpart.
+  - use lookup to display selected item (for container) or reset it when just picking an item (for authors).
 
 ### 1.4.2
 
