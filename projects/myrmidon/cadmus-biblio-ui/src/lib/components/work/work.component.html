@@ -130,21 +130,17 @@
   <fieldset *ngIf="!isContainer?.value">
     <legend>container</legend>
     <!-- lookup -->
-    <div>
+    <div class="form-row">
       <cadmus-ref-lookup
         label="container"
+        [item]="container.value"
         [service]="lookupService"
         [baseFilter]="{ container: true }"
         (itemChange)="onContainerChange($event)"
       ></cadmus-ref-lookup>
-    </div>
-    <!-- picked -->
-    <div class="form-row" style="margin-top: 6px">
-      <div>
-        {{ container.value | biblioWork }}
-      </div>
       <button
         *ngIf="container.value"
+        style="margin-top: 20px"
         type="button"
         mat-icon-button
         color="warn"

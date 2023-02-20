@@ -13,7 +13,6 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Author, WorkAuthor } from '@myrmidon/cadmus-biblio-core';
 
 import { AuthorRefLookupService } from '../../services/author-ref-lookup.service';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 /**
  * Work's authors editor. This lets users pick any author by
@@ -136,6 +135,9 @@ export class WorkAuthorsComponent implements OnInit {
       ordinal: this.editedAuthors.length + 1,
     };
     this.addAuthor(wa);
+    setTimeout(() => {
+      this.author = undefined;
+    });
   }
 
   private getAuthorGroup(author?: WorkAuthor): FormGroup {
