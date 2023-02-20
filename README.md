@@ -14,6 +14,8 @@ The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used t
 
 ## History
 
+- 2023-02-20: updated key generation algorithm to reflect API counterpart.
+
 ### 1.4.2
 
 - 2023-02-20: validation in work authors.

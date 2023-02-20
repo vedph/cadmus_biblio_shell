@@ -279,7 +279,9 @@ export class WorkComponent implements OnInit {
   }
 
   public buildKey(): void {
-    this.key.setValue(this._workKeyService.buildKey(this.getWork()));
+    this.key.setValue(
+      this._workKeyService.buildKey(this.getWork(), this.isContainer.value)
+    );
     this.key.updateValueAndValidity();
     this.key.markAsDirty();
   }

@@ -8,9 +8,10 @@ export class WorkKeyService {
   /**
    * Build the key for the specified work or container.
    * @param work The work or container to build the key for.
+   * @param isContainer True if container, false if work.
    * @returns The key.
    */
-  public buildKey(work: Container): string {
+  public buildKey(work: Container, isContainer: boolean): string {
     if (!work) {
       return '';
     }
@@ -44,8 +45,8 @@ export class WorkKeyService {
       }
     }
 
-    // number if any
-    if (work?.number) {
+    // number if container and present
+    if (work?.number && isContainer) {
       sb.push(' ');
       sb.push(work.number || '');
     }
