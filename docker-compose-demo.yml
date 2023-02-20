@@ -31,7 +31,7 @@ services:
 
   # biblio API
   cadmus-biblio-api:
-    image: vedph2020/cadmus_biblio_api:3.1.1
+    image: vedph2020/cadmus_biblio_api:3.1.2
     container_name: cadmus-biblio-api
     ports:
       - 61691:80
@@ -49,7 +49,7 @@ services:
 
   # demo API
   cadmus-api:
-    image: vedph2020/cadmus-biblio-demo-api:0.1.1
+    image: vedph2020/cadmus-biblio-demo-api:0.1.2
     container_name: cadmus-api
     ports:
       - 5034:80
@@ -69,7 +69,7 @@ services:
 
   # demo app
   cadmus-biblio-app:
-    image: vedph2020/cadmus-biblio-shell:1.4.0
+    image: vedph2020/cadmus-biblio-shell:1.4.1
     container_name: cadmus-biblio-app
     ports:
       - 4200:80
