@@ -14,6 +14,8 @@ The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used t
 
 ## History
 
+- 2023-02-20: fixed number field not displayed in work editor for containers.
+
 ### 1.4.0
 
 - 2023-02-18:
