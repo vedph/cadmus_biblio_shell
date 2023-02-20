@@ -6,5 +6,5 @@
   // window.__env.apiUrl = 'http://localhost:60380/api/';
   window.__env.apiUrl = 'http://localhost:5034/api/';
   window.__env.biblioApiUrl = 'http://localhost:61691/api/';
-  window.__env.version = '1.4.1';
+  window.__env.version = '1.4.2';
 }(this));

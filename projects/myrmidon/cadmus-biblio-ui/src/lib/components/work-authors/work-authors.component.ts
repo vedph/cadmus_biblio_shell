@@ -1,5 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -7,6 +13,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Author, WorkAuthor } from '@myrmidon/cadmus-biblio-core';
 
 import { AuthorRefLookupService } from '../../services/author-ref-lookup.service';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 /**
  * Work's authors editor. This lets users pick any author by
@@ -53,6 +60,7 @@ export class WorkAuthorsComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public editedAuthors: FormArray;
+  public authorCount: FormControl<number>;
   public form: FormGroup;
   public groups: FormGroup[];
 
@@ -69,10 +77,15 @@ export class WorkAuthorsComponent implements OnInit {
     this.authorsChange = new EventEmitter<WorkAuthor[]>();
     this.editorClose = new EventEmitter<any>();
     this.editing = false;
-    this.editedAuthors = _formBuilder.array([], Validators.required);
+    this.authorCount = _formBuilder.control(0, {
+      validators: Validators.min(1),
+      nonNullable: true,
+    });
+    this.editedAuthors = _formBuilder.array([]);
     this.groups = this.editedAuthors.controls as FormGroup[];
     this.form = _formBuilder.group({
       editedAuthors: this.editedAuthors,
+      authorCount: this.authorCount,
     });
   }
 
@@ -81,6 +94,9 @@ export class WorkAuthorsComponent implements OnInit {
     this.editedAuthors.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
       if (!this._updating) {
         this.currentAuthors = this.buildCurrentAuthors();
+        this.authorCount.setValue(this.editedAuthors.length);
+        this.authorCount.updateValueAndValidity();
+        this.authorCount.markAsDirty();
       }
     });
   }
@@ -107,6 +123,7 @@ export class WorkAuthorsComponent implements OnInit {
       }
     }
     this.currentAuthors = this.buildCurrentAuthors();
+    this.authorCount.setValue(this.editedAuthors.length);
     this.form.markAsPristine();
     this._updating = false;
   }
@@ -123,20 +140,23 @@ export class WorkAuthorsComponent implements OnInit {
 
   private getAuthorGroup(author?: WorkAuthor): FormGroup {
     return this._formBuilder.group({
-      id: this._formBuilder.control(author?.id),
-      last: this._formBuilder.control(author?.last, [
+      id: this._formBuilder.control<string | null>(author?.id || null),
+      last: this._formBuilder.control<string | null>(author?.last || null, [
         Validators.required,
         Validators.maxLength(50),
       ]),
-      first: this._formBuilder.control(author?.first, [
+      first: this._formBuilder.control<string | null>(author?.first || null, [
         Validators.required,
         Validators.maxLength(50),
       ]),
-      suffix: this._formBuilder.control(
-        author?.suffix,
-        Validators.maxLength(50)
-      ),
-      role: this._formBuilder.control(author?.role, Validators.maxLength(50)),
+      suffix: this._formBuilder.control<string | null>(author?.suffix || null, {
+        validators: Validators.maxLength(50),
+        updateOn: 'change',
+      }),
+      role: this._formBuilder.control<string | null>(author?.role || null, {
+        validators: Validators.maxLength(50),
+        updateOn: 'change',
+      }),
     });
   }
 
