@@ -14,6 +14,8 @@ The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used t
 
 ## History
 
+- 2023-05-11: updated to Angular 16.
+
 ### 1.4.3
 
 - 2023-02-20:
