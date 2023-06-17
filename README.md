@@ -14,6 +14,12 @@ The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used t
 
 ## History
 
+### 3.0.0
+
+- 2023-06-16:
+  - updated Angular and packages.
+  - refactored Docker compose script for PostgreSQL.
+
 ### 2.0.0
 
 - 2023-05-11: updated to Angular 16.
