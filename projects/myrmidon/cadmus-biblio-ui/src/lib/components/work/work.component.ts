@@ -18,6 +18,10 @@ import {
   BiblioUtilService,
 } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  HistoricalDate,
+  HistoricalDateModel,
+} from '@myrmidon/cadmus-refs-historical-date';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 
 import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
@@ -78,6 +82,8 @@ export class WorkComponent implements OnInit {
   public lastPage: FormControl<number>;
   public number: FormControl<string | null>;
   public note: FormControl<string | null>;
+  public hasDatation: FormControl<boolean>;
+  public datation: FormControl<HistoricalDateModel | null>;
   public location: FormControl<string | null>;
   public hasAccessDate: FormControl<boolean>;
   public accessDate: FormControl<Date | null>;
@@ -118,6 +124,8 @@ export class WorkComponent implements OnInit {
     this.lastPage = formBuilder.control(0, { nonNullable: true });
     this.number = formBuilder.control(null, Validators.maxLength(50));
     this.note = formBuilder.control(null, Validators.maxLength(500));
+    this.hasDatation = formBuilder.control(false, { nonNullable: true });
+    this.datation = formBuilder.control(null);
     this.location = formBuilder.control(null, Validators.maxLength(500));
     this.hasAccessDate = formBuilder.control(false, { nonNullable: true });
     this.accessDate = formBuilder.control(null);
@@ -139,6 +147,8 @@ export class WorkComponent implements OnInit {
       lastPage: this.lastPage,
       number: this.number,
       note: this.note,
+      hasDatation: this.hasDatation,
+      datation: this.datation,
       location: this.location,
       hasAccessDate: this.hasAccessDate,
       accessDate: this.accessDate,
@@ -214,6 +224,13 @@ export class WorkComponent implements OnInit {
     this.lastPage.setValue(work.lastPage || 0);
     this.number.setValue(work.number || null);
     this.note.setValue(work.note || null);
+    if (work.datation) {
+      this.hasDatation.setValue(true);
+      this.datation.setValue(HistoricalDate.parse(work.datation) || null);
+    } else {
+      this.hasDatation.setValue(false);
+      this.datation.reset();
+    }
     this.location.setValue(work.location || null);
     this.hasAccessDate.setValue(work.accessDate ? true : false);
     this.accessDate.setValue(work.accessDate || null);
@@ -229,6 +246,15 @@ export class WorkComponent implements OnInit {
 
   private getWork(): EditedWork {
     const key = this.key.value?.trim() || '';
+
+    let datation: string | null = null;
+    let datationValue: number | null = 0;
+    if (this.hasDatation.value && this.datation.value) {
+      const hd = new HistoricalDate(this.datation.value);
+      datation = hd.toString();
+      datationValue = hd.getSortValue();
+    }
+
     return {
       isContainer: this.isContainer.value,
       id: this._work?.id,
@@ -246,6 +272,8 @@ export class WorkComponent implements OnInit {
       lastPage: this.lastPage.value,
       number: this.number.value?.trim(),
       note: this.note.value?.trim(),
+      datation: datation || undefined,
+      datationValue: datationValue || undefined,
       location: this.location.value?.trim(),
       accessDate: this.hasAccessDate.value ? this.accessDate.value! : undefined,
       keywords: this.keywords.value?.length ? this.keywords.value : undefined,
@@ -268,6 +296,12 @@ export class WorkComponent implements OnInit {
     this.container.setValue(container || null);
     this.container.updateValueAndValidity();
     this.container.markAsDirty();
+  }
+
+  public onDatationChange(datation: HistoricalDateModel | undefined): void {
+    this.datation.setValue(datation || null);
+    this.datation.updateValueAndValidity();
+    this.datation.markAsDirty();
   }
 
   public removeContainer(): void {

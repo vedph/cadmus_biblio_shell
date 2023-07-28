@@ -30,6 +30,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CadmusCoreModule } from '@myrmidon/cadmus-core';
 import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
 import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
+import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { NgToolsModule } from '@myrmidon/ng-tools';
@@ -87,6 +88,7 @@ import { WorkListComponent } from './components/work-list/work-list.component';
     NgToolsModule,
     NgMatToolsModule,
     CadmusCoreModule,
+    CadmusRefsHistoricalDateModule,
     CadmusRefsLookupModule,
     CadmusUiModule,
     CadmusBiblioCoreModule,

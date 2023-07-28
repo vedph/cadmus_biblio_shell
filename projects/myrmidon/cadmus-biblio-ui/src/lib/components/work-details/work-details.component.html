@@ -21,12 +21,13 @@
     in <span class="title">{{ w?.container?.title }}</span>
     <span *ngIf="w?.container?.number">&nbsp;{{ w?.container?.number }}</span>
   </div>
-  <!-- place, number, year(s), page - page, publisher -->
+  <!-- place, number, year(s), page - page, publisher, datation -->
   <div style="margin: 4px">
     {{ work.placePub }} {{ w?.number }}
     {{ work.yearPub + (work.yearPub2 ? "-" + work.yearPub2 : "") }}
     <span *ngIf="w?.firstPage">p. {{ w?.firstPage }} - {{ w?.lastPage }}</span>
     <span *ngIf="work.publisher">&nbsp;({{ work.publisher }})</span>
+    <span *ngIf="work.datation">: {{ work.datation | historicalDate }}</span>
   </div>
   <!-- location, access -->
   <div style="margin: 4px">

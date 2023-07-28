@@ -37,6 +37,8 @@ export interface WorkFilter extends PagingOptions {
   keyword?: string;
   yearPubMin?: number;
   yearPubMax?: number;
+  datationMin?: number;
+  datationMax?: number;
   key?: string;
 }
 
@@ -184,6 +186,12 @@ export class BiblioService {
     }
     if (filter.yearPubMax) {
       httpParams = httpParams.set('yearPubMax', filter.yearPubMax.toString());
+    }
+    if (filter.datationMin) {
+      httpParams = httpParams.set('datationMin', filter.datationMin.toString());
+    }
+    if (filter.datationMax) {
+      httpParams = httpParams.set('datationMax', filter.datationMax.toString());
     }
     if (filter.key) {
       httpParams = httpParams.set('key', filter.key);
