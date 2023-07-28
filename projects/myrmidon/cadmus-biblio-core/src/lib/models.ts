@@ -43,6 +43,8 @@ export interface Container {
   location?: string;
   accessDate?: Date;
   note?: string;
+  datation?: string;
+  datationValue?: number;
   keywords?: Keyword[];
 }
 
