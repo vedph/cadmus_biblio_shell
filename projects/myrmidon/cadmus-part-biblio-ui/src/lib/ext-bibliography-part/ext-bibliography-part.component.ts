@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
-  Validators,
   UntypedFormGroup,
   FormGroup,
 } from '@angular/forms';
@@ -51,6 +50,9 @@ export class ExtBibliographyPartComponent
    */
   @Input()
   public workTagEntries: ThesaurusEntry[] | undefined;
+  // biblio-link-scopes
+  @Input()
+  public scopeEntries: ThesaurusEntry[] | undefined;
 
   constructor(authService: AuthJwtService, formBuilder: FormBuilder) {
     super(authService, formBuilder);
@@ -92,6 +94,13 @@ export class ExtBibliographyPartComponent
       this.workTagEntries = thesauri[key].entries;
     } else {
       this.workTagEntries = undefined;
+    }
+
+    key = 'ext-biblio-link-scopes';
+    if (this.hasThesaurus(key)) {
+      this.scopeEntries = thesauri[key].entries;
+    } else {
+      this.scopeEntries = undefined;
     }
   }
 

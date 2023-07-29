@@ -25,6 +25,15 @@ export interface Keyword {
 }
 
 /**
+ * External ID used for work and container links.
+ */
+export interface ExternalId {
+  sourceId: string;
+  scope: string;
+  value: string;
+}
+
+/**
  * A work container.
  */
 export interface Container {
@@ -46,6 +55,7 @@ export interface Container {
   datation?: string;
   datationValue?: number;
   keywords?: Keyword[];
+  links?: ExternalId[];
 }
 
 /**

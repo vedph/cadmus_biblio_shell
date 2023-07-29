@@ -233,6 +233,17 @@
       (modelChange)="onKeywordsChange($event)"
     ></biblio-work-keywords>
   </div>
+  <div>
+    <!-- links -->
+    <fieldset>
+      <legend>links</legend>
+      <biblio-external-ids
+        [scopeEntries]="scopeEntries"
+        [ids]="work?.links"
+        (idsChange)="onLinksChange($event)"
+      ></biblio-external-ids>
+    </fieldset>
+  </div>
 
   <!-- buttons -->
   <div>

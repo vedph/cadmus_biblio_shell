@@ -1,0 +1,50 @@
+<div>
+  <div>
+    <button type="button" color="primary" mat-flat-button (click)="addId()">
+      <mat-icon>add</mat-icon> ID
+    </button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>scope</th>
+        <th>value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let id of ctlIds.value; let i = index">
+        <td>
+          <button
+            type="button"
+            color="primary"
+            mat-icon-button
+            (click)="editId(id, i)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            type="button"
+            color="warn"
+            mat-icon-button
+            (click)="deleteId(i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+        <td>{{ id.scope }}</td>
+        <td>{{ id.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <mat-expansion-panel [expanded]="editedId" [disabled]="!editedId">
+    <mat-expansion-panel-header
+      >#{{ editedIndex + 1 }}</mat-expansion-panel-header
+    >
+    <biblio-external-id
+      [id]="editedId"
+      (idChange)="saveId($event)"
+      [scopeEntries]="scopeEntries"
+    ></biblio-external-id>
+  </mat-expansion-panel>
+</div>

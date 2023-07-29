@@ -14,6 +14,7 @@ The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used t
 
 ## History
 
+- 2023-07-29: added work and container links.
 - 2023-07-28: added `datation` and `datationValue` to works and containers.
 
 ### 3.0.0

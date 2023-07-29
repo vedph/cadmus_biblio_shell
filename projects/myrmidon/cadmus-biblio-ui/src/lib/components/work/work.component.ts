@@ -16,6 +16,7 @@ import {
   WorkType,
   WorkKeyService,
   BiblioUtilService,
+  ExternalId,
 } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
@@ -59,6 +60,9 @@ export class WorkComponent implements OnInit {
    */
   @Input()
   public langEntries: ThesaurusEntry[] | undefined;
+  // ext-biblio-link-scopes
+  @Input()
+  public scopeEntries: ThesaurusEntry[] | undefined;
 
   @Output()
   public workChange: EventEmitter<EditedWork>;
@@ -88,6 +92,7 @@ export class WorkComponent implements OnInit {
   public hasAccessDate: FormControl<boolean>;
   public accessDate: FormControl<Date | null>;
   public keywords: FormControl<Keyword[]>;
+  public links: FormControl<ExternalId[]>;
 
   public types$: Observable<WorkType[]> | undefined;
 
@@ -130,6 +135,7 @@ export class WorkComponent implements OnInit {
     this.hasAccessDate = formBuilder.control(false, { nonNullable: true });
     this.accessDate = formBuilder.control(null);
     this.keywords = formBuilder.control([], { nonNullable: true });
+    this.links = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       isContainer: this.isContainer,
       type: this.type,
@@ -153,6 +159,7 @@ export class WorkComponent implements OnInit {
       hasAccessDate: this.hasAccessDate,
       accessDate: this.accessDate,
       keywords: this.keywords,
+      links: this.links,
     });
   }
 
@@ -235,6 +242,7 @@ export class WorkComponent implements OnInit {
     this.hasAccessDate.setValue(work.accessDate ? true : false);
     this.accessDate.setValue(work.accessDate || null);
     this.keywords.setValue(work.keywords || []);
+    this.links.setValue(work.links || []);
 
     // if it has a container it can't be a container
     if (work.container) {
@@ -277,6 +285,7 @@ export class WorkComponent implements OnInit {
       location: this.location.value?.trim(),
       accessDate: this.hasAccessDate.value ? this.accessDate.value! : undefined,
       keywords: this.keywords.value?.length ? this.keywords.value : undefined,
+      links: this.links.value?.length ? this.links.value : undefined,
     };
   }
 
@@ -302,6 +311,12 @@ export class WorkComponent implements OnInit {
     this.datation.setValue(datation || null);
     this.datation.updateValueAndValidity();
     this.datation.markAsDirty();
+  }
+
+  public onLinksChange(links: ExternalId[]): void {
+    this.links.setValue(links || []);
+    this.links.updateValueAndValidity();
+    this.links.markAsDirty();
   }
 
   public removeContainer(): void {

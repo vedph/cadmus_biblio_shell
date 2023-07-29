@@ -6,6 +6,7 @@
     <a mat-button routerLink="/home">Cadmus Biblio</a>
     <!-- items menu -->
     <button
+      type="button"
       mat-button
       [matMenuTriggerFor]="itemMenu"
       *ngIf="logged && itemBrowsers"
@@ -22,16 +23,20 @@
     </mat-menu>
     <!-- item menu -->
     <ng-container *ngIf="logged && !itemBrowsers">
-
       <button mat-button routerLink="/items">Items</button>
     </ng-container>
 
     <!-- search menu -->
-    <button mat-button routerLink="/search" *ngIf="logged">Search</button>
+    <button type="button" mat-button routerLink="/search" *ngIf="logged">
+      Search
+    </button>
     <!-- graph menu -->
-    <button mat-button routerLink="/graph" *ngIf="logged">Graph</button>
+    <button type="button" mat-button routerLink="/graph" *ngIf="logged">
+      Graph
+    </button>
     <!-- thesauri menu -->
     <button
+      type="button"
       mat-button
       routerLink="/thesauri"
       *ngIf="
@@ -42,6 +47,7 @@
     </button>
     <!-- bibliography menu -->
     <button
+      type="button"
       mat-button
       routerLink="/biblio"
       *ngIf="
@@ -52,16 +58,16 @@
     </button>
 
     <ng-container *ngIf="logged">
-      <button mat-button routerLink="/demo">Demo</button>
-      <button mat-button routerLink="/works">Works</button>
+      <button type="button" mat-button routerLink="/demo">Demo</button>
+      <button type="button" mat-button routerLink="/works">Works</button>
     </ng-container>
 
     <span class="tb-fill-remaining-space"></span>
 
-     <!-- user -->
-     <div *ngIf="user" fxLayout="row" fxLayoutAlign="start center">
+    <!-- user -->
+    <div *ngIf="user" fxLayout="row" fxLayoutAlign="start center">
       <!-- indicators -->
-      <img [src]="getGravatarUrl(user.email, 32)" [alt]="user.userName" />
+      <img [src]="getGravatarUrl(user.email, 32)" alt="{{ user.userName }}" />
       <mat-icon
         class="small-icon"
         *ngIf="user && user.roles.includes('admin')"
@@ -96,11 +102,11 @@
     </div>
 
     <!-- login -->
-    <button *ngIf="!logged" mat-icon-button routerLink="/login">
+    <button type="button" *ngIf="!logged" mat-icon-button routerLink="/login">
       <mat-icon>login</mat-icon>
     </button>
     <!-- logout -->
-    <button *ngIf="logged" mat-icon-button (click)="logout()">
+    <button type="button" *ngIf="logged" mat-icon-button (click)="logout()">
       <mat-icon>logout</mat-icon>
     </button>
   </mat-toolbar>
@@ -114,8 +120,10 @@
   <div layout="row" layout-align="center center">
     <p>
       Cadmus by
-      <a href="http://www.fusisoft.it" target="_blank">Daniele Fusi</a> -
-      version
+      <a rel="noopener" href="http://www.fusisoft.it" target="_blank"
+        >Daniele Fusi</a
+      >
+      - version {{version}}
     </p>
   </div>
 </footer>

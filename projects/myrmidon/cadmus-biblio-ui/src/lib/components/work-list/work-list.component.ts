@@ -102,6 +102,10 @@ export class WorkListComponent implements OnDestroy {
    */
   @Input()
   public workTagEntries: ThesaurusEntry[] | undefined;
+  // ext-biblio-link-scopes
+  @Input()
+  public scopeEntries: ThesaurusEntry[] | undefined;
+
   /**
    * Emitted when entries have been changed.
    */

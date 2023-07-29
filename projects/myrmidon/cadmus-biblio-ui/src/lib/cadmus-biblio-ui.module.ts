@@ -44,9 +44,13 @@ import { WorkBrowserComponent } from './components/work-browser/work-browser.com
 import { WorkAuthorsComponent } from './components/work-authors/work-authors.component';
 import { WorkKeywordsComponent } from './components/work-keywords/work-keywords.component';
 import { WorkListComponent } from './components/work-list/work-list.component';
+import { ExternalIdsComponent } from './components/external-ids/external-ids.component';
+import { ExternalIdComponent } from './components/external-id/external-id.component';
 
 @NgModule({
   declarations: [
+    ExternalIdComponent,
+    ExternalIdsComponent,
     KeywordPickerComponent,
     WorkAuthorsComponent,
     WorkBrowserComponent,
@@ -95,6 +99,8 @@ import { WorkListComponent } from './components/work-list/work-list.component';
     CadmusBiblioApiModule,
   ],
   exports: [
+    ExternalIdComponent,
+    ExternalIdsComponent,
     KeywordPickerComponent,
     WorkAuthorsComponent,
     WorkBrowserComponent,

@@ -13,6 +13,7 @@ export class PartPageComponent implements OnInit {
   public roleEntries: ThesaurusEntry[] | undefined;
   public langEntries: ThesaurusEntry[] | undefined;
   public workTagEntries: ThesaurusEntry[] | undefined;
+  public scopeEntries: ThesaurusEntry[] | undefined;
   public data?: ExtBibliographyPart;
 
   constructor() {
@@ -41,6 +42,11 @@ export class PartPageComponent implements OnInit {
       { id: 'history', value: 'history of studies' },
       { id: 'method', value: 'methodology' },
       { id: 'algorithm', value: 'algorithms' },
+    ];
+
+    this.scopeEntries = [
+      { id: 'A', value: 'alpha' },
+      { id: 'B', value: 'beta' },
     ];
   }
 

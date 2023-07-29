@@ -38,6 +38,7 @@ export class ExtBibliographyPartFeatureComponent
       'ext-biblio-author-roles',
       'ext-biblio-languages',
       'ext-biblio-work-tags',
+      'ext-biblio-link-scopes'
     ];
   }
 }
