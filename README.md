@@ -2,17 +2,17 @@
 
 Cadmus frontend components for [external bibliography](https://github.com/vedph/cadmus_biblioapi).
 
-Quick Docker image build:
+🐋 Quick Docker image build:
 
 1. update [env.js](src/env.js) version number and `npm run build-lib` (run [publish.bat](publish.bat) if required);
 2. `ng build --configuration=production`;
-3. `docker build . -t vedph2020/cadmus-biblio-shell:3.0.0 -t vedph2020/cadmus-biblio-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-biblio-shell:3.1.0 -t vedph2020/cadmus-biblio-shell:latest` (replace with the current version).
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
 
-The alternative [docker-compose-demo.yml](docker-compose-demo.yml) can be used to build a stack with both the biblio API and a demo Cadmus API.
-
 ## History
+
+### 3.1.0
 
 - 2023-07-29: added work and container links.
 - 2023-07-28: added `datation` and `datationValue` to works and containers.

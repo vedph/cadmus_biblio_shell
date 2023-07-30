@@ -44,6 +44,7 @@
     <biblio-external-id
       [id]="editedId"
       (idChange)="saveId($event)"
+      (close)="closeId()"
       [scopeEntries]="scopeEntries"
     ></biblio-external-id>
   </mat-expansion-panel>
