@@ -12,6 +12,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+- 2023-08-29: updated Angular.
+
 ### 3.1.0
 
 - 2023-07-29: added work and container links.
