@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -29,10 +29,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
-// ELF
-import { devTools } from '@ngneat/elf-devtools';
-import { Actions } from '@ngneat/effects-ng';
 
 // ngx-monaco
 import { MonacoEditorModule } from 'ngx-monaco-editor';
@@ -86,16 +82,6 @@ import { PART_EDITOR_KEYS } from './part-editor-keys';
 import { INDEX_LOOKUP_DEFINITIONS } from './index-lookup-definitions';
 import { ITEM_BROWSER_KEYS } from './item-browser-keys';
 
-// https://ngneat.github.io/elf/docs/dev-tools/
-export function initElfDevTools(actions: Actions) {
-  return () => {
-    devTools({
-      name: 'cadmus-biblio-shell',
-      actionsDispatcher: actions,
-    });
-  };
-}
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -114,124 +100,118 @@ export function initElfDevTools(actions: Actions) {
     BrowserAnimationsModule,
     ReactiveFormsModule,
     ClipboardModule,
-    RouterModule.forRoot(
-      [
-        { path: 'home', component: HomeComponent },
-        { path: 'demo', component: DemoComponent },
-        { path: 'works', component: WorkPageComponent },
-        { path: 'part', component: PartPageComponent },
-        // auth
-        { path: 'login', component: LoginPageComponent },
-        {
-          path: 'reset-password',
-          component: ResetPasswordComponent,
-          canActivate: [AuthJwtGuardService],
-        },
-        {
-          path: 'register-user',
-          component: RegisterUserPageComponent,
-          canActivate: [AuthJwtAdminGuardService],
-        },
-        {
-          path: 'manage-users',
-          component: ManageUsersPageComponent,
-          canActivate: [AuthJwtAdminGuardService],
-        },
-        // cadmus - items
-        {
-          path: 'items/:id',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-item-editor').then(
-              (module) => module.CadmusItemEditorModule
-            ),
-          canActivate: [AuthJwtGuardService],
-          canDeactivate: [PendingChangesGuard],
-        },
-        {
-          path: 'items',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-item-list').then(
-              (module) => module.CadmusItemListModule
-            ),
-          canActivate: [AuthJwtGuardService],
-        },
-        {
-          path: 'search',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-item-search').then(
-              (module) => module.CadmusItemSearchModule
-            ),
-          canActivate: [AuthJwtGuardService],
-        },
-        // cadmus - thesauri
-        {
-          path: 'thesauri/:id',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-thesaurus-editor').then(
-              (module) => module.CadmusThesaurusEditorModule
-            ),
-          canActivate: [EditorGuardService],
-        },
-        {
-          path: 'thesauri',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-thesaurus-list').then(
-              (module) => module.CadmusThesaurusListModule
-            ),
-          canActivate: [EditorGuardService],
-        },
-        // cadmus - parts
-        {
-          path: 'items/:iid/general',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-part-general-pg').then(
-              (module) => module.CadmusPartGeneralPgModule
-            ),
-          canActivate: [AuthJwtGuardService],
-        },
-        // biblio - parts
-        {
-          path: 'items/:iid/biblio',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-part-biblio-pg').then(
-              (module) => module.CadmusPartBiblioPgModule
-            ),
-          canActivate: [AuthJwtGuardService],
-        },
-        // cadmus - graph
-        {
-          path: 'graph',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-graph-pg').then(
-              (module) => module.CadmusGraphPgModule
-            ),
-          canActivate: [AuthJwtGuardService],
-        },
-        // cadmus - preview
-        {
-          path: 'preview',
-          loadChildren: () =>
-            import('@myrmidon/cadmus-preview-pg').then(
-              (module) => module.CadmusPreviewPgModule
-            ),
-          canActivate: [AuthJwtGuardService],
-        },
-        // biblio
-        {
-          path: 'biblio',
-          component: BiblioPageComponent,
-          canActivate: [AuthJwtAdminGuardService],
-        },
-        // home
-        { path: '', redirectTo: 'home', pathMatch: 'full' },
-        // fallback
-        { path: '**', component: HomeComponent },
-      ],
+    RouterModule.forRoot([
+      { path: 'home', component: HomeComponent },
+      { path: 'demo', component: DemoComponent },
+      { path: 'works', component: WorkPageComponent },
+      { path: 'part', component: PartPageComponent },
+      // auth
+      { path: 'login', component: LoginPageComponent },
       {
-        initialNavigation: 'enabledBlocking',
-        useHash: true,
-      }
-    ),
+        path: 'reset-password',
+        component: ResetPasswordComponent,
+        canActivate: [AuthJwtGuardService],
+      },
+      {
+        path: 'register-user',
+        component: RegisterUserPageComponent,
+        canActivate: [AuthJwtAdminGuardService],
+      },
+      {
+        path: 'manage-users',
+        component: ManageUsersPageComponent,
+        canActivate: [AuthJwtAdminGuardService],
+      },
+      // cadmus - items
+      {
+        path: 'items/:id',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-item-editor').then(
+            (module) => module.CadmusItemEditorModule
+          ),
+        canActivate: [AuthJwtGuardService],
+        canDeactivate: [PendingChangesGuard],
+      },
+      {
+        path: 'items',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-item-list').then(
+            (module) => module.CadmusItemListModule
+          ),
+        canActivate: [AuthJwtGuardService],
+      },
+      {
+        path: 'search',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-item-search').then(
+            (module) => module.CadmusItemSearchModule
+          ),
+        canActivate: [AuthJwtGuardService],
+      },
+      // cadmus - thesauri
+      {
+        path: 'thesauri/:id',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-thesaurus-editor').then(
+            (module) => module.CadmusThesaurusEditorModule
+          ),
+        canActivate: [EditorGuardService],
+      },
+      {
+        path: 'thesauri',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-thesaurus-list').then(
+            (module) => module.CadmusThesaurusListModule
+          ),
+        canActivate: [EditorGuardService],
+      },
+      // cadmus - parts
+      {
+        path: 'items/:iid/general',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-part-general-pg').then(
+            (module) => module.CadmusPartGeneralPgModule
+          ),
+        canActivate: [AuthJwtGuardService],
+      },
+      // biblio - parts
+      {
+        path: 'items/:iid/biblio',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-part-biblio-pg').then(
+            (module) => module.CadmusPartBiblioPgModule
+          ),
+        canActivate: [AuthJwtGuardService],
+      },
+      // cadmus - graph
+      {
+        path: 'graph',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-graph-pg').then(
+            (module) => module.CadmusGraphPgModule
+          ),
+        canActivate: [AuthJwtGuardService],
+      },
+      // cadmus - preview
+      {
+        path: 'preview',
+        loadChildren: () =>
+          import('@myrmidon/cadmus-preview-pg').then(
+            (module) => module.CadmusPreviewPgModule
+          ),
+        canActivate: [AuthJwtGuardService],
+      },
+      // biblio
+      {
+        path: 'biblio',
+        component: BiblioPageComponent,
+        canActivate: [AuthJwtAdminGuardService],
+      },
+      // home
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      // fallback
+      { path: '**', component: HomeComponent },
+    ]),
     // material
     MatAutocompleteModule,
     MatButtonModule,
@@ -315,13 +295,6 @@ export function initElfDevTools(actions: Actions) {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthJwtInterceptor,
       multi: true,
-    },
-    // ELF dev tools
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      useFactory: initElfDevTools,
-      deps: [Actions],
     },
   ],
   bootstrap: [AppComponent],

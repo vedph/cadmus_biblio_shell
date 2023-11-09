@@ -12,6 +12,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+### 4.0.0
+
+- 2023-11-09: ⚠️ upgraded to Angular 17.
 - 2023-08-29: updated Angular.
 
 ### 3.1.0
