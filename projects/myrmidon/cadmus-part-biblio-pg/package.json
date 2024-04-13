@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-biblio-pg",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Cadmus - external bibliography part wrapper",
   "keywords": [
     "Cadmus",
@@ -16,7 +16,10 @@
   },
   "peerDependencies": {
     "@angular/common": "^17.0.0",
-    "@angular/core": "^17.0.0"
+    "@angular/core": "^17.0.0",
+    "@myrmidon/cadmus-core": "^8.0.0",
+    "@myrmidon/cadmus-state": "^8.0.0",
+    "@myrmidon/cadmus-ui-pg": "^8.0.0"
   },
   "dependencies": {
     "tslib": "^2.5.0"

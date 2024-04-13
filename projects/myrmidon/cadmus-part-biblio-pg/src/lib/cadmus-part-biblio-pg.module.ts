@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PendingChangesGuard } from '@myrmidon/cadmus-core';
-import { CadmusPartBiblioUiModule, EXT_BIBLIOGRAPHY_PART_TYPEID } from '@myrmidon/cadmus-part-biblio-ui';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CadmusPartBiblioUiModule, EXT_BIBLIOGRAPHY_PART_TYPEID } from '@myrmidon/cadmus-part-biblio-ui';
 
 import { ExtBibliographyPartFeatureComponent } from './ext-bibliography-part-feature/ext-bibliography-part-feature.component';
 
