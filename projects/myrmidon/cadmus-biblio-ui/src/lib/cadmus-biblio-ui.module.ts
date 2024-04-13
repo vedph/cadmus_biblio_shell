@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ClipboardModule } from '@angular/cdk/clipboard'
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 // material
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -27,14 +27,23 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { CadmusCoreModule } from '@myrmidon/cadmus-core';
-import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
-import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
-import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
-import { CadmusUiModule } from '@myrmidon/cadmus-ui';
+// myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+
+// bricks
+import {
+  HistoricalDateComponent,
+  HistoricalDatePipe,
+} from '@myrmidon/cadmus-refs-historical-date';
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+
+// cadmus
+import { CadmusCoreModule } from '@myrmidon/cadmus-core';
+import { CadmusUiModule } from '@myrmidon/cadmus-ui';
+
+import { CadmusBiblioApiModule } from '@myrmidon/cadmus-biblio-api';
+import { CadmusBiblioCoreModule } from '@myrmidon/cadmus-biblio-core';
 
 import { WorkComponent } from './components/work/work.component';
 import { WorkDetailsComponent } from './components/work-details/work-details.component';
@@ -92,8 +101,9 @@ import { ExternalIdComponent } from './components/external-id/external-id.compon
     NgToolsModule,
     NgMatToolsModule,
     CadmusCoreModule,
-    CadmusRefsHistoricalDateModule,
-    CadmusRefsLookupModule,
+    HistoricalDateComponent,
+    HistoricalDatePipe,
+    RefLookupComponent,
     CadmusUiModule,
     CadmusBiblioCoreModule,
     CadmusBiblioApiModule,

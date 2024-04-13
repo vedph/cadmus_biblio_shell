@@ -30,11 +30,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// ngx-monaco
-import { MonacoEditorModule } from 'ngx-monaco-editor';
-// ngx-markdown
-import { MarkdownModule } from 'ngx-markdown';
+// vendor
+import { NgeMonacoModule } from '@cisstech/nge/monaco';
+import { NgeMarkdownModule } from '@cisstech/nge/markdown';
 
+// myrmidon
 import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
 import {
   AuthJwtAdminGuardService,
@@ -46,6 +46,9 @@ import { AuthJwtAdminModule } from '@myrmidon/auth-jwt-admin';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 import { NgxDirtyCheckModule } from '@myrmidon/ngx-dirty-check';
 
+// bricks
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+
 // cadmus
 import { CadmusApiModule, EditorGuardService } from '@myrmidon/cadmus-api';
 import { CadmusCoreModule, PendingChangesGuard } from '@myrmidon/cadmus-core';
@@ -54,7 +57,6 @@ import { CadmusGraphUiModule } from '@myrmidon/cadmus-graph-ui';
 import { CadmusProfileCoreModule } from '@myrmidon/cadmus-profile-core';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { CadmusItemEditorModule } from '@myrmidon/cadmus-item-editor';
 import { CadmusItemListModule } from '@myrmidon/cadmus-item-list';
@@ -236,8 +238,8 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     MatTooltipModule,
     MatToolbarModule,
     // vendors
-    MonacoEditorModule.forRoot(),
-    MarkdownModule.forRoot(),
+    NgeMonacoModule.forRoot({}),
+    NgeMarkdownModule,
     // myrmidon
     NgToolsModule,
     NgMatToolsModule,
@@ -252,7 +254,7 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     CadmusApiModule,
     CadmusCoreModule,
     CadmusProfileCoreModule,
-    CadmusRefsLookupModule,
+    RefLookupComponent,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
