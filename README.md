@@ -12,6 +12,16 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+### 5.1.0
+
+- 2024-05-24:
+  - ⚠️ upgraded to Angular 18 and updated packages, bumping all libraries version numbers to 5.1.0.
+  - replaced HTTP providers using functional providers and removing deprecated Angular HTTP module, e.g.:
+
+    ```ts
+    provideHttpClient(withInterceptors([authJwtInterceptor]))
+    ```
+
 - 2024-04-13: ⚠️ upgraded to [bricks V2](https://github.com/vedph/cadmus-bricks-shell-v2). Library major **version** bumped to 5.
 - 2023-11-18: updated Angular.
 
