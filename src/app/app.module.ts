@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -41,10 +41,10 @@ import {
   AuthJwtGuardService,
   AuthJwtInterceptor,
   AuthJwtLoginModule,
+  authJwtInterceptor,
 } from '@myrmidon/auth-jwt-login';
 import { AuthJwtAdminModule } from '@myrmidon/auth-jwt-admin';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
-import { NgxDirtyCheckModule } from '@myrmidon/ngx-dirty-check';
 
 // bricks
 import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
@@ -243,7 +243,6 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     // myrmidon
     NgToolsModule,
     NgMatToolsModule,
-    NgxDirtyCheckModule,
     AuthJwtLoginModule,
     AuthJwtAdminModule,
     // cadmus
@@ -272,6 +271,7 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     CadmusPartBiblioUiModule,
   ],
   providers: [
+    provideHttpClient(withInterceptors([authJwtInterceptor])),
     EnvServiceProvider,
     // parts and fragments type IDs to editor group keys mappings
     // https://github.com/nrwl/nx/issues/208#issuecomment-384102058
@@ -293,11 +293,11 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     },
     // HTTP interceptor
     // https://medium.com/@ryanchenkie_40935/angular-authentication-using-the-http-client-and-http-interceptors-2f9d1540eb8
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthJwtInterceptor,
-      multi: true,
-    },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthJwtInterceptor,
+    //   multi: true,
+    // },
   ],
   bootstrap: [AppComponent],
 })
