@@ -27,20 +27,15 @@
         (click)="addAuthor()"
         matTooltip="Add a new author"
       >
-        <mat-icon>add_circle</mat-icon> new
+        <mat-icon class="mat-primary">add_circle</mat-icon> new
       </button>
     </div>
 
     <!-- authors array -->
     <div formArrayName="editedAuthors">
-      <div
-        *ngFor="
-          let item of groups;
-          let i = index;
-          let first = first;
-          let last = last
-        "
-      >
+      @for ( item of groups; track item; let i = $index; let first = $first; let
+      last = $last) {
+      <div>
         <!-- child form -->
         <div [formGroupName]="i">
           <!-- child actions -->
@@ -52,7 +47,7 @@
             color="warn"
             (click)="removeAuthor(i)"
           >
-            <mat-icon>remove_circle</mat-icon>
+            <mat-icon class="mat-warn">remove_circle</mat-icon>
           </button>
           <button
             [disabled]="first"
@@ -72,90 +67,70 @@
           >
             <mat-icon>arrow_downward</mat-icon>
           </button>
-
           <!-- child controls -->
           <div class="form-row">
             <!-- last -->
             <mat-form-field>
               <mat-label>last</mat-label>
               <input matInput formControlName="last" />
-              <mat-error
-                *ngIf="
-                  item['controls'].last.errors?.required &&
-                  (item['controls'].last.dirty || item['controls'].last.touched)
-                "
-                >required</mat-error
-              >
-              <mat-error
-                *ngIf="
-                  item['controls'].last.errors?.maxLength &&
-                  (item['controls'].last.dirty || item['controls'].last.touched)
-                "
-                >too long</mat-error
-              >
+              @if ( item['controls'].last.errors?.required &&
+              (item['controls'].last.dirty || item['controls'].last.touched) ) {
+              <mat-error>required</mat-error>
+              } @if ( item['controls'].last.errors?.maxLength &&
+              (item['controls'].last.dirty || item['controls'].last.touched) ) {
+              <mat-error>too long</mat-error>
+              }
             </mat-form-field>
-
             <!-- first -->
             <mat-form-field>
               <mat-label>first</mat-label>
               <input matInput formControlName="first" />
-              <mat-error
-                *ngIf="
-                  item['controls'].first.errors?.required &&
-                  (item['controls'].first.dirty ||
-                    item['controls'].first.touched)
-                "
-                >required</mat-error
-              >
-              <mat-error
-                *ngIf="
-                  item['controls'].first.errors?.maxLength &&
-                  (item['controls'].first.dirty ||
-                    item['controls'].first.touched)
-                "
-                >too long</mat-error
-              >
+              @if ( item['controls'].first.errors?.required &&
+              (item['controls'].first.dirty || item['controls'].first.touched) )
+              {
+              <mat-error>required</mat-error>
+              } @if ( item['controls'].first.errors?.maxLength &&
+              (item['controls'].first.dirty || item['controls'].first.touched) )
+              {
+              <mat-error>too long</mat-error>
+              }
             </mat-form-field>
-
             <!-- suffix -->
             <mat-form-field>
               <mat-label>suffix</mat-label>
               <input matInput formControlName="suffix" />
-              <mat-error
-                *ngIf="
-                  item['controls'].suffix.errors?.maxLength &&
-                  (item['controls'].suffix.dirty ||
-                    item['controls'].suffix.touched)
-                "
-                >too long</mat-error
-              >
+              @if ( item['controls'].suffix.errors?.maxLength &&
+              (item['controls'].suffix.dirty || item['controls'].suffix.touched)
+              ) {
+              <mat-error>too long</mat-error>
+              }
             </mat-form-field>
-
             <!-- role (bound) -->
-            <mat-form-field *ngIf="roleEntries?.length" style="width: 8em">
+            @if (roleEntries?.length) {
+            <mat-form-field>
               <mat-label>role</mat-label>
               <mat-select formControlName="role">
-                <mat-option *ngFor="let e of roleEntries" [value]="e.id">{{
-                  e.value
-                }}</mat-option>
+                @for (e of roleEntries; track e.id) {
+                <mat-option [value]="e.id">{{ e.value }}</mat-option>
+                }
               </mat-select>
             </mat-form-field>
-
+            }
             <!-- role (free) -->
-            <mat-form-field *ngIf="!roleEntries?.length" style="width: 8em">
+            @if (!roleEntries?.length) {
+            <mat-form-field>
               <mat-label>role</mat-label>
               <input matInput formControlName="role" />
-              <mat-error
-                *ngIf="
-                  item['controls'].role.errors?.maxLength &&
-                  (item['controls'].role.dirty || item['controls'].role.touched)
-                "
-                >too long</mat-error
-              >
+              @if ( item['controls'].role.errors?.maxLength &&
+              (item['controls'].role.dirty || item['controls'].role.touched) ) {
+              <mat-error>too long</mat-error>
+              }
             </mat-form-field>
+            }
           </div>
         </div>
       </div>
+      }
     </div>
 
     <!-- buttons -->
@@ -167,7 +142,7 @@
         matTooltip="Discard authors"
         (click)="cancel()"
       >
-        <mat-icon>clear</mat-icon>
+        <mat-icon class="mat-warn">clear</mat-icon>
       </button>
       <button
         type="submit"
@@ -176,7 +151,7 @@
         matTooltip="Accept authors"
         [disabled]="form.invalid"
       >
-        <mat-icon>check_circle</mat-icon>
+        <mat-icon class="mat-primary">check_circle</mat-icon>
       </button>
     </div>
   </mat-expansion-panel>

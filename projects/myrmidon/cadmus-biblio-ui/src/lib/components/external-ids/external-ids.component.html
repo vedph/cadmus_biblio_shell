@@ -1,6 +1,12 @@
 <div>
   <div>
-    <button type="button" color="primary" mat-flat-button (click)="addId()">
+    <button
+      type="button"
+      color="primary"
+      class="mat-primary"
+      mat-flat-button
+      (click)="addId()"
+    >
       <mat-icon>add</mat-icon> ID
     </button>
   </div>
@@ -13,7 +19,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let id of ctlIds.value; let i = index">
+      @for (id of ctlIds.value; track id; let i = $index) {
+      <tr>
         <td>
           <button
             type="button"
@@ -21,7 +28,7 @@
             mat-icon-button
             (click)="editId(id, i)"
           >
-            <mat-icon>edit</mat-icon>
+            <mat-icon class="mat-primary">edit</mat-icon>
           </button>
           <button
             type="button"
@@ -29,12 +36,13 @@
             mat-icon-button
             (click)="deleteId(i)"
           >
-            <mat-icon>delete</mat-icon>
+            <mat-icon class="mat-warn">delete</mat-icon>
           </button>
         </td>
         <td>{{ id.scope }}</td>
         <td>{{ id.value }}</td>
       </tr>
+      }
     </tbody>
   </table>
   <mat-expansion-panel [expanded]="editedId" [disabled]="!editedId">

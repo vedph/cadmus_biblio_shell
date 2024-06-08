@@ -15,9 +15,11 @@
             (itemChange)="onWorkChange($event)"
           ></cadmus-ref-lookup>
           <hr />
-          <div *ngIf="work">
+          @if (work) {
+          <div>
             <pre>{{ work | json }}</pre>
           </div>
+          }
         </div>
 
         <div>
@@ -29,9 +31,11 @@
             (itemChange)="onContainerChange($event)"
           ></cadmus-ref-lookup>
           <hr />
-          <div *ngIf="container">
+          @if (container) {
+          <div>
             <pre>{{ container | json }}</pre>
           </div>
+          }
         </div>
       </mat-tab>
 
@@ -42,9 +46,11 @@
           label="author"
           (itemChange)="onAuthorChange($event)"
         ></cadmus-ref-lookup>
-        <div *ngIf="author">
+        @if (author) {
+        <div>
           <pre>{{ author | json }}</pre>
         </div>
+        }
       </mat-tab>
 
       <!-- work authors -->
@@ -53,9 +59,11 @@
           [roleEntries]="roleEntries"
           (authorsChange)="onAuthorsChange($event)"
         ></biblio-work-authors>
-        <div *ngIf="authors">
+        @if (authors) {
+        <div>
           <pre>{{ authors | json }}</pre>
         </div>
+        }
       </mat-tab>
 
       <!-- keyword picker -->
@@ -64,9 +72,11 @@
           (keywordChange)="onKeywordChange($event)"
         ></biblio-keyword-picker>
         <hr />
-        <div *ngIf="keyword">
+        @if (keyword) {
+        <div>
           <pre>{{ keyword | json }}</pre>
         </div>
+        }
       </mat-tab>
 
       <!-- work keywords -->
@@ -75,9 +85,11 @@
           [langEntries]="langEntries"
           (modelChange)="onKeywordsChange($event)"
         ></biblio-work-keywords>
-        <div *ngIf="keywords">
+        @if (keywords) {
+        <div>
           <pre>{{ keywords | json }}</pre>
         </div>
+        }
       </mat-tab>
 
       <!-- work -->
@@ -86,9 +98,11 @@
           [langEntries]="langEntries"
           (workChange)="onEditedWorkChange($event)"
         ></biblio-work>
-        <div *ngIf="editedWork">
+        @if (editedWork) {
+        <div>
           <pre>{{ editedWork | json }}</pre>
         </div>
+        }
       </mat-tab>
 
       <!-- work filter -->
@@ -98,9 +112,11 @@
           [persisted]="true"
           (filterChange)="onFilterChange($event)"
         ></biblio-work-filter>
-        <div *ngIf="filter">
+        @if (filter) {
+        <div>
           <pre>{{ filter | json }}</pre>
         </div>
+        }
       </mat-tab>
 
       <!-- work details -->

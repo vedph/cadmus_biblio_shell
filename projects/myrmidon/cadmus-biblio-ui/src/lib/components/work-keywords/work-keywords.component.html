@@ -14,13 +14,11 @@
         #lookupAuto="matAutocomplete"
         [displayWith]="keywordToString"
       >
-        <mat-option
-          *ngFor="let k of keywords$ | async"
-          [value]="k"
-          (onSelectionChange)="pickKeyword(k)"
-        >
+        @for (k of keywords$ | async; track k) {
+        <mat-option [value]="k" (onSelectionChange)="pickKeyword(k)">
           {{ keywordToString(k) }}
         </mat-option>
+        }
       </mat-autocomplete>
 
       <mat-form-field>
@@ -40,7 +38,7 @@
           (click)="clearKeyword()"
           [disabled]="!keyword"
         >
-          <mat-icon>clear</mat-icon>
+          <mat-icon class="mat-warn">clear</mat-icon>
         </button>
       </mat-form-field>
       &nbsp;
@@ -51,20 +49,15 @@
         (click)="addKeyword()"
         matTooltip="Add a new keyword"
       >
-        <mat-icon>add_circle</mat-icon>
+        <mat-icon class="mat-primary">add_circle</mat-icon>
       </button>
     </form>
 
     <!-- keywords array -->
     <div formArrayName="keywords">
-      <div
-        *ngFor="
-          let item of groups;
-          let i = index;
-          let first = first;
-          let last = last
-        "
-      >
+      @for ( item of groups; track item; let i = $index; let first = $first; let
+      last = $last) {
+      <div>
         <!-- child form -->
         <div [formGroupName]="i">
           <!-- child actions -->
@@ -76,72 +69,56 @@
             color="warn"
             (click)="removeKeyword(i)"
           >
-            <mat-icon>remove_circle</mat-icon>
+            <mat-icon class="mat-warn">remove_circle</mat-icon>
           </button>
-
           <!-- child controls -->
           <!-- language (bound) -->
-          <mat-form-field *ngIf="langEntries?.length" style="width: 8em">
+          @if (langEntries?.length) {
+          <mat-form-field style="width: 8em">
             <mat-label>language</mat-label>
             <mat-select formControlName="language">
-              <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
-                e.value
-              }}</mat-option>
+              @for (e of langEntries; track e.id) {
+              <mat-option [value]="e.id">{{ e.value }}</mat-option>
+              }
             </mat-select>
-            <mat-error
-              *ngIf="
-                item['controls'].language.errors?.required &&
-                (item['controls'].language.dirty ||
-                  item['controls'].language.touched)
-              "
-              >required</mat-error
-            >
+            @if ( item['controls'].language.errors?.required &&
+            (item['controls'].language.dirty ||
+            item['controls'].language.touched) ) {
+            <mat-error>required</mat-error>
+            }
           </mat-form-field>
-
+          }
           <!-- language (free) -->
-          <mat-form-field *ngIf="!langEntries?.length" style="width: 8em">
+          @if (!langEntries?.length) {
+          <mat-form-field style="width: 8em">
             <mat-label>language</mat-label>
             <input matInput formControlName="language" />
-            <mat-error
-              *ngIf="
-                item['controls'].language.errors?.required &&
-                (item['controls'].language.dirty ||
-                  item['controls'].language.touched)
-              "
-              >required</mat-error
-            >
-            <mat-error
-              *ngIf="
-                item['controls'].language.errors?.maxLength &&
-                (item['controls'].language.dirty ||
-                  item['controls'].language.touched)
-              "
-              >too long</mat-error
-            >
+            @if ( item['controls'].language.errors?.required &&
+            (item['controls'].language.dirty ||
+            item['controls'].language.touched) ) {
+            <mat-error>required</mat-error>
+            } @if ( item['controls'].language.errors?.maxLength &&
+            (item['controls'].language.dirty ||
+            item['controls'].language.touched) ) {
+            <mat-error>too long</mat-error>
+            }
           </mat-form-field>
-
-          &nbsp;
+          } &nbsp;
           <!-- value -->
           <mat-form-field>
             <mat-label>value</mat-label>
             <input matInput formControlName="value" />
-            <mat-error
-              *ngIf="
-                item['controls'].value.errors?.required &&
-                (item['controls'].value.dirty || item['controls'].value.touched)
-              "
-              >required</mat-error
-            >
-            <mat-error
-              *ngIf="
-                item['controls'].value.errors?.maxLength &&
-                (item['controls'].value.dirty || item['controls'].value.touched)
-              "
-              >too long</mat-error
-            >
+            @if ( item['controls'].value.errors?.required &&
+            (item['controls'].value.dirty || item['controls'].value.touched) ) {
+            <mat-error>required</mat-error>
+            } @if ( item['controls'].value.errors?.maxLength &&
+            (item['controls'].value.dirty || item['controls'].value.touched) ) {
+            <mat-error>too long</mat-error>
+            }
           </mat-form-field>
         </div>
       </div>
+      }
     </div>
 
     <!-- buttons -->
@@ -153,7 +130,7 @@
         matTooltip="Discard keywords"
         (click)="cancel()"
       >
-        <mat-icon>clear</mat-icon>
+        <mat-icon class="mat-warn">clear</mat-icon>
       </button>
       <button
         type="submit"
@@ -162,7 +139,7 @@
         matTooltip="Accept keywords"
         [disabled]="form.invalid || form.pristine"
       >
-        <mat-icon>check_circle</mat-icon>
+        <mat-icon class="mat-primary">check_circle</mat-icon>
       </button>
     </div>
   </mat-expansion-panel>

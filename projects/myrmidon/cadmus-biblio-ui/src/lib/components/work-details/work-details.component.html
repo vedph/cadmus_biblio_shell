@@ -1,4 +1,5 @@
-<div *ngIf="work">
+@if (work) {
+<div>
   <!-- type, language, key -->
   <div>
     <span class="boxed">{{ work.type }}</span>
@@ -9,48 +10,64 @@
   </div>
   <!-- authors, title -->
   <div style="margin: 4px">
-    <span class="authors" *ngIf="work.authors?.length">
+    @if (work.authors?.length) {
+    <span class="authors">
       {{ authorsToString(work.authors) }}
     </span>
-    &nbsp;
+    } &nbsp;
     <span class="title">{{ work.title }}</span>
-    <span *ngIf="work.edition" class="sup">&nbsp;{{ work.edition }}</span>
+    @if (work.edition) {
+    <span class="sup">&nbsp;{{ work.edition }}</span>
+    }
   </div>
   <!-- container title, container number -->
-  <div style="margin: 4px" *ngIf="w?.container">
+  @if (w?.container) {
+  <div style="margin: 4px">
     in <span class="title">{{ w?.container?.title }}</span>
-    <span *ngIf="w?.container?.number">&nbsp;{{ w?.container?.number }}</span>
+    @if (w?.container?.number) {
+    <span>&nbsp;{{ w?.container?.number }}</span>
+    }
   </div>
+  }
   <!-- place, number, year(s), page - page, publisher, datation -->
   <div style="margin: 4px">
     {{ work.placePub }} {{ w?.number }}
     {{ work.yearPub + (work.yearPub2 ? "-" + work.yearPub2 : "") }}
-    <span *ngIf="w?.firstPage">p. {{ w?.firstPage }} - {{ w?.lastPage }}</span>
-    <span *ngIf="work.publisher">&nbsp;({{ work.publisher }})</span>
-    <span *ngIf="work.datation">: {{ work.datation | historicalDate }}</span>
+    @if (w?.firstPage) {
+    <span>p. {{ w?.firstPage }} - {{ w?.lastPage }}</span>
+    } @if (work.publisher) {
+    <span>&nbsp;({{ work.publisher }})</span>
+    } @if (work.datation) {
+    <span>: {{ work.datation | historicalDate }}</span>
+    }
   </div>
   <!-- location, access -->
   <div style="margin: 4px">
-    <ng-container [ngSwitch]="work.location?.startsWith('http')">
-      <a *ngSwitchCase="true" [href]="work.location" target="_blank">{{
-        work.location
-      }}</a>
-      <span *ngSwitchDefault>{{ work.location }}</span>
-    </ng-container>
-    <span *ngIf="work.accessDate"
-      >&nbsp;accessed: {{ work.accessDate | date }}</span
-    >
+    @switch (work.location?.startsWith('http')) { @case (true) {
+    <a [href]="work.location" target="_blank">{{ work.location }}</a>
+    } @default {
+    <span>{{ work.location }}</span>
+    } } @if (work.accessDate) {
+    <span>&nbsp;accessed: {{ work.accessDate | date }}</span>
+    }
   </div>
   <!-- keywords -->
-  <div *ngIf="work.keywords?.length" class="keywords">
+  @if (work.keywords?.length) {
+  <div class="keywords">
     <ul>
-      <li *ngFor="let k of work.keywords">{{ k.value }} ({{ k.language }})</li>
+      @for (k of work.keywords; track k) {
+      <li>{{ k.value }} ({{ k.language }})</li>
+      }
     </ul>
   </div>
+  }
   <!-- id -->
   <div style="margin: 4px">
     <span class="literal">{{ work.id }}</span>
   </div>
   <!-- note -->
-  <div *ngIf="work.note" class="note">{{ work.note }}</div>
+  @if (work.note) {
+  <div class="note">{{ work.note }}</div>
+  }
 </div>
+}

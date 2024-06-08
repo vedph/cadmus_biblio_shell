@@ -6,6 +6,8 @@
   [scopeEntries]="scopeEntries"
   (dataChange)="onDataChange($event)"
 ></biblio-ext-bibliography-part>
-<div *ngIf="data">
+@if (data) {
+<div>
   <pre>{{ data | json }}</pre>
 </div>
+}

@@ -1,31 +1,29 @@
 <form [formGroup]="form" (submit)="save()">
   <div>
     <!-- scope (bound) -->
-    <mat-form-field *ngIf="scopeEntries?.length">
+    @if (scopeEntries?.length) {
+    <mat-form-field>
       <mat-label>scope</mat-label>
       <mat-select [formControl]="scope">
-        <mat-option *ngFor="let e of scopeEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of scopeEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="$any(scope).errors?.required && (scope.dirty || scope.touched)"
-        >scope required</mat-error
-      >
+      @if ($any(scope).errors?.required && (scope.dirty || scope.touched)) {
+      <mat-error>scope required</mat-error>
+      }
     </mat-form-field>
+    }
 
     <!-- scope (free) -->
     <mat-form-field>
       <mat-label>scope</mat-label>
       <input matInput [formControl]="scope" />
-      <mat-error
-        *ngIf="$any(scope).errors?.required && (scope.dirty || scope.touched)"
-        >scope required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(scope).errors?.maxLength && (scope.dirty || scope.touched)"
-        >scope too long</mat-error
-      >
+      @if ($any(scope).errors?.required && (scope.dirty || scope.touched)) {
+      <mat-error>scope required</mat-error>
+      } @if ($any(scope).errors?.maxLength && (scope.dirty || scope.touched)) {
+      <mat-error>scope too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
@@ -34,14 +32,11 @@
     <mat-form-field class="long-text">
       <mat-label>value</mat-label>
       <textarea rows="2" matInput [formControl]="value"></textarea>
-      <mat-error
-        *ngIf="$any(value).errors?.required && (value.dirty || value.touched)"
-        >value required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(value).errors?.maxLength && (value.dirty || value.touched)"
-        >value too long</mat-error
-      >
+      @if ($any(value).errors?.required && (value.dirty || value.touched)) {
+      <mat-error>value required</mat-error>
+      } @if ($any(value).errors?.maxLength && (value.dirty || value.touched)) {
+      <mat-error>value too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
@@ -54,7 +49,7 @@
       matTooltip="Discard changes"
       (click)="cancel()"
     >
-      <mat-icon>clear</mat-icon>
+      <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
       type="submit"
@@ -63,7 +58,7 @@
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"
     >
-      <mat-icon>check_circle</mat-icon>
+      <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
   </div>
 </form>

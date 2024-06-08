@@ -8,30 +8,34 @@
       <mat-label>type</mat-label>
       <mat-select [formControl]="type">
         <mat-option [value]="null">(any)</mat-option>
-        <mat-option *ngFor="let t of types" [value]="t.id">{{
-          t.name
-        }}</mat-option>
+        @for (t of types; track t.id) {
+        <mat-option [value]="t.id">{{ t.name }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
   </div>
 
   <div>
     <!-- language (bound) -->
-    <mat-form-field *ngIf="langEntries?.length">
+    @if (langEntries?.length) {
+    <mat-form-field>
       <mat-label>language</mat-label>
       <mat-select [formControl]="language">
         <mat-option [value]="null">(any)</mat-option>
-        <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of langEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
+    }
 
     <!-- language (free) -->
-    <mat-form-field *ngIf="!langEntries?.length" style="width: 5em">
+    @if (!langEntries?.length) {
+    <mat-form-field style="width: 6em">
       <mat-label>language</mat-label>
       <input matInput [formControl]="language" />
     </mat-form-field>
+    }
   </div>
 
   <!-- author -->
@@ -42,7 +46,8 @@
       (itemChange)="onAuthorChange($event)"
     ></cadmus-ref-lookup>
   </div>
-  <div *ngIf="author?.value">
+  @if (author.value) {
+  <div>
     <span class="info">{{ authorToString(author.value) }}</span>
     <button
       type="button"
@@ -51,9 +56,10 @@
       color="warn"
       (click)="clearAuthor()"
     >
-      <mat-icon>clear</mat-icon>
+      <mat-icon class="mat-warn">clear</mat-icon>
     </button>
   </div>
+  }
 
   <!-- lastName -->
   <div>
@@ -110,7 +116,8 @@
       (itemChange)="onContainerChange($event)"
     ></cadmus-ref-lookup>
   </div>
-  <div *ngIf="container?.value">
+  @if (container.value) {
+  <div>
     <span class="info">{{ workToString(container.value) }}</span>
     <button
       type="button"
@@ -119,9 +126,10 @@
       color="warn"
       (click)="clearContainer()"
     >
-      <mat-icon>clear</mat-icon>
+      <mat-icon class="mat-warn">clear</mat-icon>
     </button>
   </div>
+  }
 
   <!-- buttons -->
   <div>
@@ -132,7 +140,7 @@
       matTooltip="Reset all filters"
       (click)="reset()"
     >
-      <mat-icon>clear</mat-icon>
+      <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
       type="submit"
@@ -140,7 +148,7 @@
       mat-icon-button
       matTooltip="Apply filters"
     >
-      <mat-icon>check_circle</mat-icon>
+      <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
   </div>
 </form>

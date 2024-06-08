@@ -1,13 +1,8 @@
 <form [formGroup]="form">
   <div formArrayName="works">
-    <div
-      *ngFor="
-        let item of works.controls;
-        let i = index;
-        let first = first;
-        let last = last
-      "
-    >
+    @for ( item of works.controls; track item; let i = $index; let first =
+    $first; let last = $last) {
+    <div>
       <!-- child form -->
       <div [formGroupName]="i">
         <!-- child actions -->
@@ -19,7 +14,7 @@
           color="primary"
           (click)="viewWorkDetails(entries[i])"
         >
-          <mat-icon>article</mat-icon>
+          <mat-icon class="mat-primary">article</mat-icon>
         </button>
         <button
           type="button"
@@ -36,7 +31,7 @@
           color="warn"
           (click)="removeWork(i)"
         >
-          <mat-icon>remove_circle</mat-icon>
+          <mat-icon class="mat-warn">remove_circle</mat-icon>
         </button>
         <button
           [disabled]="first"
@@ -69,54 +64,51 @@
         {{ entries[i].label }}
         <div class="work-controls">
           <!-- tag (bound) -->
-          <mat-form-field
-            style="grid-area: tag"
-            appearance="fill"
-            *ngIf="workTagEntries?.length"
-          >
+          @if (workTagEntries?.length) {
+          <mat-form-field style="grid-area: tag" appearance="fill">
             <mat-label>tag</mat-label>
             <mat-select formControlName="tag">
-              <mat-option *ngFor="let e of workTagEntries" [value]="e.id">{{
-                e.value
-              }}</mat-option>
+              @for (e of workTagEntries; track e.id) {
+              <mat-option [value]="e.id">{{ e.value }}</mat-option>
+              }
             </mat-select>
-            <mat-error *ngIf="groupHasError(item, 'required')"
-              >tag required</mat-error
-            >
+            @if (groupHasError(item, 'required')) {
+            <mat-error>tag required</mat-error>
+            }
           </mat-form-field>
-
+          }
           <!-- tag (free) -->
-          <mat-form-field
-            style="grid-area: tag"
-            appearance="fill"
-            *ngIf="!workTagEntries?.length"
-          >
+          @if (!workTagEntries?.length) {
+          <mat-form-field style="grid-area: tag" appearance="fill">
             <mat-label>tag</mat-label>
             <input matInput formControlName="tag" />
-            <mat-error *ngIf="groupHasError(item, 'maxLength')"
-              >tag too long</mat-error
-            >
+            @if (groupHasError(item, 'maxLength')) {
+            <mat-error>tag too long</mat-error>
+            }
           </mat-form-field>
-
-          &nbsp;
+          } &nbsp;
           <!-- note -->
           <mat-form-field appearance="fill" style="grid-area: note">
             <mat-label>note</mat-label>
             <input matInput formControlName="note" />
-            <mat-error *ngIf="groupHasError(item, 'maxLength')"
-              >note too long</mat-error
-            >
+            @if (groupHasError(item, 'maxLength')) {
+            <mat-error>note too long</mat-error>
+            }
           </mat-form-field>
         </div>
       </div>
     </div>
+    }
   </div>
 
   <!-- details -->
-  <div gdArea="details" *ngIf="detailWork">
-    <div *ngIf="loadingDetailWork">
+  @if (detailWork) {
+  <div gdArea="details">
+    @if (loadingDetailWork) {
+    <div>
       <mat-spinner [diameter]="24" [strokeWidth]="4"></mat-spinner>
     </div>
+    }
     <mat-expansion-panel [(expanded)]="detailsOpen">
       <mat-expansion-panel-header>
         {{ detailWork | biblioWork }}
@@ -124,6 +116,7 @@
       <biblio-work-details [work]="detailWork"></biblio-work-details>
     </mat-expansion-panel>
   </div>
+  }
 
   <!-- browser -->
   <hr />

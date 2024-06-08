@@ -16,24 +16,29 @@
       <mat-checkbox [formControl]="isContainer">container</mat-checkbox>
       &nbsp;
       <!-- add -->
+      @if (addEnabled) {
       <button
-        *ngIf="addEnabled"
         type="button"
         mat-flat-button
         color="primary"
+        class="mat-primary"
         (click)="addWork()"
       >
         <mat-icon>add_circle</mat-icon> new
       </button>
+      }
     </div>
 
     <!-- progress -->
-    <div *ngIf="loading">
+    @if (loading) {
+    <div>
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </div>
+    }
 
     <!-- table -->
-    <table *ngIf="page$ | async as page" id="work-list">
+    @if (page$ | async; as page) {
+    <table id="work-list">
       <thead>
         <tr>
           <th></th>
@@ -41,13 +46,16 @@
           <th>key</th>
           <th>authors</th>
           <th>title</th>
-          <th fxHide.lt-md *ngIf="!isContainer?.value">container</th>
+          @if (!isContainer.value) {
+          <th fxHide.lt-md>container</th>
+          }
           <th fxHide.lt-md>number</th>
           <th fxHide.lt-md>year</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let w of page.items">
+        @for (w of page.items; track w.id) {
+        <tr>
           <td class="fit-width">
             <button
               type="button"
@@ -56,36 +64,37 @@
               color="primary"
               (click)="viewDetails(w)"
             >
-              <mat-icon>article</mat-icon>
+              <mat-icon class="mat-primary">article</mat-icon>
             </button>
+            @if (pickEnabled) {
             <button
               type="button"
               mat-icon-button
               matTooltip="Pick this work"
-              *ngIf="pickEnabled"
               (click)="pickWork(w)"
             >
               <mat-icon style="color: #3fb5a3">check_circle</mat-icon>
             </button>
+            } @if (editEnabled) {
             <button
               type="button"
               mat-icon-button
               matTooltip="Edit this work"
-              *ngIf="editEnabled"
               (click)="editWork(w)"
             >
               <mat-icon>edit</mat-icon>
             </button>
+            } @if (deleteEnabled) {
             <button
               type="button"
               mat-icon-button
               matTooltip="Delete this work"
-              *ngIf="deleteEnabled"
               color="warn"
               (click)="deleteWork(w)"
             >
-              <mat-icon>delete</mat-icon>
+              <mat-icon class="mat-warn">delete</mat-icon>
             </button>
+            }
           </td>
           <td>
             {{ w.type }}
@@ -99,9 +108,11 @@
           <td>
             {{ w.title }}
           </td>
-          <td fxHide.lt-md *ngIf="!isContainer?.value">
+          @if (!isContainer.value) {
+          <td fxHide.lt-md>
             {{ w.container?.title }}
           </td>
+          }
           <td fxHide.lt-md>
             {{ w.number }}
           </td>
@@ -109,11 +120,14 @@
             {{ w.yearPub ? w.yearPub : "" }}
           </td>
         </tr>
+        }
       </tbody>
     </table>
+    }
 
     <!-- pager -->
-    <div *ngIf="page$ | async as page" style="grid-area: pagination">
+    @if (page$ | async; as page) {
+    <div style="grid-area: pagination">
       <mat-paginator
         [length]="page.total"
         [pageSize]="pageSize"
@@ -123,12 +137,16 @@
         (page)="onPageChange($event)"
       ></mat-paginator>
     </div>
+    }
 
     <!-- details -->
-    <div style="grid-area: details" *ngIf="work" id="work-details">
-      <div *ngIf="loadingWork">
+    @if (work) {
+    <div style="grid-area: details" id="work-details">
+      @if (loadingWork) {
+      <div>
         <mat-spinner [diameter]="24" [strokeWidth]="4"></mat-spinner>
       </div>
+      }
       <mat-expansion-panel [(expanded)]="detailsOpen">
         <mat-expansion-panel-header>
           {{ workToString(work) }}
@@ -136,5 +154,6 @@
         <biblio-work-details [work]="work"></biblio-work-details>
       </mat-expansion-panel>
     </div>
+    }
   </div>
 </div>
