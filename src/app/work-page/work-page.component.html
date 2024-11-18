@@ -11,7 +11,7 @@
       [workTagEntries]="workTagEntries"
       (entriesChange)="onEntriesChange($event)"
     ></biblio-work-list>
-    @if (entries?.length) {
+    @if (entries.length) {
     <div>
       <pre>{{ entries | json }}</pre>
     </div>

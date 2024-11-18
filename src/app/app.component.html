@@ -1,5 +1,5 @@
 <header>
-  <mat-toolbar color="primary" class="mat-primary">
+  <mat-toolbar class="mat-primary">
     <span style="flex: 0 0 60px"
       ><img src="./assets/img/logo-white-40.png" alt="Fusisoft"
     /></span>
@@ -21,7 +21,7 @@
     </mat-menu>
     <!-- item menu -->
     @if (logged && !itemBrowsers) {
-    <button mat-button routerLink="/items">Items</button>
+    <button type="button" mat-button routerLink="/items">Items</button>
     }
 
     <!-- search menu -->
@@ -29,9 +29,9 @@
     <button type="button" mat-button routerLink="/search">Search</button>
     }
     <!-- graph menu -->
-    @if (logged) {
+    <!-- @if (logged) {
     <button type="button" mat-button routerLink="/graph">Graph</button>
-    }
+    } -->
     <!-- thesauri menu -->
     @if ( user && (user.roles.includes('admin') ||
     user.roles.includes('editor')) ) {
@@ -52,7 +52,7 @@
     @if (user) {
     <div fxLayout="row" fxLayoutAlign="start center">
       <!-- indicators -->
-      <img [src]="getGravatarUrl(user.email, 32)" alt="{{ user.userName }}" />
+      <img [src]="user.email | gravatar : 32" alt="{{ user.userName }}" />
       @if (user && user.roles.includes('admin')) {
       <mat-icon class="small-icon" title="admin">build</mat-icon>
       } @if (user && !user.emailConfirmed) {
@@ -69,7 +69,9 @@
       </mat-menu>
       <!-- admin menu -->
       @if (user && user.roles.includes('admin')) {
-      <button mat-button [matMenuTriggerFor]="adminMenu">Admin</button>
+      <button type="button" mat-button [matMenuTriggerFor]="adminMenu">
+        Admin
+      </button>
       }
       <mat-menu #adminMenu>
         <a mat-menu-item routerLink="/manage-users">Manage users</a>

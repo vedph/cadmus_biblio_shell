@@ -39,7 +39,6 @@ import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
 import {
   AuthJwtAdminGuardService,
   AuthJwtGuardService,
-  AuthJwtInterceptor,
   AuthJwtLoginModule,
   authJwtInterceptor,
 } from '@myrmidon/auth-jwt-login';
