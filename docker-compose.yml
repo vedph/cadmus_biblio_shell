@@ -34,12 +34,14 @@ services:
     image: vedph2020/cadmus-biblio-api:6.0.1
     container_name: cadmus-biblio-api
     ports:
-      - 61691:80
+      - 61691:8080
     depends_on:
       - cadmus-biblio-mongo
       - cadmus-biblio-pgsql
     environment:
+      - ASPNETCORE_URLS=http://+:8080
       - CONNECTIONSTRINGS__DEFAULT=mongodb://cadmus-biblio-mongo:27017/{0}
+      - CONNECTIONSTRINGS__AUTH=Server=cadmus-biblio-pgsql;port=5432;Database={0};User Id=postgres;Password=postgres;Include Error Detail=True
       - CONNECTIONSTRINGS__BIBLIO=Server=cadmus-biblio-pgsql;port=5432;Database={0};User Id=postgres;Password=postgres;Include Error Detail=True
       - SEED__BIBLIODELAY=30
       - SERILOG__CONNECTIONSTRING=mongodb://cadmus-biblio-mongo:27017/{0}-log
@@ -49,17 +51,19 @@ services:
 
   # Biblio demo API
   cadmus-biblio-demo-api:
-    image: vedph2020/cadmus-biblio-demo-api:5.1.0
+    image: vedph2020/cadmus-biblio-demo-api:7.0.0
     container_name: cadmus-biblio-demo-api
     ports:
-      - 5034:80
+      - 5034:8080
     depends_on:
       - cadmus-biblio-mongo
       - cadmus-biblio-pgsql
     environment:
+      - ASPNETCORE_URLS=http://+:8080
       - CONNECTIONSTRINGS__DEFAULT=mongodb://cadmus-biblio-mongo:27017/{0}
+      - CONNECTIONSTRINGS__AUTH=Server=cadmus-biblio-pgsql;port=5432;Database={0};User Id=postgres;Password=postgres;Include Error Detail=True
       - CONNECTIONSTRINGS__BIBLIO=Server=cadmus-biblio-pgsql;port=5432;Database={0};User Id=postgres;Password=postgres;Include Error Detail=True
-      - SEED__INDEXDELAY=30
+      - SEED__DELAY=30
       - SERILOG__CONNECTIONSTRING=mongodb://cadmus-biblio-mongo:27017/{0}-log
       - STOCKUSERS__0__PASSWORD=P4ss-W0rd!
     networks:
