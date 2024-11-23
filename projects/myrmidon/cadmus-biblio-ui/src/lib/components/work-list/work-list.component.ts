@@ -59,6 +59,7 @@ import { DialogService } from '@myrmidon/ng-mat-tools';
       transition('closed <=> open', [animate('300ms ease-in')]),
     ]),
   ],
+  standalone: false,
 })
 export class WorkListComponent implements OnDestroy {
   private _entries: WorkListEntry[];

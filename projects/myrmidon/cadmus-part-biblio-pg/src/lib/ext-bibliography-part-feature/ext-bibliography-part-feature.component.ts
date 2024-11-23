@@ -10,6 +10,7 @@ import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
   selector: 'biblio-ext-bibliography-part-feature',
   templateUrl: './ext-bibliography-part-feature.component.html',
   styleUrls: ['./ext-bibliography-part-feature.component.css'],
+  standalone: false,
 })
 export class ExtBibliographyPartFeatureComponent
   extends EditPartFeatureBase
@@ -38,7 +39,7 @@ export class ExtBibliographyPartFeatureComponent
       'ext-biblio-author-roles',
       'ext-biblio-languages',
       'ext-biblio-work-tags',
-      'ext-biblio-link-scopes'
+      'ext-biblio-link-scopes',
     ];
   }
 }

@@ -21,6 +21,7 @@ import { DataPage } from '@myrmidon/ng-tools';
   selector: 'biblio-work-browser',
   templateUrl: './work-browser.component.html',
   styleUrls: ['./work-browser.component.css'],
+  standalone: false,
 })
 export class WorkBrowserComponent implements OnInit {
   private _filter: WorkFilter;

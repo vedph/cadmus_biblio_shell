@@ -4,14 +4,13 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-register-user-page',
   templateUrl: './register-user-page.component.html',
-  styleUrls: ['./register-user-page.component.css']
+  styleUrls: ['./register-user-page.component.css'],
+  standalone: false,
 })
 export class RegisterUserPageComponent implements OnInit {
+  constructor(private _router: Router) {}
 
-  constructor(private _router: Router) { }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public onRegistered(): void {
     this._router.navigate(['/home']);

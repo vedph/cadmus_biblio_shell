@@ -10,6 +10,7 @@ import {
   selector: 'biblio-work-details',
   templateUrl: './work-details.component.html',
   styleUrls: ['./work-details.component.css'],
+  standalone: false,
 })
 export class WorkDetailsComponent {
   private _work: Work | Container | undefined;

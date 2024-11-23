@@ -5,6 +5,7 @@ import { BiblioUtilService } from '../services/biblio-util.service';
 
 @Pipe({
   name: 'biblioAuthor',
+  standalone: false,
 })
 export class BiblioAuthorPipe implements PipeTransform {
   constructor(private _utilService: BiblioUtilService) {}

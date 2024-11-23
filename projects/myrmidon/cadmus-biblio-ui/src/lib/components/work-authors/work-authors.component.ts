@@ -23,6 +23,7 @@ import { AuthorRefLookupService } from '../../services/author-ref-lookup.service
   selector: 'biblio-work-authors',
   templateUrl: './work-authors.component.html',
   styleUrls: ['./work-authors.component.css'],
+  standalone: false,
 })
 export class WorkAuthorsComponent implements OnInit {
   private _updating?: boolean;

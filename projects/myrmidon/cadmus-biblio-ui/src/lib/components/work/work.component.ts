@@ -34,6 +34,7 @@ import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
   selector: 'biblio-work',
   templateUrl: './work.component.html',
   styleUrls: ['./work.component.css'],
+  standalone: false,
 })
 export class WorkComponent implements OnInit {
   private _work: EditedWork | undefined;

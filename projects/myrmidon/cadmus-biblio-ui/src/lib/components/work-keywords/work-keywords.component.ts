@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   UntypedFormControl,
   Validators,
@@ -19,6 +18,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
   selector: 'biblio-work-keywords',
   templateUrl: './work-keywords.component.html',
   styleUrls: ['./work-keywords.component.css'],
+  standalone: false,
 })
 export class WorkKeywordsComponent implements OnInit {
   private _model: Keyword[] | undefined;

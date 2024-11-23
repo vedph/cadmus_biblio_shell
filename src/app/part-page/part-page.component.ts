@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { ExtBibliographyPart, EXT_BIBLIOGRAPHY_PART_TYPEID } from '@myrmidon/cadmus-part-biblio-ui';
+import {
+  ExtBibliographyPart,
+  EXT_BIBLIOGRAPHY_PART_TYPEID,
+} from '@myrmidon/cadmus-part-biblio-ui';
 import { PartIdentity } from '@myrmidon/cadmus-ui';
 
 @Component({
   selector: 'biblio-part-page',
   templateUrl: './part-page.component.html',
   styleUrls: ['./part-page.component.css'],
+  standalone: false,
 })
 export class PartPageComponent implements OnInit {
   public identity: PartIdentity;

@@ -27,6 +27,7 @@ import { NgToolsValidators } from '@myrmidon/ng-tools';
   selector: 'biblio-ext-bibliography-part',
   templateUrl: './ext-bibliography-part.component.html',
   styleUrls: ['./ext-bibliography-part.component.css'],
+  standalone: false,
 })
 export class ExtBibliographyPartComponent
   extends ModelEditorComponentBase<ExtBibliographyPart>

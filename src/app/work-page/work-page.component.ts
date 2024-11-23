@@ -5,7 +5,8 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 @Component({
   selector: 'biblio-work-page',
   templateUrl: './work-page.component.html',
-  styleUrls: ['./work-page.component.css']
+  styleUrls: ['./work-page.component.css'],
+  standalone: false,
 })
 export class WorkPageComponent implements OnInit {
   public roleEntries: ThesaurusEntry[];
@@ -39,8 +40,7 @@ export class WorkPageComponent implements OnInit {
     ];
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public onEntriesChange(entries: WorkListEntry[]): void {
     this.entries = entries;

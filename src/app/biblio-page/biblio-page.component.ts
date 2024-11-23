@@ -8,6 +8,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
   selector: 'cadmus-biblio-page',
   templateUrl: './biblio-page.component.html',
   styleUrls: ['./biblio-page.component.scss'],
+  standalone: false,
 })
 export class BiblioPageComponent {
   public langEntries: ThesaurusEntry[] | undefined;

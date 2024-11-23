@@ -22,6 +22,7 @@ const WORK_FILTER_KEY = 'cadmus-biblio-ui.work-filter';
   selector: 'biblio-work-filter',
   templateUrl: './work-filter.component.html',
   styleUrls: ['./work-filter.component.css'],
+  standalone: false,
 })
 export class WorkFilterComponent implements OnInit {
   private _filter$: BehaviorSubject<WorkFilter>;

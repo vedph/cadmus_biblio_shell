@@ -15,6 +15,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
   selector: 'biblio-external-id',
   templateUrl: './external-id.component.html',
   styleUrls: ['./external-id.component.css'],
+  standalone: false,
 })
 export class ExternalIdComponent implements OnInit {
   private _id: ExternalId | undefined;

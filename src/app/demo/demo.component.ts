@@ -7,13 +7,17 @@ import {
   Work,
   WorkAuthor,
 } from '@myrmidon/cadmus-biblio-core';
-import { AuthorRefLookupService, WorkRefLookupService } from '@myrmidon/cadmus-biblio-ui';
+import {
+  AuthorRefLookupService,
+  WorkRefLookupService,
+} from '@myrmidon/cadmus-biblio-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 @Component({
   selector: 'biblio-demo',
   templateUrl: './demo.component.html',
   styleUrls: ['./demo.component.css'],
+  standalone: false,
 })
 export class DemoComponent implements OnInit {
   public work: Work | undefined;
@@ -35,8 +39,10 @@ export class DemoComponent implements OnInit {
 
   public detWork: Work | Container | undefined;
 
-  constructor(public authorLookupService: AuthorRefLookupService,
-    public workLookupService: WorkRefLookupService) {
+  constructor(
+    public authorLookupService: AuthorRefLookupService,
+    public workLookupService: WorkRefLookupService
+  ) {
     this.roleEntries = [
       { id: '-', value: '---' },
       { id: 'trs', value: 'translator' },
