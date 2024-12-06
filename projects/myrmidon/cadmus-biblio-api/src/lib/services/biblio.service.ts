@@ -11,7 +11,7 @@ import {
   Work,
   WorkInfo,
 } from '@myrmidon/cadmus-biblio-core';
-import { DataPage, EnvService, ErrorService } from '@myrmidon/ng-tools';
+import { DataPage, EnvService, ErrorService } from '@myrmidon/ngx-tools';
 
 export interface AuthorFilter extends PagingOptions {
   last?: string;

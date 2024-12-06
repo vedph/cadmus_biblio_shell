@@ -27,10 +27,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// myrmidon
-import { NgToolsModule } from '@myrmidon/ng-tools';
-import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
-
 // bricks
 import {
   HistoricalDateComponent,
@@ -98,8 +94,6 @@ import { ExternalIdComponent } from './components/external-id/external-id.compon
     MatTooltipModule,
     MatToolbarModule,
     // cadmus
-    NgToolsModule,
-    NgMatToolsModule,
     CadmusCoreModule,
     HistoricalDateComponent,
     HistoricalDatePipe,

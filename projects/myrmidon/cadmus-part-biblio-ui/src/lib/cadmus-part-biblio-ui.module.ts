@@ -25,9 +25,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// myrmidon
-import { AuthJwtLoginModule } from '@myrmidon/auth-jwt-login';
-
 // cadmus
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 
@@ -66,7 +63,6 @@ import { ExtBibliographyPartComponent } from './ext-bibliography-part/ext-biblio
     MatTooltipModule,
     MatToolbarModule,
     // Cadmus
-    AuthJwtLoginModule,
     CadmusUiModule,
     CadmusBiblioCoreModule,
     CadmusBiblioApiModule,

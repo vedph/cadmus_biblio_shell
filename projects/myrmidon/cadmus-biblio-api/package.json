@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-biblio-api",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "description": "Cadmus - bibliographic API services",
   "keywords": [
     "Cadmus",
@@ -17,7 +17,7 @@
   "peerDependencies": {
     "@angular/common": "^19.0.0",
     "@angular/core": "^19.0.0",
-    "@myrmidon/ng-tools": "^4.0.0"
+    "@myrmidon/ngx-tools": "^0.0.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"

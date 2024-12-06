@@ -36,7 +36,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { DialogService } from '@myrmidon/ng-mat-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
 
 /**
  * A list of picked bibliographic entries.

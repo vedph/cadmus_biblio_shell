@@ -11,7 +11,7 @@ import {
   WorkType,
 } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { LocalStorageService } from '@myrmidon/ng-tools';
+import { LocalStorageService } from '@myrmidon/ngx-tools';
 
 import { AuthorRefLookupService } from '../../services/author-ref-lookup.service';
 import { WorkRefLookupService } from '../../services/work-ref-lookup.service';

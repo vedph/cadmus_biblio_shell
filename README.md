@@ -12,6 +12,12 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## History
 
+### 7.0.0
+
+- 2024-12-06:
+  - ⚠️ upgraded to new core dependencies.
+  - M3 theme.
+
 ### 6.0.0
 
 - 2024-11-19: ⚠️ upgraded to .NET 9.

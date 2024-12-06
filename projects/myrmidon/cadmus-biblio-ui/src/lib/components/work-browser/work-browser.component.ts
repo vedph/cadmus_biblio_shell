@@ -15,7 +15,7 @@ import {
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { DataPage } from '@myrmidon/ng-tools';
+import { DataPage } from '@myrmidon/ngx-tools';
 
 @Component({
   selector: 'biblio-work-browser',

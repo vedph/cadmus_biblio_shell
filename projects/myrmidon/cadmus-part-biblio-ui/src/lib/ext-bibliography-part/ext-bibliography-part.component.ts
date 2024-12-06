@@ -16,7 +16,7 @@ import {
   ExtBibliographyPart,
   EXT_BIBLIOGRAPHY_PART_TYPEID,
 } from '../ext-bibliography-part';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 /**
  * ExtBibliography editor component.
@@ -60,7 +60,7 @@ export class ExtBibliographyPartComponent
     this.initialWorks = [];
     // form
     this.works = formBuilder.control([], {
-      validators: [NgToolsValidators.strictMinLengthValidator(1)],
+      validators: [NgxToolsValidators.strictMinLengthValidator(1)],
       nonNullable: true,
     });
   }

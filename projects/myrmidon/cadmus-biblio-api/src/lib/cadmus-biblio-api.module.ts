@@ -1,14 +1,10 @@
 import { NgModule } from '@angular/core';
-import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
+import { EnvServiceProvider } from '@myrmidon/ngx-tools';
 
 @NgModule({
   declarations: [],
-  imports: [
-    NgToolsModule
-  ],
+  imports: [],
   exports: [],
-  providers: [
-    EnvServiceProvider
-  ]
+  providers: [EnvServiceProvider],
 })
 export class CadmusBiblioApiModule {}
