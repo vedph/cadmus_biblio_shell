@@ -4,19 +4,37 @@ import {
   FormBuilder,
   UntypedFormGroup,
   FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
-import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { MatIcon } from '@angular/material/icon';
+import {
+  MatCard,
+  MatCardHeader,
+  MatCardAvatar,
+  MatCardTitle,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+
+import {
+  EditedObject,
+  ModelEditorComponentBase,
+  CloseSaveButtonsComponent,
+} from '@myrmidon/cadmus-ui';
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
-import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
+
+import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
 
 import {
   ExtBibliographyPart,
   EXT_BIBLIOGRAPHY_PART_TYPEID,
 } from '../ext-bibliography-part';
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { WorkListComponent } from '@myrmidon/cadmus-biblio-ui';
 
 /**
  * ExtBibliography editor component.
@@ -27,7 +45,19 @@ import { NgxToolsValidators } from '@myrmidon/ngx-tools';
   selector: 'biblio-ext-bibliography-part',
   templateUrl: './ext-bibliography-part.component.html',
   styleUrls: ['./ext-bibliography-part.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardAvatar,
+    MatIcon,
+    MatCardTitle,
+    MatCardContent,
+    MatCardActions,
+    CloseSaveButtonsComponent,
+    WorkListComponent,
+  ],
 })
 export class ExtBibliographyPartComponent
   extends ModelEditorComponentBase<ExtBibliographyPart>

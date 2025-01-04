@@ -123,7 +123,7 @@
     <div>
       @if (hasDatation.value) {
       <cadmus-refs-historical-date
-        [date]="datation.value"
+        [date]="datation.value || undefined"
         (dateChange)="onDatationChange($event)"
       ></cadmus-refs-historical-date>
       }
@@ -142,7 +142,7 @@
         [service]="lookupService"
         [baseFilter]="{ container: true }"
         (itemChange)="onContainerChange($event)"
-      ></cadmus-ref-lookup>
+      />
       @if (container.value) {
       <button
         style="margin-top: 20px"
@@ -210,7 +210,7 @@
     <mat-checkbox [formControl]="hasAccessDate">access date</mat-checkbox>
     &nbsp;
     <!-- accessDate -->
-    <mat-form-field style="width: 12em">
+    <mat-form-field>
       <mat-label>access date</mat-label>
       <input matInput [matDatepicker]="picker" [formControl]="accessDate" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -223,7 +223,7 @@
       [langEntries]="langEntries"
       [model]="keywords.value"
       (modelChange)="onKeywordsChange($event)"
-    ></biblio-work-keywords>
+    />
   </div>
   <div>
     <!-- links -->
@@ -233,7 +233,7 @@
         [scopeEntries]="scopeEntries"
         [ids]="links.value"
         (idsChange)="onLinksChange($event)"
-      ></biblio-external-ids>
+      />
     </fieldset>
   </div>
 

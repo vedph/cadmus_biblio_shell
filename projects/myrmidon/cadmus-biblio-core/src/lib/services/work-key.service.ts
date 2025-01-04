@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { Container, WorkAuthor } from '../models';
 
 @Injectable({
@@ -56,6 +57,6 @@ export class WorkKeyService {
     sb.push((work.yearPub || 0).toString());
 
     const key = sb.join('');
-    return key.length > 300? key.substring(0, 300) : key;
+    return key.length > 300 ? key.substring(0, 300) : key;
   }
 }

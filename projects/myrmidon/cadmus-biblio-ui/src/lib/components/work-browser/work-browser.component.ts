@@ -1,9 +1,30 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
-import { ViewportScroller } from '@angular/common';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
+import { ViewportScroller, AsyncPipe } from '@angular/common';
+import {
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
+
+import { DataPage } from '@myrmidon/ngx-tools';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   BiblioUtilService,
@@ -12,16 +33,31 @@ import {
   WorkAuthor,
   WorkInfo,
 } from '@myrmidon/cadmus-biblio-core';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { BiblioService } from '@myrmidon/cadmus-biblio-api';
-import { FormBuilder, FormControl } from '@angular/forms';
-import { DataPage } from '@myrmidon/ngx-tools';
+
+import { WorkFilterComponent } from '../work-filter/work-filter.component';
+import { WorkDetailsComponent } from '../work-details/work-details.component';
 
 @Component({
   selector: 'biblio-work-browser',
   templateUrl: './work-browser.component.html',
   styleUrls: ['./work-browser.component.css'],
-  standalone: false,
+  imports: [
+    WorkFilterComponent,
+    MatCheckbox,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButton,
+    MatIcon,
+    MatProgressBar,
+    MatIconButton,
+    MatTooltip,
+    MatPaginator,
+    MatProgressSpinner,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    WorkDetailsComponent,
+    AsyncPipe,
+  ],
 })
 export class WorkBrowserComponent implements OnInit {
   private _filter: WorkFilter;

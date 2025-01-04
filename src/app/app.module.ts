@@ -37,7 +37,6 @@ import { NgeMarkdownModule } from '@cisstech/nge/markdown';
 // myrmidon
 import {
   EllipsisPipe,
-  EnvServiceProvider,
   FlatLookupPipe,
   SafeHtmlPipe,
 } from '@myrmidon/ngx-tools';
@@ -57,25 +56,8 @@ import {
 import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
 
 // cadmus
-import { CadmusApiModule, EditorGuardService } from '@myrmidon/cadmus-api';
-import { CadmusCoreModule, PendingChangesGuard } from '@myrmidon/cadmus-core';
-import { CadmusGraphPgModule } from '@myrmidon/cadmus-graph-pg';
-import { CadmusGraphUiModule } from '@myrmidon/cadmus-graph-ui';
-import { CadmusProfileCoreModule } from '@myrmidon/cadmus-profile-core';
-import { CadmusStateModule } from '@myrmidon/cadmus-state';
-import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-import { CadmusItemEditorModule } from '@myrmidon/cadmus-item-editor';
-import { CadmusItemListModule } from '@myrmidon/cadmus-item-list';
-import { CadmusItemSearchModule } from '@myrmidon/cadmus-item-search';
-import { CadmusThesaurusEditorModule } from '@myrmidon/cadmus-thesaurus-editor';
-import { CadmusThesaurusListModule } from '@myrmidon/cadmus-thesaurus-list';
-import { CadmusThesaurusUiModule } from '@myrmidon/cadmus-thesaurus-ui';
-
-import { CadmusBiblioCoreModule } from 'projects/myrmidon/cadmus-biblio-core/src/public-api';
-import { CadmusBiblioApiModule } from 'projects/myrmidon/cadmus-biblio-api/src/public-api';
-import { CadmusBiblioUiModule } from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
-import { CadmusPartBiblioUiModule } from 'projects/myrmidon/cadmus-part-biblio-ui/src/public-api';
+import { EditorGuardService } from '@myrmidon/cadmus-api';
+import { PendingChangesGuard } from '@myrmidon/cadmus-core';
 
 import { AppComponent } from './app.component';
 import { BiblioPageComponent } from './biblio-page/biblio-page.component';
@@ -90,6 +72,17 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { PART_EDITOR_KEYS } from './part-editor-keys';
 import { INDEX_LOOKUP_DEFINITIONS } from './index-lookup-definitions';
 import { ITEM_BROWSER_KEYS } from './item-browser-keys';
+import { ExtBibliographyPartComponent } from 'projects/myrmidon/cadmus-part-biblio-ui/src/public-api';
+import {
+  KeywordPickerComponent,
+  WorkAuthorsComponent,
+  WorkBrowserComponent,
+  WorkComponent,
+  WorkDetailsComponent,
+  WorkFilterComponent,
+  WorkKeywordsComponent,
+  WorkListComponent,
+} from 'projects/myrmidon/cadmus-biblio-ui/src/public-api';
 
 @NgModule({
   declarations: [
@@ -134,43 +127,43 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
       // cadmus - items
       {
         path: 'items/:id',
-        loadChildren: () =>
+        loadComponent: () =>
           import('@myrmidon/cadmus-item-editor').then(
-            (module) => module.CadmusItemEditorModule
+            (module) => module.ItemEditorComponent
           ),
         canActivate: [AuthJwtGuardService],
         canDeactivate: [PendingChangesGuard],
       },
       {
         path: 'items',
-        loadChildren: () =>
+        loadComponent: () =>
           import('@myrmidon/cadmus-item-list').then(
-            (module) => module.CadmusItemListModule
+            (module) => module.ItemListComponent
           ),
         canActivate: [AuthJwtGuardService],
       },
       {
         path: 'search',
-        loadChildren: () =>
+        loadComponent: () =>
           import('@myrmidon/cadmus-item-search').then(
-            (module) => module.CadmusItemSearchModule
+            (module) => module.ItemSearchComponent
           ),
         canActivate: [AuthJwtGuardService],
       },
       // cadmus - thesauri
       {
         path: 'thesauri/:id',
-        loadChildren: () =>
+        loadComponent: () =>
           import('@myrmidon/cadmus-thesaurus-editor').then(
-            (module) => module.CadmusThesaurusEditorModule
+            (module) => module.ThesaurusEditorFeatureComponent
           ),
         canActivate: [EditorGuardService],
       },
       {
         path: 'thesauri',
-        loadChildren: () =>
+        loadComponent: () =>
           import('@myrmidon/cadmus-thesaurus-list').then(
-            (module) => module.CadmusThesaurusListModule
+            (module) => module.ThesaurusListComponent
           ),
         canActivate: [EditorGuardService],
       },
@@ -192,12 +185,21 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
           ),
         canActivate: [AuthJwtGuardService],
       },
+      // cadmus - flags
+      {
+        path: 'flags',
+        loadComponent: () =>
+          import('@myrmidon/cadmus-flags-pg').then(
+            (module) => module.FlagsEditorFeatureComponent
+          ),
+        canActivate: [AuthJwtGuardService],
+      },
       // cadmus - graph
       {
         path: 'graph',
-        loadChildren: () =>
-          import('@myrmidon/cadmus-graph-pg').then(
-            (module) => module.CadmusGraphPgModule
+        loadComponent: () =>
+          import('@myrmidon/cadmus-graph-pg-ex').then(
+            (module) => module.GraphEditorExFeatureComponent
           ),
         canActivate: [AuthJwtGuardService],
       },
@@ -256,33 +258,19 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     UserListComponent,
     GravatarPipe,
     // cadmus
-    CadmusCoreModule,
-    CadmusItemEditorModule,
-    CadmusUiModule,
-    CadmusUiPgModule,
-    CadmusApiModule,
-    CadmusCoreModule,
-    CadmusProfileCoreModule,
     RefLookupComponent,
-    CadmusStateModule,
-    CadmusUiModule,
-    CadmusUiPgModule,
-    CadmusGraphPgModule,
-    CadmusGraphUiModule,
-    CadmusItemListModule,
-    CadmusItemSearchModule,
-    CadmusThesaurusEditorModule,
-    CadmusThesaurusListModule,
-    CadmusThesaurusUiModule,
-    // biblio
-    CadmusBiblioCoreModule,
-    CadmusBiblioApiModule,
-    CadmusBiblioUiModule,
-    CadmusPartBiblioUiModule,
+    ExtBibliographyPartComponent,
+    KeywordPickerComponent,
+    WorkKeywordsComponent,
+    WorkAuthorsComponent,
+    WorkListComponent,
+    WorkFilterComponent,
+    WorkComponent,
+    WorkBrowserComponent,
+    WorkDetailsComponent
   ],
   providers: [
     provideHttpClient(withInterceptors([authJwtInterceptor])),
-    EnvServiceProvider,
     // parts and fragments type IDs to editor group keys mappings
     // https://github.com/nrwl/nx/issues/208#issuecomment-384102058
     // inject like: @Inject('partEditorKeys') partEditorKeys: PartEditorKeys

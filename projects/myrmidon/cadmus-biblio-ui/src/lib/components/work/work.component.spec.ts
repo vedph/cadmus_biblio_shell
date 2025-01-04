@@ -8,8 +8,8 @@ describe('WorkComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WorkComponent ]
-    })
+    imports: [WorkComponent]
+})
     .compileComponents();
   });
 

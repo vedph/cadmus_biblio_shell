@@ -17,8 +17,7 @@
         [item]="author"
         label="author"
         (itemChange)="pickAuthor($event)"
-      >
-      </cadmus-ref-lookup>
+      />
 
       <button
         type="button"
@@ -117,7 +116,7 @@
             </mat-form-field>
             }
             <!-- role (free) -->
-            @if (!roleEntries?.length) {
+            @else {
             <mat-form-field>
               <mat-label>role</mat-label>
               <input matInput formControlName="role" />

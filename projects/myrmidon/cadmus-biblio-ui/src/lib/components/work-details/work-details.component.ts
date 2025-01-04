@@ -1,4 +1,8 @@
 import { Component, Input } from '@angular/core';
+import { DatePipe } from '@angular/common';
+
+import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
+
 import {
   BiblioUtilService,
   Container,
@@ -10,7 +14,7 @@ import {
   selector: 'biblio-work-details',
   templateUrl: './work-details.component.html',
   styleUrls: ['./work-details.component.css'],
-  standalone: false,
+  imports: [DatePipe, HistoricalDatePipe],
 })
 export class WorkDetailsComponent {
   private _work: Work | Container | undefined;

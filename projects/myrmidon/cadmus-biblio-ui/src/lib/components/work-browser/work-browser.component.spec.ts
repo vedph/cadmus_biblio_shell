@@ -8,8 +8,8 @@ describe('WorkBrowserComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WorkBrowserComponent ]
-    })
+    imports: [WorkBrowserComponent]
+})
     .compileComponents();
   });
 

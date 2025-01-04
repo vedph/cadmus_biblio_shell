@@ -8,8 +8,8 @@ describe('KeywordPickerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ KeywordPickerComponent ]
-    })
+    imports: [KeywordPickerComponent]
+})
     .compileComponents();
   });
 

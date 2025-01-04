@@ -8,8 +8,8 @@ describe('BiblioPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BiblioPageComponent ]
-    })
+    declarations: [BiblioPageComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(BiblioPageComponent);

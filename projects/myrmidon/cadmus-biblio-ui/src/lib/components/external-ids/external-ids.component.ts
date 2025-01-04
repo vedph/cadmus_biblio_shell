@@ -9,14 +9,30 @@ import {
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
+
 import { ExternalId } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+
+import { ExternalIdComponent } from '../external-id/external-id.component';
 
 @Component({
   selector: 'biblio-external-ids',
   templateUrl: './external-ids.component.html',
   styleUrls: ['./external-ids.component.css'],
-  standalone: false,
+  imports: [
+    MatButton,
+    MatIcon,
+    MatIconButton,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    ExternalIdComponent,
+  ],
 })
 export class ExternalIdsComponent implements OnInit, OnDestroy {
   private _sub?: Subscription;

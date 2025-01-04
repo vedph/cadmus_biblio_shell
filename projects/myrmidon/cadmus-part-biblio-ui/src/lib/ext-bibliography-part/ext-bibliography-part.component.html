@@ -13,14 +13,14 @@
         [workTagEntries]="workTagEntries"
         [entries]="initialWorks"
         (entriesChange)="onEntriesChange($event)"
-      ></biblio-work-list>
+      />
     </mat-card-content>
     <mat-card-actions>
       <cadmus-close-save-buttons
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

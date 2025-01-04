@@ -4,7 +4,18 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
+
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
 import { ExternalId } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
@@ -15,7 +26,19 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
   selector: 'biblio-external-id',
   templateUrl: './external-id.component.html',
   styleUrls: ['./external-id.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class ExternalIdComponent implements OnInit {
   private _id: ExternalId | undefined;

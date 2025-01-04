@@ -5,9 +5,26 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+  MatExpansionPanelDescription,
+} from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Author, WorkAuthor } from '@myrmidon/cadmus-biblio-core';
@@ -23,7 +40,25 @@ import { AuthorRefLookupService } from '../../services/author-ref-lookup.service
   selector: 'biblio-work-authors',
   templateUrl: './work-authors.component.html',
   styleUrls: ['./work-authors.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatIcon,
+    MatExpansionPanelDescription,
+    RefLookupComponent,
+    MatButton,
+    MatTooltip,
+    MatIconButton,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    MatSelect,
+    MatOption,
+  ],
 })
 export class WorkAuthorsComponent implements OnInit {
   private _updating?: boolean;
@@ -129,10 +164,10 @@ export class WorkAuthorsComponent implements OnInit {
   }
 
   //#region Authors
-  public pickAuthor(author: Author): void {
-    this.author = author;
+  public pickAuthor(author: unknown): void {
+    this.author = author as Author;
     const wa: WorkAuthor = {
-      ...author,
+      ...this.author,
       ordinal: this.editedAuthors.length + 1,
     };
     this.addAuthor(wa);

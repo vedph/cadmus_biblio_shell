@@ -8,8 +8,8 @@ describe('ExternalIdComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ExternalIdComponent]
-    });
+    imports: [ExternalIdComponent]
+});
     fixture = TestBed.createComponent(ExternalIdComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

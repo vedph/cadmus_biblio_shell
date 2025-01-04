@@ -8,8 +8,8 @@ describe('ExtBibliographyPartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ExtBibliographyPartComponent ]
-    })
+    imports: [ExtBibliographyPartComponent]
+})
     .compileComponents();
   });
 

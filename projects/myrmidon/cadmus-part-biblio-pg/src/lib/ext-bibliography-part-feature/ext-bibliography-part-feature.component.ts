@@ -5,12 +5,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
 import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
+import { ExtBibliographyPartComponent } from '@myrmidon/cadmus-part-biblio-ui';
 
 @Component({
   selector: 'biblio-ext-bibliography-part-feature',
   templateUrl: './ext-bibliography-part-feature.component.html',
   styleUrls: ['./ext-bibliography-part-feature.component.css'],
-  standalone: false,
+  imports: [CurrentItemBarComponent, ExtBibliographyPartComponent],
 })
 export class ExtBibliographyPartFeatureComponent
   extends EditPartFeatureBase

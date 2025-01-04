@@ -9,5 +9,3 @@ export * from './lib/pipes/biblio-work.pipe';
 
 export * from './lib/services/biblio-util.service';
 export * from './lib/services/work-key.service';
-
-export * from './lib/cadmus-biblio-core.module';

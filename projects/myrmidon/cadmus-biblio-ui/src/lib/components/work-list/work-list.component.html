@@ -60,7 +60,6 @@
           <mat-icon>content_copy</mat-icon>
         </button>
         <!-- label -->
-        &nbsp;
         {{ entries[i].label }}
         <div class="work-controls">
           <!-- tag (bound) -->
@@ -78,7 +77,7 @@
           </mat-form-field>
           }
           <!-- tag (free) -->
-          @if (!workTagEntries?.length) {
+          @else {
           <mat-form-field style="grid-area: tag" appearance="fill">
             <mat-label>tag</mat-label>
             <input matInput formControlName="tag" />
@@ -86,7 +85,7 @@
             <mat-error>tag too long</mat-error>
             }
           </mat-form-field>
-          } &nbsp;
+          }
           <!-- note -->
           <mat-form-field appearance="fill" style="grid-area: note">
             <mat-label>note</mat-label>

@@ -1,8 +1,27 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
+import { LocalStorageService } from '@myrmidon/ngx-tools';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService, WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   Author,
@@ -10,8 +29,6 @@ import {
   Container,
   WorkType,
 } from '@myrmidon/cadmus-biblio-core';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { LocalStorageService } from '@myrmidon/ngx-tools';
 
 import { AuthorRefLookupService } from '../../services/author-ref-lookup.service';
 import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
@@ -22,7 +39,21 @@ const WORK_FILTER_KEY = 'cadmus-biblio-ui.work-filter';
   selector: 'biblio-work-filter',
   templateUrl: './work-filter.component.html',
   styleUrls: ['./work-filter.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCheckbox,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatInput,
+    RefLookupComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    MatHint,
+  ],
 })
 export class WorkFilterComponent implements OnInit {
   private _filter$: BehaviorSubject<WorkFilter>;
@@ -177,12 +208,12 @@ export class WorkFilterComponent implements OnInit {
     };
   }
 
-  public onAuthorChange(author: Author): void {
-    this.author.setValue(author);
+  public onAuthorChange(author: unknown): void {
+    this.author.setValue(author as Author);
   }
 
-  public onContainerChange(container: Container): void {
-    this.container.setValue(container);
+  public onContainerChange(container: unknown): void {
+    this.container.setValue(container as Container);
   }
 
   public clearAuthor(): void {

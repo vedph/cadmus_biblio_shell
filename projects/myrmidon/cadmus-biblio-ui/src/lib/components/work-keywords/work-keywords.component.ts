@@ -1,24 +1,71 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import {
   FormArray,
   FormBuilder,
   FormGroup,
   UntypedFormControl,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+  MatExpansionPanelDescription,
+} from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatOption } from '@angular/material/core';
+import {
+  MatFormField,
+  MatLabel,
+  MatHint,
+  MatSuffix,
+  MatError,
+} from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatSelect } from '@angular/material/select';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-
 import { BiblioService, KeywordFilter } from '@myrmidon/cadmus-biblio-api';
 import { Keyword } from '@myrmidon/cadmus-biblio-core';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'biblio-work-keywords',
   templateUrl: './work-keywords.component.html',
   styleUrls: ['./work-keywords.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatIcon,
+    MatExpansionPanelDescription,
+    MatAutocomplete,
+    MatOption,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatAutocompleteTrigger,
+    MatHint,
+    MatIconButton,
+    MatSuffix,
+    MatTooltip,
+    MatSelect,
+    MatError,
+    AsyncPipe,
+  ],
 })
 export class WorkKeywordsComponent implements OnInit {
   private _model: Keyword[] | undefined;

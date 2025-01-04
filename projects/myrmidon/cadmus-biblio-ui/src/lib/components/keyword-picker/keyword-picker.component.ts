@@ -1,11 +1,25 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
+import {
+  MatAutocomplete,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 
 import { BiblioService, KeywordFilter } from '@myrmidon/cadmus-biblio-api';
 import { Keyword } from '@myrmidon/cadmus-biblio-core';
@@ -14,7 +28,20 @@ import { Keyword } from '@myrmidon/cadmus-biblio-core';
   selector: 'biblio-keyword-picker',
   templateUrl: './keyword-picker.component.html',
   styleUrls: ['./keyword-picker.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocomplete,
+    MatOption,
+    MatFormField,
+    MatInput,
+    MatAutocompleteTrigger,
+    MatIconButton,
+    MatSuffix,
+    MatTooltip,
+    MatIcon,
+    AsyncPipe,
+  ],
 })
 export class KeywordPickerComponent implements OnInit {
   /**
@@ -34,15 +61,12 @@ export class KeywordPickerComponent implements OnInit {
    */
   @Output()
   public keywordChange: EventEmitter<Keyword>;
-  public form: UntypedFormGroup;
-  public lookup: UntypedFormControl;
+  public form: FormGroup;
+  public lookup: FormControl;
   public keywords$: Observable<Keyword[]> | undefined;
   public keyword: Keyword | undefined;
 
-  constructor(
-    formBuilder: UntypedFormBuilder,
-    private _biblioService: BiblioService
-  ) {
+  constructor(formBuilder: FormBuilder, private _biblioService: BiblioService) {
     this.limit = 10;
     this.label = 'keyword/lang:keyword';
     this.keywordChange = new EventEmitter<Keyword>();
@@ -73,7 +97,7 @@ export class KeywordPickerComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.keywords$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),

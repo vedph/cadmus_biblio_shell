@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   Author,
@@ -19,7 +19,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
   styleUrls: ['./demo.component.css'],
   standalone: false,
 })
-export class DemoComponent implements OnInit {
+export class DemoComponent {
   public work: Work | undefined;
   public container: Container | undefined;
 
@@ -58,22 +58,20 @@ export class DemoComponent implements OnInit {
     ];
   }
 
-  ngOnInit(): void {}
-
-  public onWorkChange(work: Work | Container): void {
-    this.work = work;
+  public onWorkChange(work: unknown): void {
+    this.work = work as Work | Container;
   }
 
-  public onContainerChange(container: Container): void {
-    this.container = container;
+  public onContainerChange(container: unknown): void {
+    this.container = container as Container;
   }
 
-  public onAuthorChange(author: Author): void {
-    this.author = author;
+  public onAuthorChange(author: unknown): void {
+    this.author = author as Author;
   }
 
-  public onAuthorsChange(authors: WorkAuthor[]): void {
-    this.authors = authors;
+  public onAuthorsChange(authors: unknown): void {
+    this.authors = authors as WorkAuthor[];
   }
 
   public onKeywordChange(keyword: Keyword): void {
@@ -92,7 +90,7 @@ export class DemoComponent implements OnInit {
     this.filter = filter;
   }
 
-  public onWorkChangeForDetails(work: Work | Container): void {
-    this.detWork = work;
+  public onWorkChangeForDetails(work: unknown): void {
+    this.detWork = work as Work | Container;
   }
 }

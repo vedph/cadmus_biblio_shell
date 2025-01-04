@@ -4,9 +4,38 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { distinctUntilChanged, switchMap, take } from 'rxjs/operators';
+
+import { MatCheckbox } from '@angular/material/checkbox';
+import {
+  MatFormField,
+  MatLabel,
+  MatError,
+  MatSuffix,
+} from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import {
+  MatDatepickerInput,
+  MatDatepickerToggle,
+  MatDatepicker,
+} from '@angular/material/datepicker';
+
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+import {
+  HistoricalDate,
+  HistoricalDateModel,
+  HistoricalDateComponent,
+} from '@myrmidon/cadmus-refs-historical-date';
 
 import {
   Container,
@@ -19,12 +48,11 @@ import {
   ExternalId,
 } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import {
-  HistoricalDate,
-  HistoricalDateModel,
-} from '@myrmidon/cadmus-refs-historical-date';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 
+import { WorkAuthorsComponent } from '../work-authors/work-authors.component';
+import { WorkKeywordsComponent } from '../work-keywords/work-keywords.component';
+import { ExternalIdsComponent } from '../external-ids/external-ids.component';
 import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
 
 /**
@@ -34,7 +62,30 @@ import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
   selector: 'biblio-work',
   templateUrl: './work.component.html',
   styleUrls: ['./work.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCheckbox,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    MatIconButton,
+    MatSuffix,
+    MatIcon,
+    WorkAuthorsComponent,
+    HistoricalDateComponent,
+    RefLookupComponent,
+    MatTooltip,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    MatDatepicker,
+    WorkKeywordsComponent,
+    ExternalIdsComponent,
+    AsyncPipe,
+  ],
 })
 export class WorkComponent implements OnInit {
   private _work: EditedWork | undefined;
@@ -302,8 +353,8 @@ export class WorkComponent implements OnInit {
     this.keywords.markAsDirty();
   }
 
-  public onContainerChange(container: Container | undefined): void {
-    this.container.setValue(container || null);
+  public onContainerChange(container: unknown): void {
+    this.container.setValue((container as Container) || null);
     this.container.updateValueAndValidity();
     this.container.markAsDirty();
   }

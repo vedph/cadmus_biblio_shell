@@ -44,7 +44,7 @@
       label="author"
       [service]="authorLookupService"
       (itemChange)="onAuthorChange($event)"
-    ></cadmus-ref-lookup>
+    />
   </div>
   @if (author.value) {
   <div>
@@ -112,9 +112,10 @@
   <div>
     <cadmus-ref-lookup
       label="container"
+      [service]="workLookupService"
       [baseFilter]="{ container: true }"
       (itemChange)="onContainerChange($event)"
-    ></cadmus-ref-lookup>
+    />
   </div>
   @if (container.value) {
   <div>

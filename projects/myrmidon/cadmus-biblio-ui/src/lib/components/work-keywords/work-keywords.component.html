@@ -41,7 +41,6 @@
           <mat-icon class="mat-warn">clear</mat-icon>
         </button>
       </mat-form-field>
-      &nbsp;
       <button
         type="button"
         mat-icon-button
@@ -74,7 +73,7 @@
           <!-- child controls -->
           <!-- language (bound) -->
           @if (langEntries?.length) {
-          <mat-form-field style="width: 8em">
+          <mat-form-field>
             <mat-label>language</mat-label>
             <mat-select formControlName="language">
               @for (e of langEntries; track e.id) {
@@ -89,8 +88,8 @@
           </mat-form-field>
           }
           <!-- language (free) -->
-          @if (!langEntries?.length) {
-          <mat-form-field style="width: 8em">
+          @else {
+          <mat-form-field>
             <mat-label>language</mat-label>
             <input matInput formControlName="language" />
             @if ( item['controls'].language.errors?.required &&

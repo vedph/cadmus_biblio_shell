@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-biblio-ui",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "Cadmus - bibliographic API UI components",
   "keywords": [
     "Cadmus",
@@ -17,14 +17,14 @@
   "peerDependencies": {
     "@angular/common": "^19.0.0",
     "@angular/core": "^19.0.0",
-    "@myrmidon/ngx-tools": "^0.0.1",
+    "@myrmidon/ngx-tools": "^1.0.0",
     "@myrmidon/ngx-mat-tools": "^0.0.1",
-    "@myrmidon/cadmus-refs-historical-date": "^7.0.0",
-    "@myrmidon/cadmus-refs-lookup": "^6.0.0",
-    "@myrmidon/cadmus-core": "^10.0.0",
-    "@myrmidon/cadmus-ui": "^10.0.0",
-    "@myrmidon/cadmus-biblio-api": "^7.0.0",
-    "@myrmidon/cadmus-biblio-core": "^6.0.0"
+    "@myrmidon/cadmus-refs-historical-date": "^8.0.0",
+    "@myrmidon/cadmus-refs-lookup": "^8.0.0",
+    "@myrmidon/cadmus-core": "^11.0.0",
+    "@myrmidon/cadmus-ui": "^11.0.0",
+    "@myrmidon/cadmus-biblio-api": "^8.0.0",
+    "@myrmidon/cadmus-biblio-core": "^8.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

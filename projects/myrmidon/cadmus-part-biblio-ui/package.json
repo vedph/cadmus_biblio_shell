@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-biblio-ui",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "Cadmus - external bibliography part",
   "keywords": [
     "Cadmus",
@@ -17,11 +17,11 @@
   "peerDependencies": {
     "@angular/common": "^19.0.0",
     "@angular/core": "^19.0.0",
-    "@myrmidon/auth-jwt-login": "^7.0.1",
-    "@myrmidon/cadmus-ui": "^10.0.0",
-    "@myrmidon/cadmus-biblio-ui": "^7.0.0",
-    "@myrmidon/cadmus-biblio-api": "^7.0.0",
-    "@myrmidon/cadmus-biblio-core": "^6.0.0"
+    "@myrmidon/auth-jwt-login": "^7.1.0",
+    "@myrmidon/cadmus-ui": "^11.0.0",
+    "@myrmidon/cadmus-biblio-ui": "^8.0.0",
+    "@myrmidon/cadmus-biblio-api": "^8.0.0",
+    "@myrmidon/cadmus-biblio-core": "^8.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

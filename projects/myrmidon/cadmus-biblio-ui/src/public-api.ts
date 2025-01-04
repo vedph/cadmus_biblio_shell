@@ -15,5 +15,3 @@ export * from './lib/components/work/work.component';
 
 export * from './lib/services/author-ref-lookup.service';
 export * from './lib/services/work-ref-lookup.service';
-
-export * from './lib/cadmus-biblio-ui.module';

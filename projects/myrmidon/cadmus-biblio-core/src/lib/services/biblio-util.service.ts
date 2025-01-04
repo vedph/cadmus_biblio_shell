@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+
 import { Author, Container, Work, WorkAuthor, WorkInfo } from '../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BiblioUtilService {
-
   /**
    * Return a string representation for the specified work or container.
    * @param work Work or container.

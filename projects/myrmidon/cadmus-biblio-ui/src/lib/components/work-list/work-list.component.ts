@@ -12,10 +12,37 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ViewportScroller } from '@angular/common';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { debounceTime, take } from 'rxjs/operators';
 
+import { MatIconButton } from '@angular/material/button';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+
+import { DialogService } from '@myrmidon/ngx-mat-tools';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import {
   BiblioUtilService,
@@ -25,18 +52,12 @@ import {
   WorkAuthor,
   WorkInfo,
   WorkListEntry,
+  BiblioWorkPipe,
 } from '@myrmidon/cadmus-biblio-core';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { debounceTime, take } from 'rxjs/operators';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import { DialogService } from '@myrmidon/ngx-mat-tools';
+
+import { WorkDetailsComponent } from '../work-details/work-details.component';
+import { WorkBrowserComponent } from '../work-browser/work-browser.component';
+import { WorkComponent } from '../work/work.component';
 
 /**
  * A list of picked bibliographic entries.
@@ -59,7 +80,26 @@ import { DialogService } from '@myrmidon/ngx-mat-tools';
       transition('closed <=> open', [animate('300ms ease-in')]),
     ]),
   ],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    MatProgressSpinner,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    WorkDetailsComponent,
+    WorkBrowserComponent,
+    WorkComponent,
+    BiblioWorkPipe,
+  ],
 })
 export class WorkListComponent implements OnDestroy {
   private _entries: WorkListEntry[];

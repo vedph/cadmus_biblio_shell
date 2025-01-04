@@ -13,11 +13,11 @@
           <cadmus-ref-lookup
             [service]="workLookupService"
             (itemChange)="onWorkChange($event)"
-          ></cadmus-ref-lookup>
+          />
           <hr />
           @if (work) {
           <div>
-            <pre>{{ work | json }}</pre>
+            <code><pre>{{ work | json }}</pre></code>
           </div>
           }
         </div>
@@ -29,11 +29,11 @@
             [service]="workLookupService"
             [baseFilter]="{ container: true }"
             (itemChange)="onContainerChange($event)"
-          ></cadmus-ref-lookup>
+          />
           <hr />
           @if (container) {
           <div>
-            <pre>{{ container | json }}</pre>
+            <code><pre>{{ container | json }}</pre></code>
           </div>
           }
         </div>
@@ -45,10 +45,10 @@
           [service]="authorLookupService"
           label="author"
           (itemChange)="onAuthorChange($event)"
-        ></cadmus-ref-lookup>
+        />
         @if (author) {
         <div>
-          <pre>{{ author | json }}</pre>
+          <code><pre>{{ author | json }}</pre></code>
         </div>
         }
       </mat-tab>
@@ -58,23 +58,21 @@
         <biblio-work-authors
           [roleEntries]="roleEntries"
           (authorsChange)="onAuthorsChange($event)"
-        ></biblio-work-authors>
+        />
         @if (authors) {
         <div>
-          <pre>{{ authors | json }}</pre>
+          <code><pre>{{ authors | json }}</pre></code>
         </div>
         }
       </mat-tab>
 
       <!-- keyword picker -->
       <mat-tab label="keyword picker">
-        <biblio-keyword-picker
-          (keywordChange)="onKeywordChange($event)"
-        ></biblio-keyword-picker>
+        <biblio-keyword-picker (keywordChange)="onKeywordChange($event)" />
         <hr />
         @if (keyword) {
         <div>
-          <pre>{{ keyword | json }}</pre>
+          <code><pre>{{ keyword | json }}</pre></code>
         </div>
         }
       </mat-tab>
@@ -87,7 +85,7 @@
         ></biblio-work-keywords>
         @if (keywords) {
         <div>
-          <pre>{{ keywords | json }}</pre>
+          <code><pre>{{ keywords | json }}</pre></code>
         </div>
         }
       </mat-tab>
@@ -100,7 +98,7 @@
         ></biblio-work>
         @if (editedWork) {
         <div>
-          <pre>{{ editedWork | json }}</pre>
+          <code><pre>{{ editedWork | json }}</pre></code>
         </div>
         }
       </mat-tab>
@@ -111,10 +109,10 @@
           [langEntries]="langEntries"
           [persisted]="true"
           (filterChange)="onFilterChange($event)"
-        ></biblio-work-filter>
+        />
         @if (filter) {
         <div>
-          <pre>{{ filter | json }}</pre>
+          <code><pre>{{ filter | json }}</pre></code>
         </div>
         }
       </mat-tab>
@@ -126,7 +124,7 @@
             label="work"
             [service]="workLookupService"
             (itemChange)="onWorkChangeForDetails($event)"
-          ></cadmus-ref-lookup>
+          />
         </div>
         <biblio-work-details [work]="detWork"></biblio-work-details>
       </mat-tab>
@@ -140,7 +138,7 @@
             [addEnabled]="true"
             [deleteEnabled]="true"
             [pickEnabled]="true"
-          ></biblio-work-browser>
+          />
         </div>
       </mat-tab>
     </mat-tab-group>
