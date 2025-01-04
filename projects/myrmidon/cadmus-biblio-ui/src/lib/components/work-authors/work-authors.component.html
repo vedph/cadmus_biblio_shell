@@ -22,7 +22,6 @@
       <button
         type="button"
         mat-flat-button
-        color="primary"
         (click)="addAuthor()"
         matTooltip="Add a new author"
       >
@@ -43,7 +42,6 @@
             mat-icon-button
             type="button"
             matTooltip="Remove this author"
-            color="warn"
             (click)="removeAuthor(i)"
           >
             <mat-icon class="mat-warn">remove_circle</mat-icon>
@@ -72,11 +70,13 @@
             <mat-form-field>
               <mat-label>last</mat-label>
               <input matInput formControlName="last" />
-              @if ( item['controls'].last.errors?.required &&
-              (item['controls'].last.dirty || item['controls'].last.touched) ) {
+              @if ( $any(item).controls.last.errors?.required &&
+              ($any(item).controls.last.dirty ||
+              $any(item).controls.last.touched) ) {
               <mat-error>required</mat-error>
-              } @if ( item['controls'].last.errors?.maxLength &&
-              (item['controls'].last.dirty || item['controls'].last.touched) ) {
+              } @if ( $any(item).controls.last.errors?.maxLength &&
+              ($any(item).controls.last.dirty ||
+              $any(item).controls.last.touched) ) {
               <mat-error>too long</mat-error>
               }
             </mat-form-field>
@@ -84,13 +84,13 @@
             <mat-form-field>
               <mat-label>first</mat-label>
               <input matInput formControlName="first" />
-              @if ( item['controls'].first.errors?.required &&
-              (item['controls'].first.dirty || item['controls'].first.touched) )
-              {
+              @if ( $any(item).controls.first.errors?.required &&
+              ($any(item).controls.first.dirty ||
+              $any(item).controls.first.touched) ) {
               <mat-error>required</mat-error>
-              } @if ( item['controls'].first.errors?.maxLength &&
-              (item['controls'].first.dirty || item['controls'].first.touched) )
-              {
+              } @if ( $any(item).controls.first.errors?.maxLength &&
+              ($any(item).controls.first.dirty ||
+              $any(item).controls.first.touched) ) {
               <mat-error>too long</mat-error>
               }
             </mat-form-field>
@@ -98,9 +98,9 @@
             <mat-form-field>
               <mat-label>suffix</mat-label>
               <input matInput formControlName="suffix" />
-              @if ( item['controls'].suffix.errors?.maxLength &&
-              (item['controls'].suffix.dirty || item['controls'].suffix.touched)
-              ) {
+              @if ( $any(item).controls.suffix.errors?.maxLength &&
+              ($any(item).controls.suffix.dirty ||
+              $any(item).controls.suffix.touched) ) {
               <mat-error>too long</mat-error>
               }
             </mat-form-field>
@@ -120,8 +120,9 @@
             <mat-form-field>
               <mat-label>role</mat-label>
               <input matInput formControlName="role" />
-              @if ( item['controls'].role.errors?.maxLength &&
-              (item['controls'].role.dirty || item['controls'].role.touched) ) {
+              @if ( $any(item).controls.role.errors?.maxLength &&
+              ($any(item).controls.role.dirty ||
+              $any(item).controls.role.touched) ) {
               <mat-error>too long</mat-error>
               }
             </mat-form-field>
@@ -136,7 +137,6 @@
     <div>
       <button
         type="button"
-        color="warn"
         mat-icon-button
         matTooltip="Discard authors"
         (click)="cancel()"
@@ -145,7 +145,6 @@
       </button>
       <button
         type="submit"
-        color="primary"
         mat-icon-button
         matTooltip="Accept authors"
         [disabled]="form.invalid"

@@ -1,12 +1,6 @@
 <div>
   <div>
-    <button
-      type="button"
-      color="primary"
-      class="mat-primary"
-      mat-flat-button
-      (click)="addId()"
-    >
+    <button type="button" class="mat-primary" mat-flat-button (click)="addId()">
       <mat-icon>add</mat-icon> ID
     </button>
   </div>
@@ -22,20 +16,10 @@
       @for (id of ctlIds.value; track id; let i = $index) {
       <tr>
         <td>
-          <button
-            type="button"
-            color="primary"
-            mat-icon-button
-            (click)="editId(id, i)"
-          >
+          <button type="button" mat-icon-button (click)="editId(id, i)">
             <mat-icon class="mat-primary">edit</mat-icon>
           </button>
-          <button
-            type="button"
-            color="warn"
-            mat-icon-button
-            (click)="deleteId(i)"
-          >
+          <button type="button" mat-icon-button (click)="deleteId(i)">
             <mat-icon class="mat-warn">delete</mat-icon>
           </button>
         </td>

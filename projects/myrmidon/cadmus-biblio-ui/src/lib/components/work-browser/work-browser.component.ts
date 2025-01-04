@@ -15,7 +15,6 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import {
   MatExpansionPanel,
   MatExpansionPanelHeader,
@@ -52,7 +51,6 @@ import { WorkDetailsComponent } from '../work-details/work-details.component';
     MatIconButton,
     MatTooltip,
     MatPaginator,
-    MatProgressSpinner,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     WorkDetailsComponent,

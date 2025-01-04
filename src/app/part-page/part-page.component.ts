@@ -1,16 +1,22 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+
+import { MatCardModule } from '@angular/material/card';
+
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { PartIdentity } from '@myrmidon/cadmus-ui';
 import {
   ExtBibliographyPart,
   EXT_BIBLIOGRAPHY_PART_TYPEID,
 } from '@myrmidon/cadmus-part-biblio-ui';
-import { PartIdentity } from '@myrmidon/cadmus-ui';
+
+import { ExtBibliographyPartComponent } from '../../../projects/myrmidon/cadmus-part-biblio-ui/src/public-api';
 
 @Component({
   selector: 'biblio-part-page',
+  imports: [CommonModule, MatCardModule, ExtBibliographyPartComponent],
   templateUrl: './part-page.component.html',
   styleUrls: ['./part-page.component.css'],
-  standalone: false,
 })
 export class PartPageComponent implements OnInit {
   public identity: PartIdentity;

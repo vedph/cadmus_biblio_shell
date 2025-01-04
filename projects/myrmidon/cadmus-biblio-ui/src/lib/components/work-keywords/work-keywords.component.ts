@@ -257,8 +257,8 @@ export class WorkKeywordsComponent implements OnInit {
     for (let i = 0; i < this.keywords.length; i++) {
       const g = this.keywords.at(i) as FormGroup;
       entries.push({
-        language: g.controls.language.value?.trim(),
-        value: g.controls.value.value?.trim(),
+        language: g.controls['language'].value?.trim(),
+        value: g.controls['value'].value?.trim(),
       });
     }
     return entries.length ? entries : undefined;
@@ -272,9 +272,9 @@ export class WorkKeywordsComponent implements OnInit {
         sb.push('; ');
       }
       sb.push('[');
-      sb.push(g.controls.language.value?.trim());
+      sb.push(g.controls['language'].value?.trim());
       sb.push('] ');
-      sb.push(g.controls.value.value?.trim());
+      sb.push(g.controls['value'].value?.trim());
     }
     return sb.join('');
   }

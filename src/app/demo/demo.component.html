@@ -82,7 +82,7 @@
         <biblio-work-keywords
           [langEntries]="langEntries"
           (modelChange)="onKeywordsChange($event)"
-        ></biblio-work-keywords>
+        />
         @if (keywords) {
         <div>
           <code><pre>{{ keywords | json }}</pre></code>
@@ -95,7 +95,7 @@
         <biblio-work
           [langEntries]="langEntries"
           (workChange)="onEditedWorkChange($event)"
-        ></biblio-work>
+        />
         @if (editedWork) {
         <div>
           <code><pre>{{ editedWork | json }}</pre></code>
@@ -126,7 +126,7 @@
             (itemChange)="onWorkChangeForDetails($event)"
           />
         </div>
-        <biblio-work-details [work]="detWork"></biblio-work-details>
+        <biblio-work-details [work]="detWork"/>
       </mat-tab>
 
       <!-- work browser -->

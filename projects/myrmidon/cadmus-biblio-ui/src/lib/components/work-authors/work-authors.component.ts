@@ -242,11 +242,11 @@ export class WorkAuthorsComponent implements OnInit {
     for (let i = 0; i < this.editedAuthors.length; i++) {
       const g = this.editedAuthors.at(i) as FormGroup;
       entries.push({
-        id: g.controls.id.value,
-        last: g.controls.last.value?.trim(),
-        first: g.controls.first.value?.trim(),
-        suffix: g.controls.suffix.value?.trim(),
-        role: g.controls.role.value?.trim(),
+        id: g.controls['id'].value,
+        last: g.controls['last'].value?.trim(),
+        first: g.controls['first'].value?.trim(),
+        suffix: g.controls['suffix'].value?.trim(),
+        role: g.controls['role'].value?.trim(),
         ordinal: i + 1,
       });
     }
@@ -261,15 +261,15 @@ export class WorkAuthorsComponent implements OnInit {
         sb.push('; ');
       }
       // last
-      sb.push(g.controls.last.value?.trim());
+      sb.push(g.controls['last'].value?.trim());
       // , first
-      const first = g.controls.first.value?.trim();
+      const first = g.controls['first'].value?.trim();
       if (first) {
         sb.push(', ');
         sb.push(first);
       }
       // (role)
-      const role = g.controls.role.value?.trim();
+      const role = g.controls['role'].value?.trim();
       if (role) {
         sb.push(' (');
         sb.push(role);

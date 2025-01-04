@@ -8,8 +8,8 @@ describe('ManageUsersPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [ManageUsersPageComponent]
-})
+      declarations: [ ManageUsersPageComponent ]
+    })
     .compileComponents();
   });
 

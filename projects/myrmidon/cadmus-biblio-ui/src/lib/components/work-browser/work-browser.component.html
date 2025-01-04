@@ -1,15 +1,15 @@
 <div id="container">
   <!-- FILTERS -->
-  <div style="grid-area: filters">
+  <div id="filters">
     <biblio-work-filter
       [langEntries]="langEntries"
       [persisted]="true"
       (filterChange)="onFilterChange($event)"
-    ></biblio-work-filter>
+    />
   </div>
 
   <!-- WORKS -->
-  <div style="grid-area: list">
+  <div id="list">
     <!-- toolbar -->
     <div>
       <!-- isContainer -->
@@ -20,7 +20,6 @@
       <button
         type="button"
         mat-flat-button
-        color="primary"
         class="mat-primary"
         (click)="addWork()"
       >
@@ -55,13 +54,12 @@
       </thead>
       <tbody>
         @for (w of page.items; track w.id) {
-        <tr>
+        <tr [class.selected]="w === work">
           <td class="fit-width">
             <button
               type="button"
               mat-icon-button
               matTooltip="View work details"
-              color="primary"
               (click)="viewDetails(w)"
             >
               <mat-icon class="mat-primary">article</mat-icon>
@@ -73,7 +71,7 @@
               matTooltip="Pick this work"
               (click)="pickWork(w)"
             >
-              <mat-icon style="color: #3fb5a3">check_circle</mat-icon>
+              <mat-icon class="mat-primary">check_circle</mat-icon>
             </button>
             } @if (editEnabled) {
             <button
@@ -89,7 +87,6 @@
               type="button"
               mat-icon-button
               matTooltip="Delete this work"
-              color="warn"
               (click)="deleteWork(w)"
             >
               <mat-icon class="mat-warn">delete</mat-icon>
@@ -127,7 +124,7 @@
 
     <!-- pager -->
     @if (page$ | async; as page) {
-    <div style="grid-area: pagination">
+    <div id="pagination">
       <mat-paginator
         [length]="page.total"
         [pageSize]="pageSize"
@@ -140,20 +137,22 @@
     }
 
     <!-- details -->
-    @if (work) {
-    <div style="grid-area: details" id="work-details">
-      @if (loadingWork) {
-      <div>
-        <mat-spinner [diameter]="24" [strokeWidth]="4"></mat-spinner>
-      </div>
+    <div id="details">
+      @if (work) {
+      <fieldset>
+        @if (loadingWork) {
+        <div>
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+        }
+        <mat-expansion-panel [(expanded)]="detailsOpen">
+          <mat-expansion-panel-header>
+            {{ workToString(work) }}
+          </mat-expansion-panel-header>
+          <biblio-work-details [work]="work"></biblio-work-details>
+        </mat-expansion-panel>
+      </fieldset>
       }
-      <mat-expansion-panel [(expanded)]="detailsOpen">
-        <mat-expansion-panel-header>
-          {{ workToString(work) }}
-        </mat-expansion-panel-header>
-        <biblio-work-details [work]="work"></biblio-work-details>
-      </mat-expansion-panel>
     </div>
-    }
   </div>
 </div>

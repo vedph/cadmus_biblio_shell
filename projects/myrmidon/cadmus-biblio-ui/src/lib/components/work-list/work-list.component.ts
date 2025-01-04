@@ -216,8 +216,8 @@ export class WorkListComponent implements OnDestroy {
   private updateEntries(): void {
     for (let i = 0; i < this.works.length; i++) {
       const g = this.works.at(i) as FormGroup;
-      this._entries[i].tag = g.controls.tag.value?.trim();
-      this._entries[i].note = g.controls.note.value?.trim();
+      this._entries[i].tag = g.controls['tag'].value?.trim();
+      this._entries[i].note = g.controls['note'].value?.trim();
     }
   }
 

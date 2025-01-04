@@ -34,7 +34,6 @@
           type="button"
           mat-icon-button
           matSuffix
-          color="warn"
           (click)="clearKeyword()"
           [disabled]="!keyword"
         >
@@ -44,7 +43,6 @@
       <button
         type="button"
         mat-icon-button
-        color="primary"
         (click)="addKeyword()"
         matTooltip="Add a new keyword"
       >
@@ -65,7 +63,6 @@
             mat-icon-button
             type="button"
             matTooltip="Remove this keyword"
-            color="warn"
             (click)="removeKeyword(i)"
           >
             <mat-icon class="mat-warn">remove_circle</mat-icon>
@@ -80,9 +77,9 @@
               <mat-option [value]="e.id">{{ e.value }}</mat-option>
               }
             </mat-select>
-            @if ( item['controls'].language.errors?.required &&
-            (item['controls'].language.dirty ||
-            item['controls'].language.touched) ) {
+            @if ( $any(item).controls.language.errors?.required &&
+            ($any(item).controls.language.dirty ||
+            $any(item).controls.language.touched) ) {
             <mat-error>required</mat-error>
             }
           </mat-form-field>
@@ -92,13 +89,13 @@
           <mat-form-field>
             <mat-label>language</mat-label>
             <input matInput formControlName="language" />
-            @if ( item['controls'].language.errors?.required &&
-            (item['controls'].language.dirty ||
-            item['controls'].language.touched) ) {
+            @if ( $any(item).controls.language.errors?.required &&
+            ($any(item).controls.language.dirty ||
+            $any(item).controls.language.touched) ) {
             <mat-error>required</mat-error>
-            } @if ( item['controls'].language.errors?.maxLength &&
-            (item['controls'].language.dirty ||
-            item['controls'].language.touched) ) {
+            } @if ($any(item).controls.language.errors?.maxLength &&
+            ($any(item).controls.language.dirty ||
+            $any(item).controls.language.touched) ) {
             <mat-error>too long</mat-error>
             }
           </mat-form-field>
@@ -107,11 +104,13 @@
           <mat-form-field>
             <mat-label>value</mat-label>
             <input matInput formControlName="value" />
-            @if ( item['controls'].value.errors?.required &&
-            (item['controls'].value.dirty || item['controls'].value.touched) ) {
+            @if ( $any(item).controls.value.errors?.required &&
+            ($any(item).controls.value.dirty ||
+            $any(item).controls.value.touched) ) {
             <mat-error>required</mat-error>
-            } @if ( item['controls'].value.errors?.maxLength &&
-            (item['controls'].value.dirty || item['controls'].value.touched) ) {
+            } @if ( $any(item).controls.value.errors?.maxLength &&
+            ($any(item).controls.value.dirty ||
+            $any(item).controls.value.touched) ) {
             <mat-error>too long</mat-error>
             }
           </mat-form-field>
@@ -124,7 +123,6 @@
     <div>
       <button
         type="button"
-        color="warn"
         mat-icon-button
         matTooltip="Discard keywords"
         (click)="cancel()"
@@ -133,7 +131,6 @@
       </button>
       <button
         type="submit"
-        color="primary"
         mat-icon-button
         matTooltip="Accept keywords"
         [disabled]="form.invalid || form.pristine"

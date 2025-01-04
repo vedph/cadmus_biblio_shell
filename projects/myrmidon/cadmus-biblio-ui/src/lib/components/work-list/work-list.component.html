@@ -11,7 +11,6 @@
           type="button"
           mat-icon-button
           matTooltip="View work"
-          color="primary"
           (click)="viewWorkDetails(entries[i])"
         >
           <mat-icon class="mat-primary">article</mat-icon>
@@ -28,7 +27,6 @@
           mat-icon-button
           type="button"
           matTooltip="Remove this work from list"
-          color="warn"
           (click)="removeWork(i)"
         >
           <mat-icon class="mat-warn">remove_circle</mat-icon>
@@ -131,7 +129,7 @@
     (workAdd)="addBrowserWork($event)"
     (workEdit)="editBrowserWork($event)"
     (workDelete)="deleteBrowserWork($event)"
-  ></biblio-work-browser>
+  />
 
   <!-- editor -->
   <mat-expansion-panel
@@ -149,6 +147,6 @@
       [scopeEntries]="scopeEntries"
       (workChange)="onWorkChange($event)"
       (editorClose)="closeEditor()"
-    ></biblio-work>
+    />
   </mat-expansion-panel>
 </form>

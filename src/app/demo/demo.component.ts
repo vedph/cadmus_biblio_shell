@@ -1,4 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   Author,
@@ -12,12 +18,38 @@ import {
   WorkRefLookupService,
 } from '@myrmidon/cadmus-biblio-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+
+import {
+  KeywordPickerComponent,
+  WorkAuthorsComponent,
+  WorkBrowserComponent,
+  WorkComponent,
+  WorkDetailsComponent,
+  WorkFilterComponent,
+  WorkKeywordsComponent,
+} from '../../../projects/myrmidon/cadmus-biblio-ui/src/public-api';
 
 @Component({
   selector: 'biblio-demo',
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule,
+    MatTabsModule,
+    MatTooltipModule,
+    RefLookupComponent,
+    WorkAuthorsComponent,
+    KeywordPickerComponent,
+    WorkKeywordsComponent,
+    WorkComponent,
+    WorkFilterComponent,
+    WorkDetailsComponent,
+    WorkBrowserComponent,
+  ],
   templateUrl: './demo.component.html',
   styleUrls: ['./demo.component.css'],
-  standalone: false,
 })
 export class DemoComponent {
   public work: Work | undefined;

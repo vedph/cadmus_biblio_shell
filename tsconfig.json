@@ -1,49 +1,42 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
-    "declaration": false,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "ES2022",
-    "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
     "paths": {
-      "@myrmidon/cadmus-biblio-ui": [
-        "dist/myrmidon/cadmus-biblio-ui/myrmidon-cadmus-biblio-ui",
-        "dist/myrmidon/cadmus-biblio-ui"
+      "@myrmidon/cadmus-biblio-api": [
+        "./dist/myrmidon/cadmus-biblio-api"
       ],
       "@myrmidon/cadmus-biblio-core": [
-        "dist/myrmidon/cadmus-biblio-core/myrmidon-cadmus-biblio-core",
-        "dist/myrmidon/cadmus-biblio-core"
+        "./dist/myrmidon/cadmus-biblio-core"
       ],
-      "@myrmidon/cadmus-biblio-api": [
-        "dist/myrmidon/cadmus-biblio-api/myrmidon-cadmus-biblio-api",
-        "dist/myrmidon/cadmus-biblio-api"
+      "@myrmidon/cadmus-biblio-ui": [
+        "./dist/myrmidon/cadmus-biblio-ui"
       ],
       "@myrmidon/cadmus-part-biblio-pg": [
-        "dist/myrmidon/cadmus-part-biblio-pg/myrmidon-cadmus-part-biblio-pg",
-        "dist/myrmidon/cadmus-part-biblio-pg"
+        "./dist/myrmidon/cadmus-part-biblio-pg"
       ],
       "@myrmidon/cadmus-part-biblio-ui": [
-        "dist/myrmidon/cadmus-part-biblio-ui/myrmidon-cadmus-part-biblio-ui",
-        "dist/myrmidon/cadmus-part-biblio-ui"
+        "./dist/myrmidon/cadmus-part-biblio-ui"
       ]
     },
-    "useDefineForClassFields": false
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022"
   },
   "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true

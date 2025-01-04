@@ -1,12 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
+import { WorkListComponent } from '../../../projects/myrmidon/cadmus-biblio-ui/src/public-api';
+
 @Component({
   selector: 'biblio-work-page',
+  imports: [CommonModule, MatCardModule, WorkListComponent],
   templateUrl: './work-page.component.html',
   styleUrls: ['./work-page.component.css'],
-  standalone: false,
 })
 export class WorkPageComponent implements OnInit {
   public roleEntries: ThesaurusEntry[];

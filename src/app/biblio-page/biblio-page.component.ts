@@ -1,14 +1,19 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { take } from 'rxjs';
+
+import { MatCardModule } from '@angular/material/card';
 
 import { ThesaurusService } from '@myrmidon/cadmus-api';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
+import { WorkListComponent } from '../../../projects/myrmidon/cadmus-biblio-ui/src/public-api';
+
 @Component({
   selector: 'cadmus-biblio-page',
+  imports: [CommonModule, MatCardModule, WorkListComponent],
   templateUrl: './biblio-page.component.html',
   styleUrls: ['./biblio-page.component.scss'],
-  standalone: false,
 })
 export class BiblioPageComponent {
   public langEntries: ThesaurusEntry[] | undefined;

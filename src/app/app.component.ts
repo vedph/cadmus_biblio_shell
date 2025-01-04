@@ -1,22 +1,38 @@
-import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { Thesaurus, ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { Router } from '@angular/router';
-import { take } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { Subscription, take } from 'rxjs';
 
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { EnvService } from '@myrmidon/ngx-tools';
 import {
+  User,
   AuthJwtService,
   GravatarService,
-  User,
+  GravatarPipe,
 } from '@myrmidon/auth-jwt-login';
-import { EnvService } from '@myrmidon/ngx-tools';
+
+import { ThesaurusEntry, Thesaurus } from '@myrmidon/cadmus-core';
 import { AppRepository } from '@myrmidon/cadmus-state';
 
 @Component({
   selector: 'app-root',
+  imports: [
+    RouterModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    GravatarPipe,
+  ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  standalone: false,
+  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit, OnDestroy {
   private _authSub?: Subscription;

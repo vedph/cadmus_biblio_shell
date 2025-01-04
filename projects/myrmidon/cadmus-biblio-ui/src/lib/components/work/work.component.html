@@ -11,7 +11,7 @@
         <mat-option [value]="t.id">{{ t.name }}</mat-option>
         }
       </mat-select>
-      @if (type.errors?.required && (type.dirty || type.touched)) {
+      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
       <mat-error>type required</mat-error>
       }
     </mat-form-field>
@@ -26,7 +26,7 @@
       <button type="button" mat-icon-button matSuffix (click)="buildKey()">
         <mat-icon>redo</mat-icon>
       </button>
-      @if (key.errors?.maxLength && (key.dirty || key.touched)) {
+      @if ($any(key).errors?.maxLength && (key.dirty || key.touched)) {
       <mat-error>key too long</mat-error>
       }
     </mat-form-field>
@@ -46,9 +46,9 @@
     <mat-form-field class="long-text">
       <mat-label>title</mat-label>
       <input matInput [formControl]="title" />
-      @if (title.errors?.required && (title.dirty || title.touched)) {
+      @if ($any(title).errors?.required && (title.dirty || title.touched)) {
       <mat-error>title required</mat-error>
-      } @if (title.errors?.maxLength && (title.dirty || title.touched)) {
+      } @if ($any(title).errors?.maxLength && (title.dirty || title.touched)) {
       <mat-error>title too long</mat-error>
       }
     </mat-form-field>
@@ -64,8 +64,8 @@
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
-      @if ( language.errors?.required && (language.dirty || language.touched) )
-      {
+      @if ( $any(language).errors?.required && (language.dirty ||
+      language.touched) ) {
       <mat-error>language required</mat-error>
       }
     </mat-form-field>
@@ -75,10 +75,11 @@
     <mat-form-field>
       <mat-label>language</mat-label>
       <input matInput [formControl]="language" />
-      @if ( language.errors?.required && (language.dirty || language.touched) )
-      {
+      @if ( $any(language).errors?.required && (language.dirty ||
+      language.touched) ) {
       <mat-error>language required</mat-error>
-      } @if (language.errors?.pattern && (language.dirty || language.touched)) {
+      } @if ($any(language).errors?.pattern && (language.dirty ||
+      language.touched)) {
       <mat-error>invalid language</mat-error>
       }
     </mat-form-field>
@@ -88,8 +89,8 @@
     <mat-form-field>
       <mat-label>place</mat-label>
       <input matInput [formControl]="placePub" />
-      @if ( placePub.errors?.maxLength && (placePub.dirty || placePub.touched) )
-      {
+      @if ( $any(placePub).errors?.maxLength && (placePub.dirty ||
+      placePub.touched) ) {
       <mat-error>place too long</mat-error>
       }
     </mat-form-field>
@@ -110,7 +111,7 @@
     <mat-form-field>
       <mat-label>publisher</mat-label>
       <input matInput [formControl]="publisher" />
-      @if ( publisher.errors?.maxLength && (publisher.dirty ||
+      @if ( $any(publisher).errors?.maxLength && (publisher.dirty ||
       publisher.touched) ) {
       <mat-error>publisher too long</mat-error>
       }
@@ -148,7 +149,6 @@
         style="margin-top: 20px"
         type="button"
         mat-icon-button
-        color="warn"
         matTooltip="Remove the work's container"
         (click)="removeContainer()"
       >
@@ -177,7 +177,7 @@
     <mat-form-field>
       <mat-label>number</mat-label>
       <input matInput [formControl]="number" />
-      @if (number.errors?.maxLength && (number.dirty || number.touched)) {
+      @if ($any(number).errors?.maxLength && (number.dirty || number.touched)) {
       <mat-error>number too long</mat-error>
       }
     </mat-form-field>
@@ -188,7 +188,7 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <textarea rows="2" matInput [formControl]="note"></textarea>
-      @if (note.errors?.maxLength && (note.dirty || note.touched)) {
+      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
       <mat-error>note too long</mat-error>
       }
     </mat-form-field>
@@ -199,8 +199,8 @@
     <mat-form-field class="long-text">
       <mat-label>location</mat-label>
       <input matInput [formControl]="location" />
-      @if ( location.errors?.maxLength && (location.dirty || location.touched) )
-      {
+      @if ( $any(location).errors?.maxLength && (location.dirty ||
+      location.touched) ) {
       <mat-error>location too long</mat-error>
       }
     </mat-form-field>
@@ -241,7 +241,6 @@
   <div>
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard work changes"
       (click)="cancel()"
@@ -250,7 +249,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-icon-button
       matTooltip="Accept work changes"
       [disabled]="form.invalid || form.pristine"
