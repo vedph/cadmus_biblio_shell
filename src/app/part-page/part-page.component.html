@@ -4,7 +4,7 @@
   [langEntries]="langEntries"
   [workTagEntries]="workTagEntries"
   [scopeEntries]="scopeEntries"
-  (dataChange)="onDataChange($event)"
+  (dataChange)="onDataChange($event!.value!)"
 />
 @if (data) {
 <div>
