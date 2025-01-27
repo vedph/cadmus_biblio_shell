@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  input,
+  model,
+  OnDestroy,
+  OnInit,
+  output,
+} from '@angular/core';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { ViewportScroller, AsyncPipe } from '@angular/common';
 import {
@@ -7,7 +14,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -57,32 +64,24 @@ import { WorkDetailsComponent } from '../work-details/work-details.component';
     AsyncPipe,
   ],
 })
-export class WorkBrowserComponent implements OnInit {
+export class WorkBrowserComponent implements OnInit, OnDestroy {
+  private _sub?: Subscription;
   private _filter: WorkFilter;
 
-  @Input()
-  public pickEnabled: boolean;
-  @Input()
-  public editEnabled: boolean;
-  @Input()
-  public deleteEnabled: boolean;
-  @Input()
-  public addEnabled: boolean;
-  @Input()
-  public langEntries: ThesaurusEntry[] | undefined;
-  @Input()
-  public signals$: BehaviorSubject<string>;
-  @Input()
-  public pageSize: number;
+  public readonly pickEnabled = input<boolean>(true);
+  public readonly editEnabled = input<boolean>(true);
+  public readonly deleteEnabled = input<boolean>(true);
+  public readonly addEnabled = input<boolean>(true);
+  public readonly langEntries = input<ThesaurusEntry[]>();
+  public readonly signals$ = input<BehaviorSubject<string>>(
+    new BehaviorSubject<string>('')
+  );
+  public readonly pageSize = model<number>(20);
 
-  @Output()
-  public workPick: EventEmitter<WorkInfo>;
-  @Output()
-  public workAdd: EventEmitter<boolean>;
-  @Output()
-  public workEdit: EventEmitter<WorkInfo>;
-  @Output()
-  public workDelete: EventEmitter<WorkInfo>;
+  public readonly workPick = output<WorkInfo>();
+  public readonly workAdd = output<boolean>();
+  public readonly workEdit = output<WorkInfo>();
+  public readonly workDelete = output<WorkInfo>();
 
   public isContainer: FormControl<boolean>;
 
@@ -99,27 +98,17 @@ export class WorkBrowserComponent implements OnInit {
     private _utilService: BiblioUtilService,
     private _scroller: ViewportScroller
   ) {
-    this.pickEnabled = true;
-    this.editEnabled = true;
-    this.deleteEnabled = true;
-    this.addEnabled = true;
     this.detailsOpen = false;
-    this.signals$ = new BehaviorSubject<string>('');
-    this.workPick = new EventEmitter<WorkInfo>();
-    this.workAdd = new EventEmitter<boolean>();
-    this.workEdit = new EventEmitter<WorkInfo>();
-    this.workDelete = new EventEmitter<WorkInfo>();
-    this.pageSize = 20;
     this.page$ = new BehaviorSubject<DataPage<WorkInfo>>({
       total: 0,
       pageNumber: 1,
-      pageSize: this.pageSize,
+      pageSize: this.pageSize(),
       pageCount: 0,
       items: [],
     });
     this._filter = {
       pageNumber: 1,
-      pageSize: this.pageSize,
+      pageSize: this.pageSize(),
     };
     // form
     this.isContainer = formBuilder.control(false, { nonNullable: true });
@@ -127,7 +116,7 @@ export class WorkBrowserComponent implements OnInit {
 
   private loadPage(): void {
     this.loading = true;
-    this._filter.pageSize = this.pageSize;
+    this._filter.pageSize = this.pageSize();
 
     if (this.isContainer.value) {
       this._biblioService
@@ -148,7 +137,7 @@ export class WorkBrowserComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadPage();
 
     // whenever container/work changes, reload page
@@ -157,7 +146,7 @@ export class WorkBrowserComponent implements OnInit {
     });
 
     // handle received signals
-    this.signals$.subscribe((s) => {
+    this._sub = this.signals$().subscribe((s) => {
       switch (s) {
         case 'refresh':
           this.loadPage();
@@ -166,10 +155,14 @@ export class WorkBrowserComponent implements OnInit {
     });
   }
 
+  public ngOnDestroy(): void {
+    this._sub?.unsubscribe();
+  }
+
   public onPageChange(event: PageEvent): void {
     // https://material.angular.io/components/paginator/api
     this._filter.pageNumber = event.pageIndex + 1;
-    this.pageSize = event.pageSize;
+    this.pageSize.set(event.pageSize);
     this.loadPage();
   }
 

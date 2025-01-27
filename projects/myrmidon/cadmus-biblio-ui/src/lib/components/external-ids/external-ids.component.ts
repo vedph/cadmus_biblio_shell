@@ -1,10 +1,10 @@
 import {
   Component,
-  EventEmitter,
-  Input,
+  effect,
+  input,
+  model,
   OnDestroy,
   OnInit,
-  Output,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -36,26 +36,12 @@ import { ExternalIdComponent } from '../external-id/external-id.component';
 })
 export class ExternalIdsComponent implements OnInit, OnDestroy {
   private _sub?: Subscription;
-  private _ids: ExternalId[];
+  private _dropNextInput?: boolean;
 
-  @Input()
-  public get ids(): ExternalId[] | undefined | null {
-    return this._ids;
-  }
-  public set ids(value: ExternalId[] | undefined | null) {
-    if (this._ids === value) {
-      return;
-    }
-    this._ids = value || [];
-    this.updateForm(this._ids);
-  }
+  public readonly ids = model<ExternalId[]>();
 
   // ext-biblio-link-scopes
-  @Input()
-  public scopeEntries: ThesaurusEntry[] | undefined;
-
-  @Output()
-  public idsChange: EventEmitter<ExternalId[]>;
+  public readonly scopeEntries = input<ThesaurusEntry[]>();
 
   public editedId?: ExternalId;
   public editedIndex: number;
@@ -64,20 +50,26 @@ export class ExternalIdsComponent implements OnInit, OnDestroy {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this._ids = [];
     this.editedIndex = -1;
     // form
     this.ctlIds = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       ctlIds: this.ctlIds,
     });
-    // events
-    this.idsChange = new EventEmitter<ExternalId[]>();
+
+    effect(() => {
+      if (this._dropNextInput) {
+        this._dropNextInput = false;
+        return;
+      }
+      this.updateForm(this.ids() || []);
+    });
   }
 
   public ngOnInit(): void {
     this._sub = this.ctlIds.valueChanges.subscribe((_) => {
-      this.idsChange.emit(this.ctlIds.value);
+      this._dropNextInput = true;
+      this.ids.set(this.ctlIds.value);
     });
   }
 

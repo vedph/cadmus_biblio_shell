@@ -14,7 +14,7 @@
     </thead>
     <tbody>
       @for (id of ctlIds.value; track id; let i = $index) {
-      <tr>
+      <tr [class.selected]="i === editedIndex">
         <td>
           <button type="button" mat-icon-button (click)="editId(id, i)">
             <mat-icon class="mat-primary">edit</mat-icon>
@@ -29,15 +29,17 @@
       }
     </tbody>
   </table>
+  @if (editedId) {
   <mat-expansion-panel [expanded]="editedId" [disabled]="!editedId">
     <mat-expansion-panel-header
       >#{{ editedIndex + 1 }}</mat-expansion-panel-header
     >
     <biblio-external-id
       [id]="editedId"
-      (idChange)="saveId($event)"
+      (idChange)="saveId($event!)"
       (close)="closeId()"
-      [scopeEntries]="scopeEntries"
+      [scopeEntries]="scopeEntries()"
     />
   </mat-expansion-panel>
+  }
 </div>

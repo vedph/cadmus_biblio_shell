@@ -69,20 +69,20 @@ export class ExtBibliographyPartComponent
   /**
    * Authors roles entries.
    */
-  @Input()
+  // @Input()
   public roleEntries: ThesaurusEntry[] | undefined;
   /**
    * Keywords language entries.
    */
-  @Input()
+  // @Input()
   public langEntries: ThesaurusEntry[] | undefined;
   /**
    * Selected works tags entries.
    */
-  @Input()
+  // @Input()
   public workTagEntries: ThesaurusEntry[] | undefined;
   // biblio-link-scopes
-  @Input()
+  // @Input()
   public scopeEntries: ThesaurusEntry[] | undefined;
 
   constructor(authService: AuthJwtService, formBuilder: FormBuilder) {

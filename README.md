@@ -38,6 +38,12 @@ graph LR;
 
 ## History
 
+### 9.0.0
+
+- 2025-01-27:
+  - ⚠️ migrated to signals. Note that this did not affect `cadmus-biblio-core` and `cadmus-biblio-api`.
+  - updated Angular and packages.
+
 ### 8.0.0
 
 - 2025-01-04:

@@ -69,11 +69,11 @@
           </button>
           <!-- child controls -->
           <!-- language (bound) -->
-          @if (langEntries?.length) {
+          @if (langEntries()?.length) {
           <mat-form-field>
             <mat-label>language</mat-label>
             <mat-select formControlName="language">
-              @for (e of langEntries; track e.id) {
+              @for (e of langEntries(); track e.id) {
               <mat-option [value]="e.id">{{ e.value }}</mat-option>
               }
             </mat-select>

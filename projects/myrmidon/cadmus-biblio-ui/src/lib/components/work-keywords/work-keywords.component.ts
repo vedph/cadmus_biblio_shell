@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import {
   FormArray,
@@ -68,46 +68,26 @@ import { Keyword } from '@myrmidon/cadmus-biblio-core';
   ],
 })
 export class WorkKeywordsComponent implements OnInit {
-  private _model: Keyword[] | undefined;
-
-  @Input()
-  public get model(): Keyword[] | undefined {
-    return this._model;
-  }
-  public set model(value: Keyword[] | undefined) {
-    if (this._model === value) {
-      return;
-    }
-    this._model = value;
-    this.updateForm(value);
-  }
+  public readonly keywords = model<Keyword[]>();
 
   /**
    * The maximum count of authors to retrieve. Default=10.
    */
-  @Input()
-  public limit: number;
+  public readonly limit = input<number>(10);
 
   /**
    * Keyword's languages thesaurus entries.
    */
-  @Input()
-  public langEntries: ThesaurusEntry[] | undefined;
+  public readonly langEntries = input<ThesaurusEntry[]>();
 
-  /**
-   * Event fired when author(s) are set.
-   */
-  @Output()
-  public modelChange: EventEmitter<Keyword[]>;
   /**
    * Event fired when this editor is discarded.
    */
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public lookup: UntypedFormControl;
   public search: FormGroup;
-  public keywords: FormArray;
+  public keywordsArr: FormArray;
   public form: FormGroup;
   public groups: FormGroup[];
 
@@ -121,20 +101,21 @@ export class WorkKeywordsComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private _biblioService: BiblioService
   ) {
-    this.modelChange = new EventEmitter<Keyword[]>();
-    this.editorClose = new EventEmitter<any>();
     this.editing = false;
-    this.limit = 10;
     // form
     this.lookup = _formBuilder.control(null);
     this.search = _formBuilder.group({
       lookup: this.lookup,
     });
-    this.keywords = _formBuilder.array([]);
-    this.groups = this.keywords.controls as FormGroup[];
+    this.keywordsArr = _formBuilder.array([]);
+    this.groups = this.keywordsArr.controls as FormGroup[];
     this.form = _formBuilder.group({
       search: this.search,
-      keywords: this.keywords,
+      keywords: this.keywordsArr,
+    });
+
+    effect(() => {
+      this.updateForm(this.keywords());
     });
   }
 
@@ -142,13 +123,13 @@ export class WorkKeywordsComponent implements OnInit {
     const m = filterText.match('^(?:([a-z]{3}):)?(.+)');
     return {
       pageNumber: 1,
-      pageSize: this.limit,
+      pageSize: this.limit(),
       language: m ? m[1] : undefined,
       value: m ? m[2] : undefined,
     };
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // autocomplete
     this.keywords$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
@@ -171,7 +152,7 @@ export class WorkKeywordsComponent implements OnInit {
     );
 
     // update current when authors change
-    this.keywords.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
+    this.keywordsArr.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
       this.current = this.buildCurrent();
     });
 
@@ -184,7 +165,7 @@ export class WorkKeywordsComponent implements OnInit {
       return;
     }
 
-    this.keywords.clear();
+    this.keywordsArr.clear();
     if (model) {
       const sorted = [...model];
       sorted.sort((a: Keyword, b: Keyword) => {
@@ -201,7 +182,7 @@ export class WorkKeywordsComponent implements OnInit {
         return 0;
       });
       for (let a of sorted) {
-        this.keywords.controls.push(this.getKeywordGroup(a));
+        this.keywordsArr.controls.push(this.getKeywordGroup(a));
       }
     }
 
@@ -243,19 +224,19 @@ export class WorkKeywordsComponent implements OnInit {
 
   public addKeyword(keyword?: Keyword): void {
     // TODO sorted
-    this.keywords.push(this.getKeywordGroup(keyword));
-    this.keywords.markAsDirty();
+    this.keywordsArr.push(this.getKeywordGroup(keyword));
+    this.keywordsArr.markAsDirty();
   }
 
   public removeKeyword(index: number): void {
-    this.keywords.removeAt(index);
-    this.keywords.markAsDirty();
+    this.keywordsArr.removeAt(index);
+    this.keywordsArr.markAsDirty();
   }
 
   private getKeywords(): Keyword[] | undefined {
     const entries: Keyword[] = [];
-    for (let i = 0; i < this.keywords.length; i++) {
-      const g = this.keywords.at(i) as FormGroup;
+    for (let i = 0; i < this.keywordsArr.length; i++) {
+      const g = this.keywordsArr.at(i) as FormGroup;
       entries.push({
         language: g.controls['language'].value?.trim(),
         value: g.controls['value'].value?.trim(),
@@ -266,8 +247,8 @@ export class WorkKeywordsComponent implements OnInit {
 
   private buildCurrent(): string {
     const sb: string[] = [];
-    for (let i = 0; i < this.keywords.length; i++) {
-      const g = this.keywords.at(i) as FormGroup;
+    for (let i = 0; i < this.keywordsArr.length; i++) {
+      const g = this.keywordsArr.at(i) as FormGroup;
       if (i > 0) {
         sb.push('; ');
       }
@@ -282,7 +263,7 @@ export class WorkKeywordsComponent implements OnInit {
 
   public cancel(): void {
     this.editing = false;
-    this.updateForm(this._model);
+    this.updateForm(this.keywords());
     this.editorClose.emit();
   }
 
@@ -291,7 +272,6 @@ export class WorkKeywordsComponent implements OnInit {
       return;
     }
     this.editing = false;
-    this._model = this.getKeywords();
-    this.modelChange.emit(this._model);
+    this.keywords.set(this.getKeywords());
   }
 }

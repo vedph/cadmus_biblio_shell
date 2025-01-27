@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input, Input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
@@ -17,22 +17,9 @@ import {
   imports: [DatePipe, HistoricalDatePipe],
 })
 export class WorkDetailsComponent {
-  private _work: Work | Container | undefined;
-  public w: Work | undefined;
-  public c: Container | undefined;
-
-  @Input()
-  public get work(): Work | Container | undefined {
-    return this._work;
-  }
-  public set work(value: Work | Container | undefined) {
-    if (this._work === value) {
-      return;
-    }
-    this._work = value;
-    this.w = value;
-    this.c = value;
-  }
+  public readonly work = input<Work | Container>();
+  public readonly w = computed(() => this.work() as Work | undefined);
+  public readonly c = computed(() => this.work() as Container | undefined);
 
   constructor(private _utilService: BiblioUtilService) {}
 

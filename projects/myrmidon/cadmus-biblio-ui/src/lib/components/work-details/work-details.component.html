@@ -1,61 +1,61 @@
-@if (work) {
+@if (work()) {
 <div>
   <!-- type, language, key -->
   <div>
-    <span class="boxed">{{ work.type }}</span>
+    <span class="boxed">{{ work()!.type }}</span>
     &nbsp;
-    <span>({{ work.language }})</span>
+    <span>({{ work()!.language }})</span>
     &nbsp;
-    <span class="key">{{ work.key }}</span>
+    <span class="key">{{ work()!.key }}</span>
   </div>
   <!-- authors, title -->
   <div style="margin: 4px">
-    @if (work.authors?.length) {
+    @if (work()!.authors?.length) {
     <span class="authors">
-      {{ authorsToString(work.authors) }}
+      {{ authorsToString(work()!.authors) }}
     </span>
     } &nbsp;
-    <span class="title">{{ work.title }}</span>
-    @if (work.edition) {
-    <span class="sup">&nbsp;{{ work.edition }}</span>
+    <span class="title">{{ work()!.title }}</span>
+    @if (work()!.edition) {
+    <span class="sup">&nbsp;{{ work()!.edition }}</span>
     }
   </div>
   <!-- container title, container number -->
-  @if (w?.container) {
+  @if (w()?.container) {
   <div style="margin: 4px">
-    in <span class="title">{{ w?.container?.title }}</span>
-    @if (w?.container?.number) {
-    <span>&nbsp;{{ w?.container?.number }}</span>
+    in <span class="title">{{ w()?.container?.title }}</span>
+    @if (w()?.container?.number) {
+    <span>&nbsp;{{ w()?.container?.number }}</span>
     }
   </div>
   }
   <!-- place, number, year(s), page - page, publisher, datation -->
   <div style="margin: 4px">
-    {{ work.placePub }} {{ w?.number }}
-    {{ work.yearPub + (work.yearPub2 ? "-" + work.yearPub2 : "") }}
-    @if (w?.firstPage) {
-    <span>p. {{ w?.firstPage }} - {{ w?.lastPage }}</span>
-    } @if (work.publisher) {
-    <span>&nbsp;({{ work.publisher }})</span>
-    } @if (work.datation) {
-    <span>: {{ work.datation | historicalDate }}</span>
+    {{ work()!.placePub }} {{ w()?.number }}
+    {{ work()!.yearPub + (work()!.yearPub2 ? "-" + work()!.yearPub2 : "") }}
+    @if (w()?.firstPage) {
+    <span>p. {{ w()!.firstPage }} - {{ w()!.lastPage }}</span>
+    } @if (work()!.publisher) {
+    <span>&nbsp;({{ work()!.publisher }})</span>
+    } @if (work()!.datation) {
+    <span>: {{ work()!.datation | historicalDate }}</span>
     }
   </div>
   <!-- location, access -->
   <div style="margin: 4px">
-    @switch (work.location?.startsWith('http')) { @case (true) {
-    <a [href]="work.location" target="_blank">{{ work.location }}</a>
+    @switch (work()!.location?.startsWith('http')) { @case (true) {
+    <a [href]="work()!.location" target="_blank">{{ work()!.location }}</a>
     } @default {
-    <span>{{ work.location }}</span>
-    } } @if (work.accessDate) {
-    <span>&nbsp;accessed: {{ work.accessDate | date }}</span>
+    <span>{{ work()!.location }}</span>
+    } } @if (work()!.accessDate) {
+    <span>&nbsp;accessed: {{ work()!.accessDate | date }}</span>
     }
   </div>
   <!-- keywords -->
-  @if (work.keywords?.length) {
+  @if (work()!.keywords?.length) {
   <div class="keywords">
     <ul>
-      @for (k of work.keywords; track k) {
+      @for (k of work()!.keywords; track k) {
       <li>{{ k.value }} ({{ k.language }})</li>
       }
     </ul>
@@ -63,11 +63,11 @@
   }
   <!-- id -->
   <div style="margin: 4px">
-    <span class="literal">{{ work.id }}</span>
+    <span class="literal">{{ work()!.id }}</span>
   </div>
   <!-- note -->
-  @if (work.note) {
-  <div class="note">{{ work.note }}</div>
+  @if (work()!.note) {
+  <div class="note">{{ work()!.note }}</div>
   }
 </div>
 }

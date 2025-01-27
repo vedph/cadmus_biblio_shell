@@ -1,6 +1,7 @@
 .current {
   overflow-wrap: break-word;
   word-wrap: break-word;
+  -webkit-hyphens: auto;
   hyphens: auto;
   padding: 4px;
   border: solid 1px silver;
@@ -16,5 +17,14 @@
   flex-wrap: wrap;
 }
 .form-row * {
+  flex: 0 0 auto;
+}
+.button-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.button-row * {
   flex: 0 0 auto;
 }

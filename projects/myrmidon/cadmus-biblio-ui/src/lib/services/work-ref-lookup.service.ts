@@ -26,6 +26,7 @@ export class WorkRefLookupService implements RefLookupService {
   ) {}
 
   lookup(filter: WorkLookupFilter, options?: any): Observable<any[]> {
+    console.log('work lookup', filter);
     if (filter.container) {
       return this._biblioService
         .getContainers({
@@ -33,7 +34,7 @@ export class WorkRefLookupService implements RefLookupService {
           pageSize: filter.limit,
           matchAny: true,
           title: filter.text,
-          lastName: filter.text
+          lastName: filter.text,
         })
         .pipe(map((p) => p.items));
     } else {
@@ -43,7 +44,7 @@ export class WorkRefLookupService implements RefLookupService {
           pageSize: filter.limit,
           matchAny: true,
           title: filter.text,
-          lastName: filter.text
+          lastName: filter.text,
         })
         .pipe(map((p) => p.items));
     }

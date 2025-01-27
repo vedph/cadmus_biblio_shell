@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -41,29 +41,12 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
   ],
 })
 export class ExternalIdComponent implements OnInit {
-  private _id: ExternalId | undefined;
-
-  @Input()
-  public get id(): ExternalId | undefined | null {
-    return this._id;
-  }
-  public set id(value: ExternalId | undefined | null) {
-    if (this._id === value) {
-      return;
-    }
-    this._id = value || undefined;
-    this.updateForm(this._id);
-  }
+  public readonly id = model<ExternalId>();
 
   // ext-biblio-link-scopes
-  @Input()
-  public scopeEntries: ThesaurusEntry[] | undefined;
+  public readonly scopeEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public idChange: EventEmitter<ExternalId>;
-
-  @Output()
-  public close: EventEmitter<any>;
+  public readonly close = output();
 
   public scope: FormControl<string>;
   public value: FormControl<string>;
@@ -83,14 +66,15 @@ export class ExternalIdComponent implements OnInit {
       scope: this.scope,
       value: this.value,
     });
-    // events
-    this.idChange = new EventEmitter<ExternalId>();
-    this.close = new EventEmitter<any>();
+
+    effect(() => {
+      this.updateForm(this.id());
+    });
   }
 
   public ngOnInit(): void {
-    if (this.scopeEntries?.length && !this.scope.value) {
-      this.scope.setValue(this.scopeEntries[0].id);
+    if (this.scopeEntries()?.length && !this.scope.value) {
+      this.scope.setValue(this.scopeEntries()![0].id);
     }
   }
 
@@ -106,7 +90,7 @@ export class ExternalIdComponent implements OnInit {
 
   private getId(): ExternalId {
     return {
-      sourceId: this._id?.sourceId || '',
+      sourceId: this.id()?.sourceId || '',
       scope: this.scope.value?.trim(),
       value: this.value.value?.trim(),
     };
@@ -120,7 +104,6 @@ export class ExternalIdComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    this._id = this.getId();
-    this.idChange.emit(this._id);
+    this.id.set(this.getId());
   }
 }

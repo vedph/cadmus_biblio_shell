@@ -35,9 +35,9 @@
   <div style="margin-bottom: 8px">
     <!-- authors -->
     <biblio-work-authors
-      [roleEntries]="roleEntries"
+      [roleEntries]="roleEntries()"
       [authors]="authors.value"
-      (authorsChange)="onAuthorsChange($event)"
+      (authorsChange)="onAuthorsChange($event!)"
     ></biblio-work-authors>
   </div>
 
@@ -56,11 +56,11 @@
 
   <div class="form-row">
     <!-- language (bound) -->
-    @if (langEntries?.length) {
+    @if (langEntries()?.length) {
     <mat-form-field>
       <mat-label>language</mat-label>
       <mat-select [formControl]="language">
-        @for (e of langEntries; track e.id) {
+        @for (e of langEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
@@ -71,7 +71,7 @@
     </mat-form-field>
     }
     <!-- language (free) -->
-    @if (!langEntries?.length) {
+    @else {
     <mat-form-field>
       <mat-label>language</mat-label>
       <input matInput [formControl]="language" />
@@ -126,7 +126,7 @@
       <cadmus-refs-historical-date
         [date]="datation.value || undefined"
         (dateChange)="onDatationChange($event)"
-      ></cadmus-refs-historical-date>
+      />
       }
     </div>
   </div>
@@ -134,9 +134,8 @@
   <!-- container -->
   @if (!isContainer.value) {
   <fieldset>
-    <legend>container</legend>
     <!-- lookup -->
-    <div class="form-row">
+    <div class="form-row" style="margin-bottom: 6px">
       <cadmus-ref-lookup
         label="container"
         [item]="container.value"
@@ -220,9 +219,9 @@
   <div>
     <!-- keywords -->
     <biblio-work-keywords
-      [langEntries]="langEntries"
-      [model]="keywords.value"
-      (modelChange)="onKeywordsChange($event)"
+      [langEntries]="langEntries()"
+      [keywords]="keywords.value"
+      (keywordsChange)="onKeywordsChange($event!)"
     />
   </div>
   <div>
@@ -230,9 +229,9 @@
     <fieldset>
       <legend>links</legend>
       <biblio-external-ids
-        [scopeEntries]="scopeEntries"
+        [scopeEntries]="scopeEntries()"
         [ids]="links.value"
-        (idsChange)="onLinksChange($event)"
+        (idsChange)="onLinksChange($event!)"
       />
     </fieldset>
   </div>

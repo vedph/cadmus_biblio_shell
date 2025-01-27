@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-} from '@angular/core';
+import { Component, effect, input, model, OnDestroy } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -102,56 +96,33 @@ import { WorkComponent } from '../work/work.component';
   ],
 })
 export class WorkListComponent implements OnDestroy {
-  private _entries: WorkListEntry[];
-  private _subscriptions: Subscription[];
+  private _subs: Subscription[];
+  private _dropNextInput?: boolean;
 
-  @Input()
-  public pickEnabled: boolean;
-  @Input()
-  public editEnabled: boolean;
-  @Input()
-  public deleteEnabled: boolean;
-  @Input()
-  public addEnabled: boolean;
+  public readonly pickEnabled = input<boolean>(true);
+  public readonly editEnabled = input<boolean>(true);
+  public readonly deleteEnabled = input<boolean>(true);
+  public readonly addEnabled = input<boolean>(true);
 
   /**
    * The work entries.
    */
-  @Input()
-  public get entries(): WorkListEntry[] {
-    return this._entries;
-  }
-  public set entries(value: WorkListEntry[]) {
-    if (this._entries === value) {
-      return;
-    }
-    this._entries = value || [];
-    this.updateForm(this._entries);
-  }
+  public readonly entries = model<WorkListEntry[]>([]);
+
   /**
    * Authors roles entries.
    */
-  @Input()
-  public roleEntries: ThesaurusEntry[] | undefined;
+  public readonly roleEntries = input<ThesaurusEntry[]>();
   /**
    * Keywords language entries.
    */
-  @Input()
-  public langEntries: ThesaurusEntry[] | undefined;
+  public readonly langEntries = input<ThesaurusEntry[]>();
   /**
    * Selected works tags entries.
    */
-  @Input()
-  public workTagEntries: ThesaurusEntry[] | undefined;
+  public readonly workTagEntries = input<ThesaurusEntry[]>();
   // ext-biblio-link-scopes
-  @Input()
-  public scopeEntries: ThesaurusEntry[] | undefined;
-
-  /**
-   * Emitted when entries have been changed.
-   */
-  @Output()
-  public entriesChange: EventEmitter<WorkListEntry[]>;
+  public readonly scopeEntries = input<ThesaurusEntry[]>();
 
   public form: FormGroup;
   // this array is kept in synch with entries:
@@ -176,23 +147,31 @@ export class WorkListComponent implements OnDestroy {
     private _utilService: BiblioUtilService,
     private _scroller: ViewportScroller
   ) {
-    this.pickEnabled = true;
-    this.editEnabled = true;
-    this.deleteEnabled = true;
-    this.addEnabled = true;
-    this._entries = [];
-    this._subscriptions = [];
+    this._subs = [];
     this.detailsOpen = false;
     this.browserSignals$ = new BehaviorSubject<string>('');
-    this.entriesChange = new EventEmitter<WorkListEntry[]>();
     // form
     this.works = _formBuilder.array([]);
     this.form = _formBuilder.group({
       works: this.works,
     });
+
+    effect(() => {
+      if (this._dropNextInput) {
+        this._dropNextInput = false;
+        return;
+      }
+      this.updateForm(this.entries());
+    });
   }
 
-  ngOnDestroy(): void {
+  private cleanup(): void {
+    this._subs.forEach((s) => {
+      s.unsubscribe();
+    });
+  }
+
+  public ngOnDestroy(): void {
     this.cleanup();
   }
 
@@ -213,21 +192,23 @@ export class WorkListComponent implements OnDestroy {
     this.form.markAsPristine();
   }
 
-  private updateEntries(): void {
+  private getEntries(): WorkListEntry[] {
+    const entries: WorkListEntry[] = [];
+
     for (let i = 0; i < this.works.length; i++) {
       const g = this.works.at(i) as FormGroup;
-      this._entries[i].tag = g.controls['tag'].value?.trim();
-      this._entries[i].note = g.controls['note'].value?.trim();
+      entries.push({
+        ...this.entries()[i],
+        tag: g.controls['tag'].value?.trim(),
+        note: g.controls['note'].value?.trim(),
+      });
     }
+    return entries;
   }
 
-  private emitEntriesChange(): void {
-    this.updateEntries();
-    this.entriesChange.emit([...this._entries]);
-  }
-
-  public copyId(id: string): void {
-    this._clipboard.copy(id);
+  public copyWorkId(index: number): void {
+    const entry = this.entries()[index];
+    this._clipboard.copy(entry.id);
   }
 
   private viewDetails(id: string, container: boolean): void {
@@ -292,25 +273,31 @@ export class WorkListComponent implements OnDestroy {
     if (index < 1) {
       return;
     }
-    const item = this._entries[index];
-    this._entries.splice(index, 1);
-    this._entries.splice(index - 1, 0, item);
+    const entries = [...this.entries()];
+    const item = entries[index];
+    entries.splice(index, 1);
+    entries.splice(index - 1, 0, item);
+    this.entries.set(entries);
   }
 
   private moveEntryDown(index: number): void {
-    if (index + 1 >= this._entries.length) {
+    if (index + 1 >= this.entries().length) {
       return;
     }
-    const item = this._entries[index];
-    this._entries.splice(index, 1);
-    this._entries.splice(index + 1, 0, item);
+    const entries = [...this.entries()];
+    const item = entries[index];
+    entries.splice(index, 1);
+    entries.splice(index + 1, 0, item);
+    this.entries.set(entries);
   }
 
   private removeEntry(index: number): void {
-    this._entries.splice(index, 1);
-    if (!this._entries.length) {
+    const entries = [...this.entries()];
+    entries.splice(index, 1);
+    if (!entries.length) {
       this.detailWork = undefined;
     }
+    this.entries.set(entries);
   }
   //#endregion
 
@@ -322,21 +309,16 @@ export class WorkListComponent implements OnDestroy {
     return authors.map((a) => this._utilService.authorToString(a)).join('; ');
   }
 
-  private cleanup(): void {
-    this._subscriptions.forEach((s) => {
-      s.unsubscribe();
-    });
-  }
-
   private getWorkGroup(work?: WorkListEntry): FormGroup {
     const g = this._formBuilder.group({
       tag: this._formBuilder.control(work?.tag, Validators.maxLength(50)),
       note: this._formBuilder.control(work?.note, Validators.maxLength(500)),
     });
-    this._subscriptions.push(
+    this._subs.push(
       g.valueChanges.pipe(debounceTime(300)).subscribe(() => {
         this.form.markAsDirty();
-        this.emitEntriesChange();
+        this._dropNextInput = true;
+        this.entries.set(this.getEntries());
       })
     );
     return g;
@@ -345,7 +327,7 @@ export class WorkListComponent implements OnDestroy {
   public removeWork(index: number): void {
     this.works.removeAt(index);
     this.removeEntry(index);
-    this.emitEntriesChange();
+    this.entries.set(this.getEntries());
     this.works.markAsDirty();
   }
 
@@ -357,7 +339,7 @@ export class WorkListComponent implements OnDestroy {
     this.works.removeAt(index);
     this.works.insert(index - 1, work);
     this.moveEntryUp(index);
-    this.emitEntriesChange();
+    this.entries.set(this.getEntries());
     this.works.markAsDirty();
   }
 
@@ -369,15 +351,17 @@ export class WorkListComponent implements OnDestroy {
     this.works.removeAt(index);
     this.works.insert(index + 1, work);
     this.moveEntryDown(index);
-    this.emitEntriesChange();
+    this.entries.set(this.getEntries());
     this.works.markAsDirty();
   }
 
-  public viewWorkDetails(entry: WorkListEntry): void {
+  public viewWorkDetails(index: number): void {
+    const entry = this.entries()[index];
     this.viewDetails(entry.id, entry.payload === 'c');
   }
 
-  public editWork(entry: WorkListEntry): void {
+  public editWork(index: number): void {
+    const entry = this.entries()[index];
     this.edit(entry.id, entry.payload === 'c');
   }
   //#endregion
@@ -388,7 +372,8 @@ export class WorkListComponent implements OnDestroy {
    * @param work The work to add.
    */
   public pickBrowserWork(work: WorkInfo): void {
-    if (this._entries.find((w) => w.id === work.id)) {
+    const entries = [...this.entries()];
+    if (entries.find((w) => w.id === work.id)) {
       return;
     }
     const entry: WorkListEntry = {
@@ -396,11 +381,11 @@ export class WorkListComponent implements OnDestroy {
       label: this._utilService.workInfoToString(work),
       payload: work.isContainer ? 'c' : undefined,
     };
-    this._entries.push(entry);
+    entries.push(entry);
+    this.entries.set(entries);
     const g = this.getWorkGroup(entry);
     this.works.controls.push(g);
     this.form.markAsDirty();
-    this.emitEntriesChange();
   }
 
   /**
@@ -419,12 +404,13 @@ export class WorkListComponent implements OnDestroy {
 
   private removeDeletedWork(work: WorkInfo): void {
     // remove the entry from list if it was deleted
-    const index = this._entries.findIndex((e) => e.id === work.id);
+    const entries = [...this.entries()];
+    const index = entries.findIndex((e) => e.id === work.id);
     if (index > -1) {
       this.works.removeAt(index);
-      this._entries.splice(index, 1);
+      entries.splice(index, 1);
+      this.entries.set(entries);
       this.form.markAsDirty();
-      this.emitEntriesChange();
     }
   }
 
@@ -473,7 +459,8 @@ export class WorkListComponent implements OnDestroy {
     this.browserSignals$.next('refresh');
 
     // refresh the entry in list if it was edited
-    const index = this._entries.findIndex((e) => e.id === work.id);
+    const entries = [...this.entries()];
+    const index = entries.findIndex((e) => e.id === work.id);
     if (index > -1) {
       const entry = {
         id: work.id || '',
@@ -481,9 +468,9 @@ export class WorkListComponent implements OnDestroy {
         payload: container ? 'c' : undefined,
       };
       // (no change for works)
-      this._entries.splice(index, 1, entry);
+      entries.splice(index, 1, entry);
+      this.entries.set(entries);
       this.form.markAsDirty();
-      this.emitEntriesChange();
     }
   }
 

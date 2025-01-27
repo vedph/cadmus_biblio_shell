@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, input, OnInit, output } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -58,14 +58,11 @@ const WORK_FILTER_KEY = 'cadmus-biblio-ui.work-filter';
 export class WorkFilterComponent implements OnInit {
   private _filter$: BehaviorSubject<WorkFilter>;
 
-  @Input()
-  public persisted: boolean;
+  public readonly persisted = input<boolean>(false);
 
-  @Input()
-  public langEntries: ThesaurusEntry[] | undefined;
+  public readonly langEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public filterChange: EventEmitter<WorkFilter>;
+  public readonly filterChange = output<WorkFilter>();
 
   public form: FormGroup;
   public matchAny: FormControl<boolean>;
@@ -94,9 +91,7 @@ export class WorkFilterComponent implements OnInit {
       pageNumber: 1,
       pageSize: 10,
     });
-    this.persisted = false;
     this.types = [];
-    this.filterChange = new EventEmitter<WorkFilter>();
     // form
     this.matchAny = formBuilder.control(false, { nonNullable: true });
     this.type = formBuilder.control(null);
@@ -143,7 +138,7 @@ export class WorkFilterComponent implements OnInit {
     });
 
     // load if required
-    if (this.persisted) {
+    if (this.persisted()) {
       const f = this._storageService.retrieve<WorkFilter>(
         WORK_FILTER_KEY,
         true

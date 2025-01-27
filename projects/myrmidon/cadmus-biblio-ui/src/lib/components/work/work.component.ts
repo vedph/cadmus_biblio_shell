@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -88,38 +88,22 @@ import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
   ],
 })
 export class WorkComponent implements OnInit {
-  private _work: EditedWork | undefined;
-
-  @Input()
-  public get work(): EditedWork | undefined {
-    return this._work;
-  }
-  public set work(value: EditedWork | undefined) {
-    if (this._work === value) {
-      return;
-    }
-    this._work = value;
-    this.updateForm(value);
-  }
+  public readonly work = model<EditedWork>();
 
   /**
    * Authors roles entries: ext-biblio-author-roles.
    */
-  @Input()
-  public roleEntries: ThesaurusEntry[] | undefined;
+  public readonly roleEntries = input<ThesaurusEntry[]>();
   /**
    * Keywords language entries: ext-biblio-languages.
    */
-  @Input()
-  public langEntries: ThesaurusEntry[] | undefined;
-  // ext-biblio-link-scopes
-  @Input()
-  public scopeEntries: ThesaurusEntry[] | undefined;
+  public readonly langEntries = input<ThesaurusEntry[]>();
+  /**
+   * Scope entries: ext-biblio-link-scopes.
+   */
+  public readonly scopeEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public workChange: EventEmitter<EditedWork>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public form: FormGroup;
   public isContainer: FormControl<boolean>;
@@ -155,10 +139,6 @@ export class WorkComponent implements OnInit {
     private _workKeyService: WorkKeyService,
     private _biblioUtil: BiblioUtilService
   ) {
-    this.workChange = new EventEmitter<EditedWork>();
-    this.editorClose = new EventEmitter<any>();
-
-    // form
     this.isContainer = formBuilder.control(false, { nonNullable: true });
     this.type = formBuilder.control(null, Validators.required);
     this.isUserKey = formBuilder.control(false, { nonNullable: true });
@@ -213,6 +193,10 @@ export class WorkComponent implements OnInit {
       keywords: this.keywords,
       links: this.links,
     });
+
+    effect(() => {
+      this.updateForm(this.work());
+    });
   }
 
   ngOnInit(): void {
@@ -264,44 +248,47 @@ export class WorkComponent implements OnInit {
 
     this.isContainer.setValue(work.isContainer || false);
     this.type.setValue(work.type);
+    this.hasDatation.setValue(!!work.datation);
 
-    // a user key starts with !, but here we show 2 controls,
-    // a checkbox for user and a textbox for value (without !)
-    const userKey = work.key.startsWith('!');
-    this.isUserKey.setValue(userKey);
-    this.key.setValue(userKey ? work.key.substring(1) : work.key);
+    setTimeout(() => {
+      // a user key starts with !, but here we show 2 controls,
+      // a checkbox for user and a textbox for value (without !)
+      const userKey = work.key.startsWith('!');
+      this.isUserKey.setValue(userKey);
+      this.key.setValue(userKey ? work.key.substring(1) : work.key);
 
-    this.authors.setValue(work.authors || []);
-    this.title.setValue(work.title);
-    this.language.setValue(work.language);
-    this.placePub.setValue(work.placePub || null);
-    this.yearPub.setValue(work.yearPub || 0);
-    this.yearPub2.setValue(work.yearPub2 || 0);
-    this.publisher.setValue(work.publisher || null);
-    this.container.setValue(work.container || null);
-    this.firstPage.setValue(work.firstPage || 0);
-    this.lastPage.setValue(work.lastPage || 0);
-    this.number.setValue(work.number || null);
-    this.note.setValue(work.note || null);
-    if (work.datation) {
-      this.hasDatation.setValue(true);
-      this.datation.setValue(HistoricalDate.parse(work.datation) || null);
-    } else {
-      this.hasDatation.setValue(false);
-      this.datation.reset();
-    }
-    this.location.setValue(work.location || null);
-    this.hasAccessDate.setValue(work.accessDate ? true : false);
-    this.accessDate.setValue(work.accessDate || null);
-    this.keywords.setValue(work.keywords || []);
-    this.links.setValue(work.links || []);
+      this.authors.setValue(work.authors || []);
+      this.title.setValue(work.title);
+      this.language.setValue(work.language);
+      this.placePub.setValue(work.placePub || null);
+      this.yearPub.setValue(work.yearPub || 0);
+      this.yearPub2.setValue(work.yearPub2 || 0);
+      this.publisher.setValue(work.publisher || null);
+      this.container.setValue(work.container || null);
+      this.firstPage.setValue(work.firstPage || 0);
+      this.lastPage.setValue(work.lastPage || 0);
+      this.number.setValue(work.number || null);
+      this.note.setValue(work.note || null);
+      if (work.datation) {
+        // this.hasDatation.setValue(true);
+        this.datation.setValue(HistoricalDate.parse(work.datation) || null);
+      } else {
+        // this.hasDatation.setValue(false);
+        this.datation.reset();
+      }
+      this.location.setValue(work.location || null);
+      this.hasAccessDate.setValue(work.accessDate ? true : false);
+      this.accessDate.setValue(work.accessDate || null);
+      this.keywords.setValue(work.keywords || []);
+      this.links.setValue(work.links || []);
 
-    // if it has a container it can't be a container
-    if (work.container) {
-      this.isContainer.setValue(false);
-    }
+      // if it has a container it can't be a container
+      // if (work.container) {
+      //   this.isContainer.setValue(false);
+      // }
 
-    this.form.markAsPristine();
+      this.form.markAsPristine();
+    }, 0);
   }
 
   private getWork(): EditedWork {
@@ -317,7 +304,7 @@ export class WorkComponent implements OnInit {
 
     return {
       isContainer: this.isContainer.value,
-      id: this._work?.id,
+      id: this.work()?.id,
       type: this.type.value || '',
       key: this.isUserKey.value ? '!' + key : key,
       authors: this.authors.value?.length ? this.authors.value : undefined,
@@ -395,7 +382,6 @@ export class WorkComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._work = this.getWork();
-    this.workChange.emit(this._work);
+    this.work.set(this.getWork());
   }
 }

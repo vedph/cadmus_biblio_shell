@@ -1,3 +1,12 @@
+.form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.form-row * {
+  flex: 0 0 auto;
+}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -25,6 +34,9 @@ fieldset {
 table#work-list {
   width: 100%;
 }
+#toolbar {
+  margin-bottom: 6px;
+}
 div#filters {
   grid-area: filters;
 }
@@ -45,7 +57,7 @@ div#container {
     "filters list"
     ". pagination"
     "details details";
-  gap: 8px;
+  gap: 12px;
 }
 @media only screen and (max-width: 800px) {
   div#container {

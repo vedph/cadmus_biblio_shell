@@ -11,7 +11,7 @@
       }}</mat-panel-description>
     </mat-expansion-panel-header>
 
-    <div class="form-row">
+    <div class="button-row">
       <cadmus-ref-lookup
         [service]="authorLookupService"
         [item]="author"
@@ -23,9 +23,10 @@
         type="button"
         mat-flat-button
         (click)="addAuthor()"
+        class="mat-primary"
         matTooltip="Add a new author"
       >
-        <mat-icon class="mat-primary">add_circle</mat-icon> new
+        <mat-icon>add_circle</mat-icon> new
       </button>
     </div>
 
@@ -105,11 +106,11 @@
               }
             </mat-form-field>
             <!-- role (bound) -->
-            @if (roleEntries?.length) {
+            @if (roleEntries()?.length) {
             <mat-form-field>
               <mat-label>role</mat-label>
               <mat-select formControlName="role">
-                @for (e of roleEntries; track e.id) {
+                @for (e of roleEntries(); track e.id) {
                 <mat-option [value]="e.id">{{ e.value }}</mat-option>
                 }
               </mat-select>

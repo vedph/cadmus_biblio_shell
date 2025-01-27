@@ -5,3 +5,21 @@
   max-width: 200px;
   text-overflow: ellipsis;
 }
+.form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.form-row * {
+  flex: 0 0 auto;
+}
+fieldset {
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 8px 0;
+}
+legend {
+  color: silver;
+}

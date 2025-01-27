@@ -1,11 +1,11 @@
 <form [formGroup]="form" (submit)="save()">
   <div>
     <!-- scope (bound) -->
-    @if (scopeEntries?.length) {
+    @if (scopeEntries()?.length) {
     <mat-form-field>
       <mat-label>scope</mat-label>
       <mat-select [formControl]="scope">
-        @for (e of scopeEntries; track e.id) {
+        @for (e of scopeEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>

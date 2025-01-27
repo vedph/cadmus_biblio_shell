@@ -11,13 +11,16 @@
         <div>
           <h3>Work</h3>
           <cadmus-ref-lookup
+            label="work"
             [service]="workLookupService"
             (itemChange)="onWorkChange($event)"
           />
           <hr />
           @if (work) {
           <div>
-            <code><pre>{{ work | json }}</pre></code>
+            <code>
+              <pre>{{ work | json }}</pre>
+            </code>
           </div>
           }
         </div>
@@ -33,7 +36,9 @@
           <hr />
           @if (container) {
           <div>
-            <code><pre>{{ container | json }}</pre></code>
+            <code>
+              <pre>{{ container | json }}</pre>
+            </code>
           </div>
           }
         </div>
@@ -48,7 +53,9 @@
         />
         @if (author) {
         <div>
-          <code><pre>{{ author | json }}</pre></code>
+          <code>
+            <pre>{{ author | json }}</pre>
+          </code>
         </div>
         }
       </mat-tab>
@@ -57,11 +64,13 @@
       <mat-tab label="work authors">
         <biblio-work-authors
           [roleEntries]="roleEntries"
-          (authorsChange)="onAuthorsChange($event)"
+          (authorsChange)="onAuthorsChange($event!)"
         />
         @if (authors) {
         <div>
-          <code><pre>{{ authors | json }}</pre></code>
+          <code>
+            <pre>{{ authors | json }}</pre>
+          </code>
         </div>
         }
       </mat-tab>
@@ -72,7 +81,9 @@
         <hr />
         @if (keyword) {
         <div>
-          <code><pre>{{ keyword | json }}</pre></code>
+          <code>
+            <pre>{{ keyword | json }}</pre>
+          </code>
         </div>
         }
       </mat-tab>
@@ -81,11 +92,13 @@
       <mat-tab label="work keywords">
         <biblio-work-keywords
           [langEntries]="langEntries"
-          (modelChange)="onKeywordsChange($event)"
+          (keywordsChange)="onKeywordsChange($event!)"
         />
         @if (keywords) {
         <div>
-          <code><pre>{{ keywords | json }}</pre></code>
+          <code>
+            <pre>{{ keywords | json }}</pre>
+          </code>
         </div>
         }
       </mat-tab>
@@ -94,11 +107,13 @@
       <mat-tab label="work">
         <biblio-work
           [langEntries]="langEntries"
-          (workChange)="onEditedWorkChange($event)"
+          (workChange)="onEditedWorkChange($event!)"
         />
         @if (editedWork) {
         <div>
-          <code><pre>{{ editedWork | json }}</pre></code>
+          <code>
+            <pre>{{ editedWork | json }}</pre>
+          </code>
         </div>
         }
       </mat-tab>
@@ -112,7 +127,9 @@
         />
         @if (filter) {
         <div>
-          <code><pre>{{ filter | json }}</pre></code>
+          <code>
+            <pre>{{ filter | json }}</pre>
+          </code>
         </div>
         }
       </mat-tab>
@@ -126,7 +143,7 @@
             (itemChange)="onWorkChangeForDetails($event)"
           />
         </div>
-        <biblio-work-details [work]="detWork"/>
+        <biblio-work-details [work]="detWork" />
       </mat-tab>
 
       <!-- work browser -->

@@ -7,4 +7,3 @@ WORKDIR /usr/share/nginx/html
 COPY dist/cadmus-biblio-shell/browser/ .
 
 EXPOSE 80
-# ENTRYPOINT ["nginx", "-g", "daemon off;"]

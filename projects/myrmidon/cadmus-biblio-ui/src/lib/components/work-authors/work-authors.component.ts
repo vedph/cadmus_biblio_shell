@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -62,37 +62,19 @@ import { AuthorRefLookupService } from '../../services/author-ref-lookup.service
 })
 export class WorkAuthorsComponent implements OnInit {
   private _updating?: boolean;
-  private _authors: WorkAuthor[] | undefined;
 
-  @Input()
-  public get authors(): WorkAuthor[] | undefined {
-    return this._authors;
-  }
-  public set authors(value: WorkAuthor[] | undefined) {
-    if (this._authors === value) {
-      return;
-    }
-    this._authors = value;
-    this.updateForm(value);
-  }
+  public readonly authors = model<WorkAuthor[]>();
 
   /**
    * Author's roles thesaurus entries. When set, there
    * should be an entry with value='-' for the null role.
    */
-  @Input()
-  public roleEntries: ThesaurusEntry[] | undefined;
+  public readonly roleEntries = input<ThesaurusEntry[]>();
 
-  /**
-   * Event fired when author(s) are set.
-   */
-  @Output()
-  public authorsChange: EventEmitter<WorkAuthor[]>;
   /**
    * Event fired when this editor is discarded.
    */
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public editedAuthors: FormArray;
   public authorCount: FormControl<number>;
@@ -109,8 +91,6 @@ export class WorkAuthorsComponent implements OnInit {
     public authorLookupService: AuthorRefLookupService,
     private _formBuilder: FormBuilder
   ) {
-    this.authorsChange = new EventEmitter<WorkAuthor[]>();
-    this.editorClose = new EventEmitter<any>();
     this.editing = false;
     this.authorCount = _formBuilder.control(0, {
       validators: Validators.min(1),
@@ -122,9 +102,13 @@ export class WorkAuthorsComponent implements OnInit {
       editedAuthors: this.editedAuthors,
       authorCount: this.authorCount,
     });
+
+    effect(() => {
+      this.updateForm(this.authors());
+    });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // update current when authors change
     this.editedAuthors.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
       if (!this._updating) {
@@ -136,7 +120,7 @@ export class WorkAuthorsComponent implements OnInit {
     });
   }
 
-  private updateForm(authors: WorkAuthor[] | undefined): void {
+  private updateForm(authors?: WorkAuthor[]): void {
     if (!authors?.length) {
       this.form.reset();
       this.currentAuthors = undefined;
@@ -282,7 +266,7 @@ export class WorkAuthorsComponent implements OnInit {
 
   public cancel(): void {
     this.editing = false;
-    this.updateForm(this._authors);
+    this.updateForm(this.authors());
     this.editorClose.emit();
   }
 
@@ -290,8 +274,7 @@ export class WorkAuthorsComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._authors = this.getAuthors();
     this.editing = false;
-    this.authorsChange.emit(this._authors);
+    this.authors.set(this.getAuthors());
   }
 }

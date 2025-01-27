@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, OnInit, output, Output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -47,30 +47,24 @@ export class KeywordPickerComponent implements OnInit {
   /**
    * The maximum count of works to retrieve. Default=10.
    */
-  @Input()
-  public limit: number;
+  public readonly limit = input<number>(10);
 
   /**
-   * The label attached to this picker. Default=work or container.
+   * The label attached to this picker.
    */
-  @Input()
-  public label: string;
+  public readonly label = input<string>('keyword/lang:keyword');
 
   /**
    * Fired when a keyword is selected.
    */
-  @Output()
-  public keywordChange: EventEmitter<Keyword>;
+  public readonly keywordChange = output<Keyword>();
+
   public form: FormGroup;
   public lookup: FormControl;
   public keywords$: Observable<Keyword[]> | undefined;
   public keyword: Keyword | undefined;
 
   constructor(formBuilder: FormBuilder, private _biblioService: BiblioService) {
-    this.limit = 10;
-    this.label = 'keyword/lang:keyword';
-    this.keywordChange = new EventEmitter<Keyword>();
-    // form
     this.lookup = formBuilder.control(null);
     this.form = formBuilder.group({
       lookup: this.lookup,
@@ -91,7 +85,7 @@ export class KeywordPickerComponent implements OnInit {
 
     return {
       pageNumber: 1,
-      pageSize: this.limit,
+      pageSize: this.limit(),
       language: language,
       value: value,
     };
