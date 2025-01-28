@@ -29,10 +29,10 @@ services:
 
   # Biblio API
   cadmus-biblio-api:
-    image: vedph2020/cadmus-biblio-api:6.0.1
+    image: vedph2020/cadmus-biblio-api:7.0.2
     container_name: cadmus-biblio-api
     ports:
-      - 61691:8080
+      - 5000:8080
     depends_on:
       - cadmus-biblio-mongo
       - cadmus-biblio-pgsql
