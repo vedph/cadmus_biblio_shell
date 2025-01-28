@@ -1,6 +1,7 @@
 .current {
   overflow-wrap: break-word;
   word-wrap: break-word;
+  -webkit-hyphens: auto;
   hyphens: auto;
   padding: 4px;
   border: solid 1px silver;
@@ -8,4 +9,19 @@
 }
 .indented {
   margin-left: 135px;
+}
+.form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.form-row * {
+  flex: 0 0 auto;
+}
+fieldset {
+  border: solid 1px silver;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 8px 0;
 }
