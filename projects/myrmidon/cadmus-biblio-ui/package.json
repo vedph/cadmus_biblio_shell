@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-biblio-ui",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "description": "Cadmus - bibliographic API UI components",
   "keywords": [
     "Cadmus",
@@ -20,10 +20,10 @@
     "@myrmidon/ngx-tools": "^1.0.0",
     "@myrmidon/ngx-mat-tools": "^0.0.1",
     "@myrmidon/cadmus-refs-historical-date": "^8.0.0",
-    "@myrmidon/cadmus-refs-lookup": "^8.0.0",
+    "@myrmidon/cadmus-refs-lookup": "^8.0.1",
     "@myrmidon/cadmus-core": "^11.0.0",
     "@myrmidon/cadmus-ui": "^12.0.0",
-    "@myrmidon/cadmus-biblio-api": "^8.0.0",
+    "@myrmidon/cadmus-biblio-api": "^8.0.1",
     "@myrmidon/cadmus-biblio-core": "^8.0.0"
   },
   "dependencies": {

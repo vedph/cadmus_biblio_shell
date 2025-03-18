@@ -19,8 +19,8 @@
     "@angular/core": "^19.0.0",
     "@myrmidon/auth-jwt-login": "^7.1.1",
     "@myrmidon/cadmus-ui": "^12.0.0",
-    "@myrmidon/cadmus-biblio-ui": "^9.0.0",
-    "@myrmidon/cadmus-biblio-api": "^8.0.0",
+    "@myrmidon/cadmus-biblio-ui": "^9.0.1",
+    "@myrmidon/cadmus-biblio-api": "^8.0.1",
     "@myrmidon/cadmus-biblio-core": "^8.0.0"
   },
   "dependencies": {

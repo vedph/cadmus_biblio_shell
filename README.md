@@ -38,6 +38,10 @@ graph LR;
 
 ## History
 
+### 10.0.0
+
+- 2025-03-18: updated Angular and packages (major versions of Cadmus packages).
+
 ### 9.0.0
 
 - 2025-01-27:
