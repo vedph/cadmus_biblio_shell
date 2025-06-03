@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { take } from 'rxjs';
 
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +11,7 @@ import { WorkListComponent } from '../../../projects/myrmidon/cadmus-biblio-ui/s
 
 @Component({
   selector: 'cadmus-biblio-page',
-  imports: [CommonModule, MatCardModule, WorkListComponent],
+  imports: [MatCardModule, WorkListComponent],
   templateUrl: './biblio-page.component.html',
   styleUrls: ['./biblio-page.component.scss'],
 })

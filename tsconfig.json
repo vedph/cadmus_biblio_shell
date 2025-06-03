@@ -3,16 +3,11 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@myrmidon/cadmus-biblio-api": [
-        "./dist/myrmidon/cadmus-biblio-api"
-      ],
-      "@myrmidon/cadmus-biblio-core": [
-        "./dist/myrmidon/cadmus-biblio-core"
-      ],
-      "@myrmidon/cadmus-biblio-ui": [
-        "./dist/myrmidon/cadmus-biblio-ui"
-      ],
+      "@myrmidon/cadmus-biblio-api": ["./dist/myrmidon/cadmus-biblio-api"],
+      "@myrmidon/cadmus-biblio-core": ["./dist/myrmidon/cadmus-biblio-core"],
+      "@myrmidon/cadmus-biblio-ui": ["./dist/myrmidon/cadmus-biblio-ui"],
       "@myrmidon/cadmus-part-biblio-pg": [
         "./dist/myrmidon/cadmus-part-biblio-pg"
       ],

@@ -38,6 +38,11 @@ graph LR;
 
 ## History
 
+### 11.0.0
+
+- 2025-06-03:
+  - ⚠️ upgraded to Angular 20.
+  - better loading message.
 - 2025-05-06: updated Angular and packages.
 
 ### 10.0.0
