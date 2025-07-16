@@ -39,7 +39,7 @@
   <!-- author -->
   <fieldset>
     <div>
-      <cadmus-ref-lookup
+      <cadmus-refs-lookup
         label="author"
         [service]="authorLookupService"
         (itemChange)="onAuthorChange($event)"
@@ -110,7 +110,7 @@
   <!-- containerId -->
   <fieldset>
     <div>
-      <cadmus-ref-lookup
+      <cadmus-refs-lookup
         label="container"
         [service]="workLookupService"
         [baseFilter]="{ container: true }"

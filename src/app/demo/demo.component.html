@@ -10,7 +10,7 @@
       <mat-tab label="work picker">
         <div>
           <h3>Work</h3>
-          <cadmus-ref-lookup
+          <cadmus-refs-lookup
             label="work"
             [service]="workLookupService"
             (itemChange)="onWorkChange($event)"
@@ -27,7 +27,7 @@
 
         <div>
           <h3>Container</h3>
-          <cadmus-ref-lookup
+          <cadmus-refs-lookup
             label="container"
             [service]="workLookupService"
             [baseFilter]="{ container: true }"
@@ -46,7 +46,7 @@
 
       <!-- author picker -->
       <mat-tab label="author picker">
-        <cadmus-ref-lookup
+        <cadmus-refs-lookup
           [service]="authorLookupService"
           label="author"
           (itemChange)="onAuthorChange($event)"
@@ -137,7 +137,7 @@
       <!-- work details -->
       <mat-tab label="work details">
         <div>
-          <cadmus-ref-lookup
+          <cadmus-refs-lookup
             label="work"
             [service]="workLookupService"
             (itemChange)="onWorkChangeForDetails($event)"

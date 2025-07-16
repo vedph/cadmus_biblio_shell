@@ -3,8 +3,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { MatCardModule } from '@angular/material/card';
 
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { PartIdentity } from '@myrmidon/cadmus-ui';
+import { ThesaurusEntry, PartIdentity } from '@myrmidon/cadmus-core';
 import {
   ExtBibliographyPart,
   EXT_BIBLIOGRAPHY_PART_TYPEID,

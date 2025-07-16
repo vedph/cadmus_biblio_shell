@@ -19,11 +19,14 @@ import {
 } from '@angular/material/card';
 
 import {
-  EditedObject,
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
-import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  ThesauriSet,
+  ThesaurusEntry,
+  EditedObject,
+} from '@myrmidon/cadmus-core';
 
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';

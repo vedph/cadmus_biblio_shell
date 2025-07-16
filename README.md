@@ -38,6 +38,8 @@ graph LR;
 
 ## History
 
+- 2025-07-16: ⚠️ updated packages and bumped all major versions.
+
 ### 11.0.0
 
 - 2025-06-03:
