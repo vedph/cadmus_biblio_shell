@@ -38,6 +38,7 @@ graph LR;
 
 ## History
 
+- 2025-08-02: updated Angular and packages.
 - 2025-07-16: ⚠️ updated packages and bumped all major versions.
 
 ### 11.0.0
