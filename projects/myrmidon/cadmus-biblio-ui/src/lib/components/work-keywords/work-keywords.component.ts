@@ -120,7 +120,7 @@ export class WorkKeywordsComponent implements OnInit {
   }
 
   private getFilter(filterText: string): KeywordFilter {
-    const m = filterText.match('^(?:([a-z]{3}):)?(.+)');
+    const m = filterText.match('^(?:([^:]+):)?(.+)');
     return {
       pageNumber: 1,
       pageSize: this.limit(),
@@ -213,7 +213,6 @@ export class WorkKeywordsComponent implements OnInit {
     return this._formBuilder.group({
       language: this._formBuilder.control(keyword?.language, [
         Validators.required,
-        Validators.pattern('^[a-z]{3}$'),
       ]),
       value: this._formBuilder.control(keyword?.value, [
         Validators.required,

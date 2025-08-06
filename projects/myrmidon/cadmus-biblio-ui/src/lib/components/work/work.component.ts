@@ -148,10 +148,7 @@ export class WorkComponent implements OnInit {
       Validators.required,
       Validators.maxLength(200),
     ]);
-    this.language = formBuilder.control(null, [
-      Validators.required,
-      Validators.pattern('^[a-z]{3}$'),
-    ]);
+    this.language = formBuilder.control(null, [Validators.required]);
     this.placePub = formBuilder.control(null, Validators.maxLength(100));
     this.yearPub = formBuilder.control(0, { nonNullable: true });
     this.yearPub2 = formBuilder.control(0, { nonNullable: true });

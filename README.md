@@ -38,6 +38,9 @@ graph LR;
 
 ## History
 
+### 12.0.0
+
+- 2025-08-06: ⚠️ untied language from ISO639-3 (`@myrmidon/cadmus-biblio-ui`, `@myrmidon/cadmus-part-biblio-ui`, `@myrmidon/cadmus-part-biblio-pg`).
 - 2025-08-02: updated Angular and packages.
 - 2025-07-16: ⚠️ updated packages and bumped all major versions.
 
