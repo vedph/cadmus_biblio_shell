@@ -12,6 +12,7 @@
     "build-lib": "npm run-script build-core --configuration=production && npm run-script build-part --configuration=production"
   },
   "private": true,
+  "packageManager": "pnpm@10.23.0",
   "dependencies": {
     "@angular/animations": "^20.1.4",
     "@angular/cdk": "^20.1.4",
@@ -95,5 +96,13 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^20.1.0",
     "typescript": "~5.8.3"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-win32-arm64-msvc": "^4.53.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
   }
 }
