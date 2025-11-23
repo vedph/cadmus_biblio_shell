@@ -9,7 +9,7 @@ import {
   EXT_BIBLIOGRAPHY_PART_TYPEID,
 } from '@myrmidon/cadmus-part-biblio-ui';
 
-import { ExtBibliographyPartComponent } from '../../../projects/myrmidon/cadmus-part-biblio-ui/src/public-api';
+import { ExtBibliographyPartComponent } from '@myrmidon/cadmus-part-biblio-ui';
 
 @Component({
   selector: 'biblio-part-page',

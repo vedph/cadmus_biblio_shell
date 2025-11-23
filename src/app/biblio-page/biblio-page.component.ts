@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ThesaurusService } from '@myrmidon/cadmus-api';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
-import { WorkListComponent } from '../../../projects/myrmidon/cadmus-biblio-ui/src/public-api';
+import { WorkListComponent } from '@myrmidon/cadmus-biblio-ui';
 
 @Component({
   selector: 'cadmus-biblio-page',

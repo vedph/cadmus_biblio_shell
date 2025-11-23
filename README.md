@@ -38,6 +38,12 @@ graph LR;
 
 ## History
 
+### 12.0.1
+
+- 2025-11-23:
+  - ⚠️ upgraded to Angular 21.
+  - migrated to `pnpm`.
+
 ### 12.0.0
 
 - 2025-08-06: ⚠️ untied language from ISO639-3 (`@myrmidon/cadmus-biblio-ui`, `@myrmidon/cadmus-part-biblio-ui`, `@myrmidon/cadmus-part-biblio-pg`).

@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Subscription, take } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -9,12 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { EnvService } from '@myrmidon/ngx-tools';
-import {
-  User,
-  AuthJwtService,
-  GravatarService,
-  GravatarPipe,
-} from '@myrmidon/auth-jwt-login';
+import { User, AuthJwtService, GravatarPipe } from '@myrmidon/auth-jwt-login';
 
 import { ThesaurusEntry, Thesaurus } from '@myrmidon/cadmus-core';
 import { AppRepository } from '@myrmidon/cadmus-state';
@@ -47,7 +42,6 @@ export class AppComponent implements OnInit, OnDestroy {
     @Inject('itemBrowserKeys')
     private _itemBrowserKeys: { [key: string]: string },
     private _authService: AuthJwtService,
-    private _gravatarService: GravatarService,
     private _appRepository: AppRepository,
     private _router: Router,
     env: EnvService

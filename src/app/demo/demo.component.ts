@@ -28,7 +28,7 @@ import {
   WorkDetailsComponent,
   WorkFilterComponent,
   WorkKeywordsComponent,
-} from '../../../projects/myrmidon/cadmus-biblio-ui/src/public-api';
+} from '@myrmidon/cadmus-biblio-ui';
 
 @Component({
   selector: 'biblio-demo',

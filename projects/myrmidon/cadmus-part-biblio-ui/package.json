@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-biblio-ui",
-  "version": "12.0.0",
+  "version": "12.0.1",
   "description": "Cadmus - external bibliography part",
   "keywords": [
     "Cadmus",
@@ -15,11 +15,11 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@myrmidon/auth-jwt-login": "^8.0.1",
-    "@myrmidon/cadmus-ui": "^14.0.0",
-    "@myrmidon/cadmus-biblio-ui": "^11.0.0",
+    "@angular/common": "^20.0.0 || ^21.0.0",
+    "@angular/core": "^20.0.0 || ^21.0.0",
+    "@myrmidon/auth-jwt-login": "^8.0.3",
+    "@myrmidon/cadmus-ui": "^15.1.4",
+    "@myrmidon/cadmus-biblio-ui": "^12.0.0",
     "@myrmidon/cadmus-biblio-api": "^10.0.0",
     "@myrmidon/cadmus-biblio-core": "^10.0.0"
   },
