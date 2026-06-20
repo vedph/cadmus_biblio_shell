@@ -1,4 +1,4 @@
-import { Component, effect, input, model, OnInit, output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -26,6 +26,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
   selector: 'biblio-external-id',
   templateUrl: './external-id.component.html',
   styleUrls: ['./external-id.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

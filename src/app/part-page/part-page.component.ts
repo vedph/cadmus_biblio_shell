@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { MatCardModule } from '@angular/material/card';
 
@@ -15,6 +15,7 @@ import { ExtBibliographyPartComponent } from '@myrmidon/cadmus-part-biblio-ui';
   selector: 'biblio-part-page',
   imports: [CommonModule, MatCardModule, ExtBibliographyPartComponent],
   templateUrl: './part-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./part-page.component.css'],
 })
 export class PartPageComponent implements OnInit {

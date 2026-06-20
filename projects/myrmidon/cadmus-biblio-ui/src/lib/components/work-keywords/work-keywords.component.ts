@@ -1,4 +1,4 @@
-import { Component, effect, input, model, OnInit, output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output, ChangeDetectionStrategy } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import {
   FormArray,
@@ -44,6 +44,7 @@ import { Keyword } from '@myrmidon/cadmus-biblio-core';
   selector: 'biblio-work-keywords',
   templateUrl: './work-keywords.component.html',
   styleUrls: ['./work-keywords.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

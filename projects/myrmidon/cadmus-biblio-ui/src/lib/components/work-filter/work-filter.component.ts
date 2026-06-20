@@ -1,4 +1,4 @@
-import { Component, input, OnInit, output } from '@angular/core';
+import { Component, input, OnInit, output, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -39,6 +39,7 @@ const WORK_FILTER_KEY = 'cadmus-biblio-ui.work-filter';
   selector: 'biblio-work-filter',
   templateUrl: './work-filter.component.html',
   styleUrls: ['./work-filter.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

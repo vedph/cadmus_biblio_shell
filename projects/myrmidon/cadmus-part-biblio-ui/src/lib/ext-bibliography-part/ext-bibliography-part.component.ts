@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -48,6 +48,7 @@ import { WorkListComponent } from '@myrmidon/cadmus-biblio-ui';
   selector: 'biblio-ext-bibliography-part',
   templateUrl: './ext-bibliography-part.component.html',
   styleUrls: ['./ext-bibliography-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

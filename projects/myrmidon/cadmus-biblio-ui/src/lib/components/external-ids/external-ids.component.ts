@@ -5,6 +5,7 @@ import {
   model,
   OnDestroy,
   OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -25,6 +26,7 @@ import { ExternalIdComponent } from '../external-id/external-id.component';
   selector: 'biblio-external-ids',
   templateUrl: './external-ids.component.html',
   styleUrls: ['./external-ids.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatButton,
     MatIcon,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,6 +12,7 @@ import { ExtBibliographyPartComponent } from '@myrmidon/cadmus-part-biblio-ui';
   selector: 'biblio-ext-bibliography-part-feature',
   templateUrl: './ext-bibliography-part-feature.component.html',
   styleUrls: ['./ext-bibliography-part-feature.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CurrentItemBarComponent, ExtBibliographyPartComponent],
 })
 export class ExtBibliographyPartFeatureComponent

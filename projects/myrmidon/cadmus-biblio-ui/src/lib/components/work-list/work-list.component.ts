@@ -1,4 +1,4 @@
-import { Component, effect, input, model, OnDestroy } from '@angular/core';
+import { Component, effect, input, model, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -74,6 +74,7 @@ import { WorkComponent } from '../work/work.component';
       transition('closed <=> open', [animate('300ms ease-in')]),
     ]),
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

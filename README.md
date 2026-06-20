@@ -6,7 +6,7 @@ Cadmus frontend components for [external bibliography](https://github.com/vedph/
 
 🐋 Quick Docker image build:
 
-1. update [env.js](src/env.js) version number and `npm run build-lib` (run [publish.bat](publish.bat) if required);
+1. update [env.js](src/env.js) version number and `pnpm run build-lib` (run [publish.bat](publish.bat) if required);
 2. `ng build --configuration=production`;
 3. `docker build . -t vedph2020/cadmus-biblio-shell:5.1.1 -t vedph2020/cadmus-biblio-shell:latest` (replace with the current version).
 
@@ -37,6 +37,15 @@ graph LR;
 ```
 
 ## History
+
+### 13.0.0
+
+- 2026-06-20:
+  - ⚠️ migrated demo app to zoneless.
+  - ⚠️ migrated to new Monaco wrapper.
+  - ⚠️ upgraded to Angular 22.
+  - ⚠️ replaced styles with Angular Material M3.
+  - added `id` and `getById` to lookup services.
 
 ### 12.0.1
 

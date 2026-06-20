@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { WorkListEntry } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -10,6 +10,7 @@ import { WorkListComponent } from '@myrmidon/cadmus-biblio-ui';
   selector: 'biblio-work-page',
   imports: [CommonModule, MatCardModule, WorkListComponent],
   templateUrl: './work-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./work-page.component.css'],
 })
 export class WorkPageComponent implements OnInit {

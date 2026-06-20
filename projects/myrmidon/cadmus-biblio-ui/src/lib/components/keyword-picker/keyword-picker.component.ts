@@ -1,4 +1,4 @@
-import { Component, EventEmitter, input, Input, OnInit, output, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, OnInit, output, Output, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -28,6 +28,7 @@ import { Keyword } from '@myrmidon/cadmus-biblio-core';
   selector: 'biblio-keyword-picker',
   templateUrl: './keyword-picker.component.html',
   styleUrls: ['./keyword-picker.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

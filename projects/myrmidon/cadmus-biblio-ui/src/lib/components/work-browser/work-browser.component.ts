@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   output,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { ViewportScroller, AsyncPipe } from '@angular/common';
@@ -47,6 +48,7 @@ import { WorkDetailsComponent } from '../work-details/work-details.component';
   selector: 'biblio-work-browser',
   templateUrl: './work-browser.component.html',
   styleUrls: ['./work-browser.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     WorkFilterComponent,
     MatCheckbox,

@@ -1,4 +1,4 @@
-import { Component, effect, input, model, OnInit, output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -62,6 +62,7 @@ import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
   selector: 'biblio-work',
   templateUrl: './work.component.html',
   styleUrls: ['./work.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

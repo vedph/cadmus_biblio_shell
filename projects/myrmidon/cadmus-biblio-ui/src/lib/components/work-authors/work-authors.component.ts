@@ -1,4 +1,4 @@
-import { Component, effect, input, model, OnInit, output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -40,6 +40,7 @@ import { AuthorRefLookupService } from '../../services/author-ref-lookup.service
   selector: 'biblio-work-authors',
   templateUrl: './work-authors.component.html',
   styleUrls: ['./work-authors.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

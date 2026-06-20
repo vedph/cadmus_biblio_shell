@@ -1,4 +1,4 @@
-import { Component, computed, input, Input } from '@angular/core';
+import { Component, computed, input, Input, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
@@ -14,6 +14,7 @@ import {
   selector: 'biblio-work-details',
   templateUrl: './work-details.component.html',
   styleUrls: ['./work-details.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DatePipe, HistoricalDatePipe],
 })
 export class WorkDetailsComponent {

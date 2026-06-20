@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
 import { BiblioService } from '@myrmidon/cadmus-biblio-api';
 import {
@@ -22,10 +22,19 @@ export interface WorkLookupFilter extends RefLookupFilter {
 export class WorkRefLookupService implements RefLookupService {
   constructor(
     private _biblioService: BiblioService,
-    private _biblioUtil: BiblioUtilService
+    private _biblioUtil: BiblioUtilService,
   ) {}
 
-  lookup(filter: WorkLookupFilter, options?: any): Observable<any[]> {
+  public readonly id = 'biblio-work';
+
+  public getById(id: string): Observable<any | undefined> {
+    if (!id) {
+      return of(undefined);
+    }
+    return this._biblioService.getWork(id);
+  }
+
+  public lookup(filter: WorkLookupFilter, options?: any): Observable<any[]> {
     console.log('work lookup', filter);
     if (filter.container) {
       return this._biblioService

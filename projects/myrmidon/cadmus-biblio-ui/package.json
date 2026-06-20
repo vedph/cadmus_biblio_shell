@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-biblio-ui",
-  "version": "12.0.1",
+  "version": "13.0.0",
   "description": "Cadmus - bibliographic API UI components",
   "keywords": [
     "Cadmus",
@@ -15,16 +15,16 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^20.0.0 || ^21.0.0",
-    "@angular/core": "^20.0.0 || ^21.0.0",
-    "@myrmidon/ngx-tools": "^2.0.2",
-    "@myrmidon/ngx-mat-tools": "^1.0.1",
-    "@myrmidon/cadmus-refs-historical-date": "^9.1.1",
-    "@myrmidon/cadmus-refs-lookup": "^10.0.6",
-    "@myrmidon/cadmus-core": "^12.0.3",
-    "@myrmidon/cadmus-ui": "^15.1.4",
-    "@myrmidon/cadmus-biblio-api": "^10.0.0",
-    "@myrmidon/cadmus-biblio-core": "^10.0.0"
+    "@angular/common": "^22.0.2",
+    "@angular/core": "^22.0.2",
+    "@myrmidon/ngx-tools": "^3.0.0",
+    "@myrmidon/ngx-mat-tools": "^2.0.0",
+    "@myrmidon/cadmus-refs-historical-date": "^10.0.0",
+    "@myrmidon/cadmus-refs-lookup": "^11.0.0",
+    "@myrmidon/cadmus-core": "^13.0.0",
+    "@myrmidon/cadmus-ui": "^17.0.0",
+    "@myrmidon/cadmus-biblio-api": "^11.0.0",
+    "@myrmidon/cadmus-biblio-core": "^11.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
