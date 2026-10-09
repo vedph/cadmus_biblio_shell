@@ -32,13 +32,14 @@
   <!-- place, number, year(s), page - page, publisher, datation -->
   <div style="margin: 4px">
     {{ work()!.placePub }} {{ w()?.number }}
-    {{ work()!.yearPub + (work()!.yearPub2 ? "-" + work()!.yearPub2 : "") }}
+    {{ work()!.yearPub ?? "" }}{{ work()!.yearPub2 ? "-" + work()!.yearPub2 : "" }}
     @if (w()?.firstPage) {
     <span>p. {{ w()!.firstPage }} - {{ w()!.lastPage }}</span>
     } @if (work()!.publisher) {
     <span>&nbsp;({{ work()!.publisher }})</span>
     } @if (work()!.datation) {
-    <span>: {{ work()!.datation | historicalDate }}</span>
+    <!-- datation is the text of a historical date -->
+    <span>: {{ work()!.datation }}</span>
     }
   </div>
   <!-- location, access -->

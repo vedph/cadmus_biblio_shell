@@ -1,4 +1,12 @@
-import { Component, effect, input, model, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  effect,
+  input,
+  model,
+  OnDestroy,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -18,7 +26,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { debounceTime, take } from 'rxjs/operators';
 
 import { MatIconButton } from '@angular/material/button';
@@ -129,13 +137,15 @@ export class WorkListComponent implements OnDestroy {
   // this array is kept in synch with entries:
   public works: FormArray;
 
-  public detailWork: Work | Container | undefined;
-  public loadingDetailWork: boolean | undefined;
-  public detailsOpen: boolean;
+  // signals: these are updated in HTTP callbacks, outside of template
+  // events, so they must notify change detection
+  public readonly detailWork = signal<Work | Container | undefined>(undefined);
+  public readonly loadingDetailWork = signal<boolean>(false);
+  public readonly detailsOpen = signal<boolean>(false);
 
   public browserSignals$: BehaviorSubject<string>;
 
-  public editedWork: EditedWork | undefined;
+  public readonly editedWork = signal<EditedWork | undefined>(undefined);
   public savingWork: boolean | undefined;
 
   public deletingWork: boolean | undefined;
@@ -149,7 +159,6 @@ export class WorkListComponent implements OnDestroy {
     private _scroller: ViewportScroller
   ) {
     this._subs = [];
-    this.detailsOpen = false;
     this.browserSignals$ = new BehaviorSubject<string>('');
     // form
     this.works = _formBuilder.array([]);
@@ -170,25 +179,32 @@ export class WorkListComponent implements OnDestroy {
     this._subs.forEach((s) => {
       s.unsubscribe();
     });
+    this._subs = [];
   }
 
   public ngOnDestroy(): void {
     this.cleanup();
   }
 
-  public groupHasError(group: AbstractControl, name: string): boolean {
-    const c = (group as FormGroup)?.controls[name] as FormControl;
+  public groupHasError(
+    group: AbstractControl,
+    controlName: string,
+    errorName: string
+  ): boolean {
+    const c = (group as FormGroup)?.controls[controlName] as FormControl;
     if (!c) {
       return false;
     }
-    return c.errors && c.errors[name] && (c.dirty || c.touched);
+    return !!(c.errors && c.errors[errorName] && (c.dirty || c.touched));
   }
 
   private updateForm(entries: WorkListEntry[]): void {
-    this.works.clear();
     this.cleanup();
+    this.works.clear({ emitEvent: false });
     for (let e of entries) {
-      this.works.controls.push(this.getWorkGroup(e));
+      // push via the array (not its controls) so that the group gets
+      // registered, i.e. its changes update the array value and validity
+      this.works.push(this.getWorkGroup(e), { emitEvent: false });
     }
     this.form.markAsPristine();
   }
@@ -213,59 +229,41 @@ export class WorkListComponent implements OnDestroy {
   }
 
   private viewDetails(id: string, container: boolean): void {
-    this.loadingDetailWork = true;
+    this.loadingDetailWork.set(true);
 
-    if (container) {
-      this._biblioService
-        .getContainer(id)
-        .pipe(take(1))
-        .subscribe((w) => {
-          this.detailWork = w;
-          this.loadingDetailWork = false;
-          this.detailsOpen = true;
-        });
-    } else {
-      this._biblioService
-        .getWork(id)
-        .pipe(take(1))
-        .subscribe((w) => {
-          this.detailWork = w;
-          this.loadingDetailWork = false;
-          this.detailsOpen = true;
-        });
-    }
+    const work$: Observable<Work | Container> = container
+      ? this._biblioService.getContainer(id)
+      : this._biblioService.getWork(id);
+    work$.pipe(take(1)).subscribe({
+      next: (w) => {
+        this.detailWork.set(w);
+        this.loadingDetailWork.set(false);
+        this.detailsOpen.set(true);
+      },
+      error: () => {
+        this.loadingDetailWork.set(false);
+      },
+    });
   }
 
   private edit(id: string | null, container: boolean): void {
     if (id) {
-      if (container) {
-        this._biblioService
-          .getContainer(id)
-          .pipe(take(1))
-          .subscribe((c) => {
-            this.editedWork = c;
-            this.editedWork.isContainer = true;
-            setTimeout(() => this._scroller.scrollToAnchor('work-editor'), 0);
-          });
-      } else {
-        this._biblioService
-          .getWork(id)
-          .pipe(take(1))
-          .subscribe((w) => {
-            this.editedWork = w;
-            this.editedWork.isContainer = false;
-            setTimeout(() => this._scroller.scrollToAnchor('work-editor'), 0);
-          });
-      }
+      const work$: Observable<Work | Container> = container
+        ? this._biblioService.getContainer(id)
+        : this._biblioService.getWork(id);
+      work$.pipe(take(1)).subscribe((w) => {
+        this.editedWork.set({ ...w, isContainer: container });
+        setTimeout(() => this._scroller.scrollToAnchor('work-editor'), 0);
+      });
     } else {
-      this.editedWork = {
+      this.editedWork.set({
         isContainer: container,
         key: '',
         authors: [],
         type: '',
         title: '',
         language: '',
-      };
+      });
     }
   }
 
@@ -296,7 +294,7 @@ export class WorkListComponent implements OnDestroy {
     const entries = [...this.entries()];
     entries.splice(index, 1);
     if (!entries.length) {
-      this.detailWork = undefined;
+      this.detailWork.set(undefined);
     }
     this.entries.set(entries);
   }
@@ -373,7 +371,9 @@ export class WorkListComponent implements OnDestroy {
    * @param work The work to add.
    */
   public pickBrowserWork(work: WorkInfo): void {
-    const entries = [...this.entries()];
+    // start from the form entries, which include any tag/note change
+    // not yet synced with entries (debounced)
+    const entries = this.getEntries();
     if (entries.find((w) => w.id === work.id)) {
       return;
     }
@@ -383,10 +383,8 @@ export class WorkListComponent implements OnDestroy {
       payload: work.isContainer ? 'c' : undefined,
     };
     entries.push(entry);
+    // the form is rebuilt from entries
     this.entries.set(entries);
-    const g = this.getWorkGroup(entry);
-    this.works.controls.push(g);
-    this.form.markAsDirty();
   }
 
   /**
@@ -405,13 +403,12 @@ export class WorkListComponent implements OnDestroy {
 
   private removeDeletedWork(work: WorkInfo): void {
     // remove the entry from list if it was deleted
-    const entries = [...this.entries()];
+    const entries = this.getEntries();
     const index = entries.findIndex((e) => e.id === work.id);
     if (index > -1) {
-      this.works.removeAt(index);
       entries.splice(index, 1);
+      // the form is rebuilt from entries
       this.entries.set(entries);
-      this.form.markAsDirty();
     }
   }
 
@@ -426,8 +423,8 @@ export class WorkListComponent implements OnDestroy {
       )
       .pipe(take(1))
       .subscribe((yes) => {
-        this.deletingWork = true;
         if (yes) {
+          this.deletingWork = true;
           if (work.isContainer) {
             this._biblioService
               .deleteContainer(work.id)
@@ -460,10 +457,12 @@ export class WorkListComponent implements OnDestroy {
     this.browserSignals$.next('refresh');
 
     // refresh the entry in list if it was edited
-    const entries = [...this.entries()];
+    const entries = this.getEntries();
     const index = entries.findIndex((e) => e.id === work.id);
     if (index > -1) {
       const entry = {
+        // keep the entry's tag and note
+        ...entries[index],
         id: work.id || '',
         label: this._utilService.workToString(work),
         payload: container ? 'c' : undefined,
@@ -502,7 +501,7 @@ export class WorkListComponent implements OnDestroy {
    * Close the work being edited without saving.
    */
   public closeEditor(): void {
-    this.editedWork = undefined;
+    this.editedWork.set(undefined);
   }
   //#endregion
 }

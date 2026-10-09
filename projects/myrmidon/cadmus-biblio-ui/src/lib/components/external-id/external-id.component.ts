@@ -1,4 +1,13 @@
-import { Component, effect, input, model, OnInit, output, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  effect,
+  input,
+  model,
+  OnInit,
+  output,
+  ChangeDetectionStrategy,
+  untracked,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -74,14 +83,22 @@ export class ExternalIdComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    if (this.scopeEntries()?.length && !this.scope.value) {
-      this.scope.setValue(this.scopeEntries()![0].id);
+    this.setDefaultScope();
+  }
+
+  private setDefaultScope(): void {
+    // untracked: scope entries changes must not reset the form
+    const entries = untracked(() => this.scopeEntries());
+    if (entries?.length && !this.scope.value) {
+      this.scope.setValue(entries[0].id);
     }
   }
 
   private updateForm(id: ExternalId | undefined): void {
     if (!id) {
       this.form.reset();
+      // the reset would clear the default scope
+      this.setDefaultScope();
       return;
     }
     this.scope.setValue(id.scope);

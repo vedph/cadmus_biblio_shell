@@ -1,4 +1,5 @@
-<form [formGroup]="form" (submit)="save()">
+<!-- stop propagation: this form can be nested in other forms -->
+<form [formGroup]="form" (submit)="$event.stopPropagation(); save()">
   <div class="form-row">
     <!-- isContainer -->
     <mat-checkbox [formControl]="isContainer">container</mat-checkbox>
@@ -23,10 +24,16 @@
     <mat-form-field style="flex: 1 0 auto; max-width: 400px">
       <mat-label>key</mat-label>
       <input matInput [formControl]="key" />
-      <button type="button" mat-icon-button matSuffix (click)="buildKey()">
+      <button
+        type="button"
+        mat-icon-button
+        matSuffix
+        matTooltip="Build key"
+        (click)="buildKey()"
+      >
         <mat-icon>redo</mat-icon>
       </button>
-      @if ($any(key).errors?.maxLength && (key.dirty || key.touched)) {
+      @if ($any(key).errors?.maxlength && (key.dirty || key.touched)) {
       <mat-error>key too long</mat-error>
       }
     </mat-form-field>
@@ -48,7 +55,7 @@
       <input matInput [formControl]="title" />
       @if ($any(title).errors?.required && (title.dirty || title.touched)) {
       <mat-error>title required</mat-error>
-      } @if ($any(title).errors?.maxLength && (title.dirty || title.touched)) {
+      } @if ($any(title).errors?.maxlength && (title.dirty || title.touched)) {
       <mat-error>title too long</mat-error>
       }
     </mat-form-field>
@@ -89,7 +96,7 @@
     <mat-form-field>
       <mat-label>place</mat-label>
       <input matInput [formControl]="placePub" />
-      @if ( $any(placePub).errors?.maxLength && (placePub.dirty ||
+      @if ( $any(placePub).errors?.maxlength && (placePub.dirty ||
       placePub.touched) ) {
       <mat-error>place too long</mat-error>
       }
@@ -111,7 +118,7 @@
     <mat-form-field>
       <mat-label>publisher</mat-label>
       <input matInput [formControl]="publisher" />
-      @if ( $any(publisher).errors?.maxLength && (publisher.dirty ||
+      @if ( $any(publisher).errors?.maxlength && (publisher.dirty ||
       publisher.touched) ) {
       <mat-error>publisher too long</mat-error>
       }
@@ -136,7 +143,9 @@
   <fieldset>
     <!-- lookup -->
     <div class="form-row" style="margin-bottom: 6px">
+      <!-- Enter in the lookup must not submit the form -->
       <cadmus-refs-lookup
+        (keydown.enter)="$event.preventDefault()"
         label="container"
         [item]="container.value"
         [service]="lookupService"
@@ -176,7 +185,7 @@
     <mat-form-field>
       <mat-label>number</mat-label>
       <input matInput [formControl]="number" />
-      @if ($any(number).errors?.maxLength && (number.dirty || number.touched)) {
+      @if ($any(number).errors?.maxlength && (number.dirty || number.touched)) {
       <mat-error>number too long</mat-error>
       }
     </mat-form-field>
@@ -187,7 +196,7 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <textarea rows="2" matInput [formControl]="note"></textarea>
-      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      @if ($any(note).errors?.maxlength && (note.dirty || note.touched)) {
       <mat-error>note too long</mat-error>
       }
     </mat-form-field>
@@ -198,7 +207,7 @@
     <mat-form-field class="long-text">
       <mat-label>location</mat-label>
       <input matInput [formControl]="location" />
-      @if ( $any(location).errors?.maxLength && (location.dirty ||
+      @if ( $any(location).errors?.maxlength && (location.dirty ||
       location.touched) ) {
       <mat-error>location too long</mat-error>
       }

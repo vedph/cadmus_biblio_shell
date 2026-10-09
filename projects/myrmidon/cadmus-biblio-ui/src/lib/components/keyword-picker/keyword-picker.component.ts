@@ -96,7 +96,11 @@ export class KeywordPickerComponent implements OnInit {
     this.keywords$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((value: Keyword | string) => {
+      switchMap((value: Keyword | string | null) => {
+        // cleared lookup
+        if (value === null || value === undefined) {
+          return of([]);
+        }
         if (typeof value === 'string') {
           const filter = this.getFilter(value);
           return this._biblioService.getKeywords(filter).pipe(

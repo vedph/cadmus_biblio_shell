@@ -1,4 +1,5 @@
-<form [formGroup]="form" (submit)="save()">
+<!-- stop propagation: this form can be nested in other forms -->
+<form [formGroup]="form" (submit)="$event.stopPropagation(); save()">
   <mat-expansion-panel [(expanded)]="editing">
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -9,14 +10,17 @@
       }}</mat-panel-description>
     </mat-expansion-panel-header>
 
-    <form [formGroup]="search">
+    <!-- not a nested form: its implicit submission (Enter in the lookup)
+      would bubble up to the parent form and save it -->
+    <div [formGroup]="search">
       <fieldset>
         <mat-autocomplete
           #lookupAuto="matAutocomplete"
           [displayWith]="keywordToString"
+          (optionSelected)="pickKeyword($event.option.value)"
         >
           @for (k of keywords$ | async; track k) {
-          <mat-option [value]="k" (onSelectionChange)="pickKeyword(k)">
+          <mat-option [value]="k">
             {{ keywordToString(k) }}
           </mat-option>
           }
@@ -29,6 +33,7 @@
             type="text"
             [formControl]="lookup"
             [matAutocomplete]="lookupAuto"
+            (keydown.enter)="$event.preventDefault()"
           />
           <mat-hint>value or lang:value</mat-hint>
           <button
@@ -37,6 +42,7 @@
             matSuffix
             (click)="clearKeyword()"
             [disabled]="!keyword"
+            matTooltip="Clear"
           >
             <mat-icon class="mat-warn">clear</mat-icon>
           </button>
@@ -50,7 +56,7 @@
           <mat-icon class="mat-primary">add_circle</mat-icon>
         </button>
       </fieldset>
-    </form>
+    </div>
 
     <!-- keywords array -->
     <div formArrayName="keywords">
@@ -97,7 +103,7 @@
             ($any(item).controls.language.dirty ||
             $any(item).controls.language.touched) ) {
             <mat-error>required</mat-error>
-            } @if ($any(item).controls.language.errors?.maxLength &&
+            } @if ($any(item).controls.language.errors?.maxlength &&
             ($any(item).controls.language.dirty ||
             $any(item).controls.language.touched) ) {
             <mat-error>too long</mat-error>
@@ -112,7 +118,7 @@
             ($any(item).controls.value.dirty ||
             $any(item).controls.value.touched) ) {
             <mat-error>required</mat-error>
-            } @if ( $any(item).controls.value.errors?.maxLength &&
+            } @if ( $any(item).controls.value.errors?.maxlength &&
             ($any(item).controls.value.dirty ||
             $any(item).controls.value.touched) ) {
             <mat-error>too long</mat-error>

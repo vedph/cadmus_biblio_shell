@@ -1,4 +1,5 @@
-<form [formGroup]="form" (submit)="apply()">
+<!-- stop propagation: this form can be nested in other forms -->
+<form [formGroup]="form" (submit)="$event.stopPropagation(); apply()">
   <div class="form-row">
     <!-- matchAny -->
     <mat-checkbox [formControl]="matchAny">match any</mat-checkbox>
@@ -42,6 +43,7 @@
       <cadmus-refs-lookup
         label="author"
         [service]="authorLookupService"
+        [item]="author.value"
         (itemChange)="onAuthorChange($event)"
       />
     </div>
@@ -113,6 +115,7 @@
       <cadmus-refs-lookup
         label="container"
         [service]="workLookupService"
+        [item]="container.value"
         [baseFilter]="{ container: true }"
         (itemChange)="onContainerChange($event)"
       />

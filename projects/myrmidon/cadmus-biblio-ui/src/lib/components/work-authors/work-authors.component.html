@@ -1,10 +1,11 @@
-<form [formGroup]="form" (submit)="save()">
+<!-- stop propagation: this form can be nested in other forms -->
+<form [formGroup]="form" (submit)="$event.stopPropagation(); save()">
   <mat-expansion-panel [(expanded)]="editing">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon>account_circle</mat-icon>
         &nbsp;
-        <span class="current">{{ currentAuthors || "(no authors)" }}</span>
+        <span class="current">{{ currentAuthors() || "(no authors)" }}</span>
       </mat-panel-title>
       <mat-panel-description>{{
         editedAuthors.length || 0
@@ -12,9 +13,11 @@
     </mat-expansion-panel-header>
 
     <div class="button-row">
+      <!-- Enter in the lookup must not submit the form -->
       <cadmus-refs-lookup
+        (keydown.enter)="$event.preventDefault()"
         [service]="authorLookupService"
-        [item]="author"
+        [item]="author()"
         label="author"
         (itemChange)="pickAuthor($event)"
       />
@@ -75,7 +78,7 @@
               ($any(item).controls.last.dirty ||
               $any(item).controls.last.touched) ) {
               <mat-error>required</mat-error>
-              } @if ( $any(item).controls.last.errors?.maxLength &&
+              } @if ( $any(item).controls.last.errors?.maxlength &&
               ($any(item).controls.last.dirty ||
               $any(item).controls.last.touched) ) {
               <mat-error>too long</mat-error>
@@ -89,7 +92,7 @@
               ($any(item).controls.first.dirty ||
               $any(item).controls.first.touched) ) {
               <mat-error>required</mat-error>
-              } @if ( $any(item).controls.first.errors?.maxLength &&
+              } @if ( $any(item).controls.first.errors?.maxlength &&
               ($any(item).controls.first.dirty ||
               $any(item).controls.first.touched) ) {
               <mat-error>too long</mat-error>
@@ -99,7 +102,7 @@
             <mat-form-field>
               <mat-label>suffix</mat-label>
               <input matInput formControlName="suffix" />
-              @if ( $any(item).controls.suffix.errors?.maxLength &&
+              @if ( $any(item).controls.suffix.errors?.maxlength &&
               ($any(item).controls.suffix.dirty ||
               $any(item).controls.suffix.touched) ) {
               <mat-error>too long</mat-error>
@@ -121,7 +124,7 @@
             <mat-form-field>
               <mat-label>role</mat-label>
               <input matInput formControlName="role" />
-              @if ( $any(item).controls.role.errors?.maxLength &&
+              @if ( $any(item).controls.role.errors?.maxlength &&
               ($any(item).controls.role.dirty ||
               $any(item).controls.role.touched) ) {
               <mat-error>too long</mat-error>

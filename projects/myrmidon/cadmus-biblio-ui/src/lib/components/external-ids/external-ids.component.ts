@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import {
   MatExpansionPanel,
   MatExpansionPanelHeader,
@@ -33,6 +34,7 @@ import { ExternalIdComponent } from '../external-id/external-id.component';
     MatIconButton,
     MatExpansionPanel,
     MatExpansionPanelHeader,
+    MatTooltip,
     ExternalIdComponent,
   ],
 })
@@ -80,7 +82,9 @@ export class ExternalIdsComponent implements OnInit, OnDestroy {
   }
 
   private updateForm(ids: ExternalId[]): void {
-    this.ctlIds.setValue(ids);
+    // do not emit: this value comes from the ids model, so it must not
+    // be echoed back to it
+    this.ctlIds.setValue(ids, { emitEvent: false });
     this.form.markAsPristine();
   }
 
@@ -121,9 +125,11 @@ export class ExternalIdsComponent implements OnInit, OnDestroy {
   public deleteId(index: number): void {
     if (this.editedIndex === index) {
       this.closeId();
+    } else if (this.editedIndex > index) {
+      this.editedIndex--;
     }
     const ids = [...this.ctlIds.value];
-    ids.splice(this.editedIndex, 1);
+    ids.splice(index, 1);
     this.ctlIds.setValue(ids);
     this.ctlIds.updateValueAndValidity();
     this.form.markAsDirty();

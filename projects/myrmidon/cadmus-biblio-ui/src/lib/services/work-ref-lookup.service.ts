@@ -35,7 +35,6 @@ export class WorkRefLookupService implements RefLookupService {
   }
 
   public lookup(filter: WorkLookupFilter, options?: any): Observable<any[]> {
-    console.log('work lookup', filter);
     if (filter.container) {
       return this._biblioService
         .getContainers({

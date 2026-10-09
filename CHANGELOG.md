@@ -1,5 +1,26 @@
 # History
 
+- 2026-10-09:
+  - replaced the library build scripts with `scripts/build-libs.mjs` (`pnpm run build:libs`), which builds the libraries in dependency order computed from their manifests and actual imports, guarded by `scripts/check-local-libs.js`. Added `scripts/test-libs.mjs` (`pnpm run test:libs`).
+  - completed the migration to Vitest: all the projects use the `@angular/build:unit-test` builder with `jsdom`; added Angular Testing Library, `jest-dom` matchers and `@vitest/coverage-v8` (`ng test <project> --coverage`); removed Karma, Jasmine and their stale entry points (`karma.conf.js`, `test.ts`, unused `polyfills.ts`).
+  - fixed library peer dependencies: added missing local imports (`cadmus-biblio-api` → `cadmus-biblio-core`; `cadmus-part-biblio-ui` → `cadmus-core`, `ngx-tools`; `cadmus-part-biblio-pg` → `cadmus-api`), aligned stale ranges (`ngx-mat-tools` 3, `cadmus-ui` 18, `auth-jwt-login` 10) and removed the unused `cadmus-ui` peer from `cadmus-biblio-ui`.
+  - `@myrmidon/cadmus-biblio-core`: added full unit tests. Fixed `WorkKeyService.buildKey` author sorting: a missing ordinal vs. an ordinal of 0 was considered different but compared as equal, so the last name/suffix tie-break was skipped and the key could differ from the one built by the backend.
+  - `@myrmidon/cadmus-biblio-api`: added full unit tests. Fixed in the backend (`CadmusBiblioApi`): filtering works/containers by type never matched (the type name was compared instead of its ID), and the datation range filters sent by this service were ignored (missing from the API binding model).
+  - tests now run zoneless like the app: each project has a `test-providers.ts` (unit-test builder `providersFile`) providing `provideZonelessChangeDetection()`, because the builder initializes TestBed with zone-based change detection whenever `zone.js` is resolvable (as with pnpm's `ng` shim). `zone.js` (unused by the app) moved to `devDependencies`. Component tests use `@testing-library/angular/zoneless`, which unlike the classic `render` does not run change detection after each event, so missing change detection notifications are not masked.
+  - `@myrmidon/cadmus-biblio-ui`: added full unit tests and fixed these bugs:
+    - all the editors: validation error messages for too long values never appeared (`maxLength` instead of `maxlength` error key).
+    - all the editors: forms are nested (authors, keywords and external ID editors in the work editor; work editor and filter in the works list, in turn inside the bibliography part editor), and submit events bubble: e.g. accepting the authors also saved the whole work, and in the part editor even the part. Each embeddable form now stops the propagation of its submit event; Enter in a lookup no longer submits its form.
+    - `ExternalIdComponent`: the default scope (first scope entry) was immediately cleared.
+    - `ExternalIdsComponent`: deleting an ID always deleted the last one (or the edited one) rather than the clicked one; the next input change after the first one was ignored. Added tooltips to icon buttons.
+    - `KeywordPickerComponent`, `WorkKeywordsComponent`: a picked keyword could be added again when another option was picked (`onSelectionChange` fires also for deselection: replaced with `optionSelected`); clearing the lookup rendered an empty option; the clear button of the picker was always disabled. `WorkKeywordsComponent` also ignores already present keywords, and its search box no longer is a form nested in the keywords form.
+    - `WorkAuthorsComponent`, `WorkKeywordsComponent`, `WorkListComponent`: loaded items were added to the form array bypassing its API, so their changes did not update the form validity (e.g. a loaded author whose last name was cleared could be saved), nor the summary; an empty input did not clear the previous items. The authors summary was not refreshed in zoneless mode (now a signal).
+    - `WorkDetailsComponent`: the datation was never shown (passed to the historical date pipe, which expects a model rather than its text); a missing year was rendered as `undefined`.
+    - `WorkFilterComponent`: resetting the filters did not reset the author; a persisted filter was shown but not applied; the lookups now reflect the author and container in the filter.
+    - `WorkBrowserComponent`: applying a filter kept the current page number (yielding an empty page); late responses could replace the page requested last; loading flags and work details were not refreshed in zoneless mode (now signals); the selected row was never highlighted.
+    - `WorkComponent`: in zoneless mode the loaded work's authors, keywords and links could fail to reach their editors (values were set in a `setTimeout`); removing the container could not be saved (the control was reset to pristine); a container was saved with the hidden container and pages values. Added a tooltip to the build key button.
+    - `WorkListComponent`: tag/note validation errors never appeared; editing a work dropped the tag and note of its entry; tag/note text typed just before another list operation was lost; the details and editor panels were not refreshed in zoneless mode (now signals); the editor of a new work had an empty header.
+    - `WorkRefLookupService`: removed debug log.
+
 - 2026-09-05: updated packages.
 
 ## 13.0.0

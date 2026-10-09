@@ -1,4 +1,5 @@
-<form [formGroup]="form">
+<!-- stop propagation: this form can be nested in other forms -->
+<form [formGroup]="form" (submit)="$event.stopPropagation()">
   <div formArrayName="works">
     @for ( item of works.controls; track item; let i = $index; let first =
     $first; let last = $last) {
@@ -69,7 +70,7 @@
               <mat-option [value]="e.id">{{ e.value }}</mat-option>
               }
             </mat-select>
-            @if (groupHasError(item, 'required')) {
+            @if (groupHasError(item, 'tag', 'required')) {
             <mat-error>tag required</mat-error>
             }
           </mat-form-field>
@@ -79,7 +80,7 @@
           <mat-form-field style="grid-area: tag" appearance="fill">
             <mat-label>tag</mat-label>
             <input matInput formControlName="tag" />
-            @if (groupHasError(item, 'maxLength')) {
+            @if (groupHasError(item, 'tag', 'maxlength')) {
             <mat-error>tag too long</mat-error>
             }
           </mat-form-field>
@@ -88,7 +89,7 @@
           <mat-form-field appearance="fill" style="grid-area: note">
             <mat-label>note</mat-label>
             <input matInput formControlName="note" />
-            @if (groupHasError(item, 'maxLength')) {
+            @if (groupHasError(item, 'note', 'maxlength')) {
             <mat-error>note too long</mat-error>
             }
           </mat-form-field>
@@ -99,9 +100,9 @@
   </div>
 
   <!-- details -->
-  @if (detailWork) {
+  @if (detailWork(); as detailWork) {
   <div gdArea="details">
-    @if (loadingDetailWork) {
+    @if (loadingDetailWork()) {
     <div>
       <mat-spinner [diameter]="24" [strokeWidth]="4"></mat-spinner>
     </div>
@@ -132,14 +133,11 @@
   />
 
   <!-- editor -->
-  @if (editedWork) {
-  <mat-expansion-panel
-    [disabled]="!editedWork"
-    [expanded]="editedWork"
-    id="work-editor"
-  >
+  @if (editedWork(); as editedWork) {
+  <mat-expansion-panel [expanded]="true" id="work-editor">
     <mat-expansion-panel-header>{{
-      editedWork.title
+      editedWork.title ||
+        (editedWork.isContainer ? "(new container)" : "(new work)")
     }}</mat-expansion-panel-header>
     <biblio-work
       [work]="editedWork"

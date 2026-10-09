@@ -16,10 +16,20 @@
       @for (id of ctlIds.value; track id; let i = $index) {
       <tr [class.selected]="i === editedIndex">
         <td>
-          <button type="button" mat-icon-button (click)="editId(id, i)">
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="Edit this ID"
+            (click)="editId(id, i)"
+          >
             <mat-icon class="mat-primary">edit</mat-icon>
           </button>
-          <button type="button" mat-icon-button (click)="deleteId(i)">
+          <button
+            type="button"
+            mat-icon-button
+            matTooltip="Delete this ID"
+            (click)="deleteId(i)"
+          >
             <mat-icon class="mat-warn">delete</mat-icon>
           </button>
         </td>

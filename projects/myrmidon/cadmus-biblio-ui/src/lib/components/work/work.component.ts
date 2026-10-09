@@ -248,49 +248,48 @@ export class WorkComponent implements OnInit {
     this.type.setValue(work.type);
     this.hasDatation.setValue(!!work.datation);
 
-    setTimeout(() => {
-      // a user key starts with !, but here we show 2 controls,
-      // a checkbox for user and a textbox for value (without !)
-      const userKey = work.key.startsWith('!');
-      this.isUserKey.setValue(userKey);
-      this.key.setValue(userKey ? work.key.substring(1) : work.key);
+    // values are set synchronously: this runs in an effect, i.e. before
+    // the template is refreshed, so the template (and the child editors
+    // bound to these values) gets them in the same change detection cycle.
+    // Deferring them (e.g. with setTimeout) would not trigger change
+    // detection in a zoneless app.
 
-      this.authors.setValue(work.authors || []);
-      this.title.setValue(work.title);
-      this.language.setValue(work.language);
-      this.placePub.setValue(work.placePub || null);
-      this.yearPub.setValue(work.yearPub || 0);
-      this.yearPub2.setValue(work.yearPub2 || 0);
-      this.publisher.setValue(work.publisher || null);
-      this.container.setValue(work.container || null);
-      this.firstPage.setValue(work.firstPage || 0);
-      this.lastPage.setValue(work.lastPage || 0);
-      this.number.setValue(work.number || null);
-      this.note.setValue(work.note || null);
-      if (work.datation) {
-        // this.hasDatation.setValue(true);
-        this.datation.setValue(HistoricalDate.parse(work.datation) || null);
-      } else {
-        // this.hasDatation.setValue(false);
-        this.datation.reset();
-      }
-      this.location.setValue(work.location || null);
-      this.hasAccessDate.setValue(work.accessDate ? true : false);
-      this.accessDate.setValue(work.accessDate || null);
-      this.keywords.setValue(work.keywords || []);
-      this.links.setValue(work.links || []);
+    // a user key starts with !, but here we show 2 controls,
+    // a checkbox for user and a textbox for value (without !)
+    const userKey = work.key.startsWith('!');
+    this.isUserKey.setValue(userKey);
+    this.key.setValue(userKey ? work.key.substring(1) : work.key);
 
-      // if it has a container it can't be a container
-      // if (work.container) {
-      //   this.isContainer.setValue(false);
-      // }
+    this.authors.setValue(work.authors || []);
+    this.title.setValue(work.title);
+    this.language.setValue(work.language);
+    this.placePub.setValue(work.placePub || null);
+    this.yearPub.setValue(work.yearPub || 0);
+    this.yearPub2.setValue(work.yearPub2 || 0);
+    this.publisher.setValue(work.publisher || null);
+    this.container.setValue(work.container || null);
+    this.firstPage.setValue(work.firstPage || 0);
+    this.lastPage.setValue(work.lastPage || 0);
+    this.number.setValue(work.number || null);
+    this.note.setValue(work.note || null);
+    if (work.datation) {
+      this.datation.setValue(HistoricalDate.parse(work.datation) || null);
+    } else {
+      this.datation.reset();
+    }
+    this.location.setValue(work.location || null);
+    this.hasAccessDate.setValue(work.accessDate ? true : false);
+    this.accessDate.setValue(work.accessDate || null);
+    this.keywords.setValue(work.keywords || []);
+    this.links.setValue(work.links || []);
 
-      this.form.markAsPristine();
-    }, 0);
+    this.form.markAsPristine();
   }
 
   private getWork(): EditedWork {
     const key = this.key.value?.trim() || '';
+    // a container has no container nor pages (their controls are hidden)
+    const isContainer = this.isContainer.value;
 
     let datation: string | null = null;
     let datationValue: number | null = 0;
@@ -301,7 +300,7 @@ export class WorkComponent implements OnInit {
     }
 
     return {
-      isContainer: this.isContainer.value,
+      isContainer,
       id: this.work()?.id,
       type: this.type.value || '',
       key: this.isUserKey.value ? '!' + key : key,
@@ -312,9 +311,9 @@ export class WorkComponent implements OnInit {
       yearPub: this.yearPub.value,
       yearPub2: this.yearPub2.value || undefined,
       publisher: this.publisher.value?.trim(),
-      container: this.container.value || undefined,
-      firstPage: this.firstPage.value,
-      lastPage: this.lastPage.value,
+      container: isContainer ? undefined : this.container.value || undefined,
+      firstPage: isContainer ? undefined : this.firstPage.value,
+      lastPage: isContainer ? undefined : this.lastPage.value,
       number: this.number.value?.trim(),
       note: this.note.value?.trim(),
       datation: datation || undefined,
@@ -357,7 +356,10 @@ export class WorkComponent implements OnInit {
   }
 
   public removeContainer(): void {
-    this.container.reset();
+    // not reset: it would mark the control as pristine, so that
+    // the removal could not be saved
+    this.container.setValue(null);
+    this.container.markAsDirty();
   }
 
   public workToString(work?: Container | null): string {

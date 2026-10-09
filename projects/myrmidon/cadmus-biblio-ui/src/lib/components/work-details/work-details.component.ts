@@ -1,7 +1,5 @@
-import { Component, computed, input, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
-
-import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
 
 import {
   BiblioUtilService,
@@ -15,7 +13,7 @@ import {
   templateUrl: './work-details.component.html',
   styleUrls: ['./work-details.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [DatePipe, HistoricalDatePipe],
+  imports: [DatePipe],
 })
 export class WorkDetailsComponent {
   public readonly work = input<Work | Container>();

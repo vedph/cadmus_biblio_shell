@@ -135,7 +135,11 @@ export class WorkKeywordsComponent implements OnInit {
     this.keywords$ = this.lookup.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap((value: Keyword | string) => {
+      switchMap((value: Keyword | string | null) => {
+        // cleared lookup
+        if (value === null || value === undefined) {
+          return of([]);
+        }
         // the string comes from user typing
         if (typeof value === 'string') {
           // lookup and return results
@@ -161,13 +165,10 @@ export class WorkKeywordsComponent implements OnInit {
   }
 
   private updateForm(model: Keyword[] | undefined): void {
+    this.keywordsArr.clear({ emitEvent: false });
     if (!model) {
       this.form.reset();
-      return;
-    }
-
-    this.keywordsArr.clear();
-    if (model) {
+    } else {
       const sorted = [...model];
       sorted.sort((a: Keyword, b: Keyword) => {
         if (a.language !== b.language) {
@@ -183,9 +184,12 @@ export class WorkKeywordsComponent implements OnInit {
         return 0;
       });
       for (let a of sorted) {
-        this.keywordsArr.controls.push(this.getKeywordGroup(a));
+        // push via the array (not its controls) so that the group gets
+        // registered, i.e. its changes update the array value and validity
+        this.keywordsArr.push(this.getKeywordGroup(a), { emitEvent: false });
       }
     }
+    this.current = this.buildCurrent();
 
     this.form.markAsPristine();
   }
@@ -205,6 +209,16 @@ export class WorkKeywordsComponent implements OnInit {
 
   public pickKeyword(keyword: Keyword): void {
     this.keyword = keyword;
+    // do not add an already present keyword
+    for (let i = 0; i < this.keywordsArr.length; i++) {
+      const g = this.keywordsArr.at(i) as FormGroup;
+      if (
+        g.controls['language'].value === keyword.language &&
+        g.controls['value'].value === keyword.value
+      ) {
+        return;
+      }
+    }
     this.addKeyword(keyword);
   }
   //#endregion

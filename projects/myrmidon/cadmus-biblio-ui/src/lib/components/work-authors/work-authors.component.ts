@@ -1,4 +1,13 @@
-import { Component, effect, input, model, OnInit, output, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  effect,
+  input,
+  model,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -82,11 +91,13 @@ export class WorkAuthorsComponent implements OnInit {
   public form: FormGroup;
   public groups: FormGroup[];
 
-  public currentAuthors: string | undefined;
+  // signals: these are updated also outside of template events
+  // (debounced changes, timeouts), so they must notify change detection
+  public readonly currentAuthors = signal<string | undefined>(undefined);
   public editing: boolean;
 
   public authors$: Observable<Author[]> | undefined;
-  public author: WorkAuthor | undefined;
+  public readonly author = signal<WorkAuthor | undefined>(undefined);
 
   constructor(
     public authorLookupService: AuthorRefLookupService,
@@ -113,7 +124,7 @@ export class WorkAuthorsComponent implements OnInit {
     // update current when authors change
     this.editedAuthors.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
       if (!this._updating) {
-        this.currentAuthors = this.buildCurrentAuthors();
+        this.currentAuthors.set(this.buildCurrentAuthors());
         this.authorCount.setValue(this.editedAuthors.length);
         this.authorCount.updateValueAndValidity();
         this.authorCount.markAsDirty();
@@ -122,27 +133,29 @@ export class WorkAuthorsComponent implements OnInit {
   }
 
   private updateForm(authors?: WorkAuthor[]): void {
+    // do not emit while loading: the debounced valueChanges handler
+    // would otherwise mark the freshly loaded form as dirty
+    this.editedAuthors.clear({ emitEvent: false });
     if (!authors?.length) {
       this.form.reset();
-      this.currentAuthors = undefined;
+      this.currentAuthors.set(undefined);
       return;
     }
 
     this._updating = true;
-    this.editedAuthors.clear();
-    if (authors) {
-      // when setting authors, we must ensure they are
-      // sorted according to their ordinals if any;
-      // otherwise, just stick with the received order.
-      const sorted = [...authors];
-      sorted.sort((a: WorkAuthor, b: WorkAuthor) => {
-        return (a.ordinal || 0) - (b.ordinal || 0);
-      });
-      for (let a of sorted) {
-        this.editedAuthors.controls.push(this.getAuthorGroup(a));
-      }
+    // when setting authors, we must ensure they are
+    // sorted according to their ordinals if any;
+    // otherwise, just stick with the received order.
+    const sorted = [...authors];
+    sorted.sort((a: WorkAuthor, b: WorkAuthor) => {
+      return (a.ordinal || 0) - (b.ordinal || 0);
+    });
+    for (let a of sorted) {
+      // push via the array (not its controls) so that the group gets
+      // registered, i.e. its changes update the array value and validity
+      this.editedAuthors.push(this.getAuthorGroup(a), { emitEvent: false });
     }
-    this.currentAuthors = this.buildCurrentAuthors();
+    this.currentAuthors.set(this.buildCurrentAuthors());
     this.authorCount.setValue(this.editedAuthors.length);
     this.form.markAsPristine();
     this._updating = false;
@@ -150,14 +163,14 @@ export class WorkAuthorsComponent implements OnInit {
 
   //#region Authors
   public pickAuthor(author: unknown): void {
-    this.author = author as Author;
+    this.author.set(author as Author);
     const wa: WorkAuthor = {
-      ...this.author,
+      ...(author as Author),
       ordinal: this.editedAuthors.length + 1,
     };
     this.addAuthor(wa);
     setTimeout(() => {
-      this.author = undefined;
+      this.author.set(undefined);
     });
   }
 

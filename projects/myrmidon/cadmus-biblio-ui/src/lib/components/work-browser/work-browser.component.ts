@@ -5,7 +5,8 @@ import {
   OnDestroy,
   OnInit,
   output,
-  ChangeDetectionStrategy
+  signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { ViewportScroller, AsyncPipe } from '@angular/common';
@@ -15,7 +16,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -68,6 +69,7 @@ import { WorkDetailsComponent } from '../work-details/work-details.component';
 })
 export class WorkBrowserComponent implements OnInit, OnDestroy {
   private _sub?: Subscription;
+  private _loadSub?: Subscription;
   private _filter: WorkFilter;
 
   public readonly pickEnabled = input<boolean>(true);
@@ -88,11 +90,13 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
   public isContainer: FormControl<boolean>;
 
   public page$: BehaviorSubject<DataPage<WorkInfo>>;
-  public loading: boolean | undefined;
+  // signals: these are updated in HTTP callbacks, outside of template
+  // events, so they must notify change detection
+  public readonly loading = signal<boolean>(false);
 
-  public work: Work | Container | undefined;
-  public loadingWork: boolean | undefined;
-  public detailsOpen: boolean;
+  public readonly work = signal<Work | Container | undefined>(undefined);
+  public readonly loadingWork = signal<boolean>(false);
+  public readonly detailsOpen = signal<boolean>(false);
 
   constructor(
     formBuilder: FormBuilder,
@@ -100,7 +104,6 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
     private _utilService: BiblioUtilService,
     private _scroller: ViewportScroller
   ) {
-    this.detailsOpen = false;
     this.page$ = new BehaviorSubject<DataPage<WorkInfo>>({
       total: 0,
       pageNumber: 1,
@@ -117,26 +120,24 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
   }
 
   private loadPage(): void {
-    this.loading = true;
+    this.loading.set(true);
     this._filter.pageSize = this.pageSize();
 
-    if (this.isContainer.value) {
-      this._biblioService
-        .getContainers(this._filter)
-        .pipe(take(1))
-        .subscribe((p) => {
-          this.page$.next(p);
-          this.loading = false;
-        });
-    } else {
-      this._biblioService
-        .getWorks(this._filter)
-        .pipe(take(1))
-        .subscribe((p) => {
-          this.page$.next(p);
-          this.loading = false;
-        });
-    }
+    // cancel any pending load, so that a late response cannot
+    // replace the page requested last
+    this._loadSub?.unsubscribe();
+    const page$ = this.isContainer.value
+      ? this._biblioService.getContainers(this._filter)
+      : this._biblioService.getWorks(this._filter);
+    this._loadSub = page$.pipe(take(1)).subscribe({
+      next: (p) => {
+        this.page$.next(p);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      },
+    });
   }
 
   public ngOnInit(): void {
@@ -159,6 +160,7 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this._sub?.unsubscribe();
+    this._loadSub?.unsubscribe();
   }
 
   public onPageChange(event: PageEvent): void {
@@ -169,10 +171,12 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
   }
 
   public onFilterChange(filter: WorkFilter): void {
-    this._filter = filter;
-    // override paging options
-    this._filter.pageNumber = this.page$.value.pageNumber;
-    this._filter.pageSize = this.page$.value.pageSize;
+    // a new filter always starts from the first page
+    this._filter = {
+      ...filter,
+      pageNumber: 1,
+      pageSize: this.pageSize(),
+    };
     this.loadPage();
   }
 
@@ -200,33 +204,24 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
   }
 
   public viewDetails(work: WorkInfo): void {
-    this.loadingWork = true;
+    this.loadingWork.set(true);
 
-    if (work.isContainer) {
-      this._biblioService
-        .getContainer(work.id)
-        .pipe(take(1))
-        .subscribe((w) => {
-          this.work = w;
-          this.loadingWork = false;
-          this.detailsOpen = true;
-          setTimeout(() => {
-            this._scroller.scrollToAnchor('work-details');
-          }, 0);
-        });
-    } else {
-      this._biblioService
-        .getWork(work.id)
-        .pipe(take(1))
-        .subscribe((w) => {
-          this.work = w;
-          this.loadingWork = false;
-          this.detailsOpen = true;
-          setTimeout(() => {
-            this._scroller.scrollToAnchor('work-details');
-          }, 0);
-        });
-    }
+    const work$: Observable<Work | Container> = work.isContainer
+      ? this._biblioService.getContainer(work.id)
+      : this._biblioService.getWork(work.id);
+    work$.pipe(take(1)).subscribe({
+      next: (w) => {
+        this.work.set(w);
+        this.loadingWork.set(false);
+        this.detailsOpen.set(true);
+        setTimeout(() => {
+          this._scroller.scrollToAnchor('work-details');
+        }, 0);
+      },
+      error: () => {
+        this.loadingWork.set(false);
+      },
+    });
   }
 
   public workToString(work: Work | Container): string {

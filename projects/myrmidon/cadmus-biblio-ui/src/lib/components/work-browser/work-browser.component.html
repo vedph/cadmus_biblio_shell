@@ -28,7 +28,7 @@
     </div>
 
     <!-- progress -->
-    @if (loading) {
+    @if (loading()) {
     <div>
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </div>
@@ -53,7 +53,7 @@
       </thead>
       <tbody>
         @for (w of page.items; track w.id) {
-        <tr [class.selected]="w === work">
+        <tr [class.selected]="w.id === work()?.id">
           <td class="fit-width">
             <button
               type="button"
@@ -137,9 +137,9 @@
 
     <!-- details -->
     <div id="details">
-      @if (work) {
+      @if (work(); as work) {
       <fieldset>
-        @if (loadingWork) {
+        @if (loadingWork()) {
         <div>
           <mat-progress-bar mode="indeterminate"></mat-progress-bar>
         </div>

@@ -102,7 +102,8 @@
             "runner": "vitest",
             "setupFiles": [
               "src/test-setup.ts"
-            ]
+            ],
+            "providersFile": "src/test-providers.ts"
           }
         }
       }
@@ -134,7 +135,8 @@
             "tsConfig": "projects/myrmidon/cadmus-biblio-api/tsconfig.spec.json",
             "setupFiles": [
               "projects/myrmidon/cadmus-biblio-api/src/test-setup.ts"
-            ]
+            ],
+            "providersFile": "projects/myrmidon/cadmus-biblio-api/src/test-providers.ts"
           }
         }
       }
@@ -166,7 +168,8 @@
             "tsConfig": "projects/myrmidon/cadmus-biblio-core/tsconfig.spec.json",
             "setupFiles": [
               "projects/myrmidon/cadmus-biblio-core/src/test-setup.ts"
-            ]
+            ],
+            "providersFile": "projects/myrmidon/cadmus-biblio-core/src/test-providers.ts"
           }
         }
       }
@@ -198,7 +201,8 @@
             "tsConfig": "projects/myrmidon/cadmus-biblio-ui/tsconfig.spec.json",
             "setupFiles": [
               "projects/myrmidon/cadmus-biblio-ui/src/test-setup.ts"
-            ]
+            ],
+            "providersFile": "projects/myrmidon/cadmus-biblio-ui/src/test-providers.ts"
           }
         }
       }
@@ -230,7 +234,8 @@
             "tsConfig": "projects/myrmidon/cadmus-part-biblio-pg/tsconfig.spec.json",
             "setupFiles": [
               "projects/myrmidon/cadmus-part-biblio-pg/src/test-setup.ts"
-            ]
+            ],
+            "providersFile": "projects/myrmidon/cadmus-part-biblio-pg/src/test-providers.ts"
           }
         }
       }
@@ -262,7 +267,8 @@
             "tsConfig": "projects/myrmidon/cadmus-part-biblio-ui/tsconfig.spec.json",
             "setupFiles": [
               "projects/myrmidon/cadmus-part-biblio-ui/src/test-setup.ts"
-            ]
+            ],
+            "providersFile": "projects/myrmidon/cadmus-part-biblio-ui/src/test-providers.ts"
           }
         }
       }

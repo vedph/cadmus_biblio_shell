@@ -1,10 +1,12 @@
-<form [formGroup]="form">
+<!-- stop propagation: this form can be nested in other forms -->
+<form [formGroup]="form" (submit)="$event.stopPropagation()">
   <mat-autocomplete
     #lookupAuto="matAutocomplete"
     [displayWith]="keywordToString"
+    (optionSelected)="pickKeyword($event.option.value)"
   >
     @for (k of keywords$ | async; track k) {
-    <mat-option [value]="k" (onSelectionChange)="pickKeyword(k)">
+    <mat-option [value]="k">
       {{ keywordToString(k) }}
     </mat-option>
     }
@@ -23,7 +25,7 @@
       mat-icon-button
       matSuffix
       (click)="clear()"
-      [disabled]="!keyword"
+      [disabled]="!lookup.value"
       matTooltip="Clear"
     >
       <mat-icon class="mat-warn">clear</mat-icon>

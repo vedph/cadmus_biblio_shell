@@ -146,6 +146,8 @@ export class WorkFilterComponent implements OnInit {
       );
       if (f) {
         this._filter$.next(f);
+        // apply the restored filter
+        this.filterChange.emit(f);
       }
     }
   }
@@ -169,6 +171,8 @@ export class WorkFilterComponent implements OnInit {
         .subscribe((a) => {
           this.author.setValue(a);
         });
+    } else {
+      this.author.setValue(null);
     }
 
     // load the container from its container ID if any
