@@ -145,7 +145,9 @@ export class WorkFilterComponent implements OnInit {
     min(p.yearMax, 0);
   });
 
-  public types: WorkType[];
+  // a signal: it is set in an HTTP callback, which in a zoneless app
+  // does not trigger change detection
+  public readonly types = signal<WorkType[]>([]);
 
   constructor(
     public authorLookupService: AuthorRefLookupService,
@@ -153,9 +155,7 @@ export class WorkFilterComponent implements OnInit {
     private _storageService: LocalStorageService,
     private _biblioService: BiblioService,
     private _biblioUtil: BiblioUtilService
-  ) {
-    this.types = [];
-  }
+  ) {}
 
   ngOnInit(): void {
     // load types once
@@ -166,7 +166,7 @@ export class WorkFilterComponent implements OnInit {
       })
       .pipe(take(1))
       .subscribe((p) => {
-        this.types = p.items;
+        this.types.set(p.items);
       });
 
     // load if required

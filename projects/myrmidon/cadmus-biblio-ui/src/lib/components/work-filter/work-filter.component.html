@@ -8,7 +8,7 @@
       <mat-label>type</mat-label>
       <mat-select [formField]="form.type">
         <mat-option [value]="null">(any)</mat-option>
-        @for (t of types; track t.id) {
+        @for (t of types(); track t.id) {
         <mat-option [value]="t.id">{{ t.name }}</mat-option>
         }
       </mat-select>
