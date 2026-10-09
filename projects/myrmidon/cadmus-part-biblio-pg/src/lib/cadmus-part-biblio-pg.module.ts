@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PendingChangesGuard } from '@myrmidon/cadmus-core';
 import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
@@ -22,8 +21,6 @@ export const RouterModuleForChild = RouterModule.forChild([
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
     RouterModuleForChild,
     // Cadmus
     CurrentItemBarComponent,

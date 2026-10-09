@@ -17,11 +17,11 @@
   "peerDependencies": {
     "@angular/common": "^22.0.2",
     "@angular/core": "^22.0.2",
-    "@myrmidon/cadmus-core": "^13.0.0",
-    "@myrmidon/cadmus-state": "^16.0.0",
+    "@myrmidon/cadmus-core": "^20.0.0",
+    "@myrmidon/cadmus-state": "^20.0.0",
     "@myrmidon/cadmus-ui-pg": "^16.1.2",
     "@myrmidon/cadmus-part-biblio-ui": "^13.0.0",
-    "@myrmidon/cadmus-api": "^15.0.0"
+    "@myrmidon/cadmus-api": "^20.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
