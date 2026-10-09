@@ -102,12 +102,14 @@ async function setup(
   };
   const dataChange = vi.fn();
   const editorClose = vi.fn();
+  const dirtyChange = vi.fn();
   const dataInput = signal(options.data);
   const result = await render(ExtBibliographyPartComponent, {
     bindings: [
       inputBinding('data', dataInput),
       outputBinding('dataChange', dataChange),
       outputBinding('editorClose', editorClose),
+      outputBinding('dirtyChange', dirtyChange),
     ],
     providers: [
       { provide: AuthJwtService, useValue: auth },
@@ -132,6 +134,7 @@ async function setup(
     dataInput,
     dataChange,
     editorClose,
+    dirtyChange,
     user: userEvent.setup(),
   };
 }
@@ -238,5 +241,65 @@ describe('ExtBibliographyPartComponent', () => {
     await settle(fixture);
     expect(screen.queryByText(/Doe - Alpha, 2000/)).not.toBeInTheDocument();
     expect(screen.getByText(/Roe - Beta, 2010/)).toBeInTheDocument();
+  });
+
+  describe('signal form', () => {
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    it('should render no <form>', async () => {
+      const { container } = await setup({ data: { value: PART, thesauri: {} } });
+      expect(container.querySelector('form')).toBeNull();
+    });
+
+    it('should stay pristine after binding data', async () => {
+      const { dirtyChange } = await setup({
+        // untrimmed and null values, as they may come from the backend
+        data: {
+          value: {
+            ...PART,
+            entries: [
+              { id: 'w1', label: 'Doe - Alpha, 2000', tag: ' pri ' },
+              { ...ENTRIES[1], note: null as unknown as undefined },
+            ],
+          },
+          thesauri: {},
+        },
+      });
+      // past the works list autosave debounce
+      await wait(400);
+      expect(dirtyChange).not.toHaveBeenCalledWith(true);
+    });
+
+    it('should become dirty when a tag is typed', async () => {
+      const { user, dirtyChange } = await setup({
+        data: { value: PART, thesauri: {} },
+      });
+      await user.type(
+        screen.getAllByRole('textbox', { name: 'note' })[0],
+        'x'
+      );
+      await vi.waitFor(() => expect(dirtyChange).toHaveBeenCalledWith(true));
+    });
+
+    it('should keep typing through the autosave echo, and save the result', async () => {
+      const { user, dataChange } = await setup({
+        data: { value: PART, thesauri: {} },
+      });
+      const note = screen.getAllByRole('textbox', { name: 'note' })[1];
+      await user.type(note, 'abc ');
+      await wait(400); // past the works list autosave debounce
+      expect(note).toHaveValue('abc ');
+      await user.type(note, 'd');
+      expect(note).toHaveValue('abc d');
+      await wait(400);
+
+      await user.click(saveButton());
+      const saved = dataChange.mock.lastCall![0] as EditedObject<ExtBibliographyPart>;
+      expect(saved.value!.entries[1].note).toBe('abc d');
+      // no form tags in the saved entries
+      for (const e of saved.value!.entries) {
+        expect(Object.getOwnPropertySymbols(e)).toEqual([]);
+      }
+    });
   });
 });

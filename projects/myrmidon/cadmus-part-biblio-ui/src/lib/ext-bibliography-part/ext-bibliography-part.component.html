@@ -1,27 +1,27 @@
-<form [formGroup]="form" (submit)="save()">
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon>picture_in_picture</mat-icon>
-      </div>
-      <mat-card-title>External Bibliography Part</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <biblio-work-list
-        [roleEntries]="roleEntries"
-        [langEntries]="langEntries"
-        [workTagEntries]="workTagEntries"
-        [scopeEntries]="scopeEntries"
-        [entries]="initialWorks"
-        (entriesChange)="onEntriesChange($event)"
-      />
-    </mat-card-content>
-    <mat-card-actions>
-      <cadmus-close-save-buttons
-        [form]="form"
-        [noSave]="userLevel < 2"
-        (closeRequest)="close()"
-      />
-    </mat-card-actions>
-  </mat-card>
-</form>
+<!-- no <form> here: the part is saved by the save button -->
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon>picture_in_picture</mat-icon>
+    </div>
+    <mat-card-title>External Bibliography Part</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <biblio-work-list
+      [roleEntries]="roleEntries()"
+      [langEntries]="langEntries()"
+      [workTagEntries]="workTagEntries()"
+      [scopeEntries]="scopeEntries()"
+      [entries]="form.works().value()"
+      (entriesChange)="onEntriesChange($event)"
+    />
+  </mat-card-content>
+  <mat-card-actions>
+    <cadmus-close-save-buttons
+      [form]="form"
+      [noSave]="userLevel < 2"
+      (closeRequest)="close()"
+      (saveRequest)="save()"
+    />
+  </mat-card-actions>
+</mat-card>
