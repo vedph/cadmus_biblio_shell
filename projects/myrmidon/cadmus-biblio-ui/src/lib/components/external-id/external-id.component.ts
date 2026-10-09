@@ -103,6 +103,8 @@ export class ExternalIdComponent implements OnInit {
     }
     this.scope.setValue(id.scope);
     this.value.setValue(id.value);
+    // a new ID has no scope yet: use the default one
+    this.setDefaultScope();
     this.form.markAsPristine();
   }
 

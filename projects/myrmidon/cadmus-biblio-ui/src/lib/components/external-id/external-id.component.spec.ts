@@ -120,6 +120,23 @@ describe('ExternalIdComponent', () => {
       expect(select).toHaveTextContent('DOI');
     });
 
+    it('should default the scope of a new empty ID', async () => {
+      const { user, idChange } = await setup({
+        scopeEntries: SCOPES,
+        id: { sourceId: '', scope: '', value: '' },
+      });
+      expect(screen.getByRole('combobox', { name: 'scope' })).toHaveTextContent(
+        'DOI'
+      );
+      await user.type(screen.getByRole('textbox', { name: 'value' }), '10.1');
+      await user.click(acceptButton());
+      expect(idChange).toHaveBeenCalledWith({
+        sourceId: '',
+        scope: 'doi',
+        value: '10.1',
+      });
+    });
+
     it('should show the bound scope', async () => {
       await setup({
         scopeEntries: SCOPES,

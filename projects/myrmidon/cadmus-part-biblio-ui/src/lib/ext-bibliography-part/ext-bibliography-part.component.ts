@@ -142,6 +142,7 @@ export class ExtBibliographyPartComponent
   private updateForm(part?: ExtBibliographyPart | null): void {
     if (!part) {
       this.form.reset();
+      this.initialWorks = [];
       return;
     }
     this.works.setValue(part.entries || []);

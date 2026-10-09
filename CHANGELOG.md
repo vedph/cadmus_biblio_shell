@@ -10,7 +10,7 @@
   - `@myrmidon/cadmus-biblio-ui`: added full unit tests and fixed these bugs:
     - all the editors: validation error messages for too long values never appeared (`maxLength` instead of `maxlength` error key).
     - all the editors: forms are nested (authors, keywords and external ID editors in the work editor; work editor and filter in the works list, in turn inside the bibliography part editor), and submit events bubble: e.g. accepting the authors also saved the whole work, and in the part editor even the part. Each embeddable form now stops the propagation of its submit event; Enter in a lookup no longer submits its form.
-    - `ExternalIdComponent`: the default scope (first scope entry) was immediately cleared.
+    - `ExternalIdComponent`: the default scope (first scope entry) was immediately cleared, and never applied to new IDs added from `ExternalIdsComponent`.
     - `ExternalIdsComponent`: deleting an ID always deleted the last one (or the edited one) rather than the clicked one; the next input change after the first one was ignored. Added tooltips to icon buttons.
     - `KeywordPickerComponent`, `WorkKeywordsComponent`: a picked keyword could be added again when another option was picked (`onSelectionChange` fires also for deselection: replaced with `optionSelected`); clearing the lookup rendered an empty option; the clear button of the picker was always disabled. `WorkKeywordsComponent` also ignores already present keywords, and its search box no longer is a form nested in the keywords form.
     - `WorkAuthorsComponent`, `WorkKeywordsComponent`, `WorkListComponent`: loaded items were added to the form array bypassing its API, so their changes did not update the form validity (e.g. a loaded author whose last name was cleared could be saved), nor the summary; an empty input did not clear the previous items. The authors summary was not refreshed in zoneless mode (now a signal).
@@ -20,6 +20,7 @@
     - `WorkComponent`: in zoneless mode the loaded work's authors, keywords and links could fail to reach their editors (values were set in a `setTimeout`); removing the container could not be saved (the control was reset to pristine); a container was saved with the hidden container and pages values. Added a tooltip to the build key button.
     - `WorkListComponent`: tag/note validation errors never appeared; editing a work dropped the tag and note of its entry; tag/note text typed just before another list operation was lost; the details and editor panels were not refreshed in zoneless mode (now signals); the editor of a new work had an empty header.
     - `WorkRefLookupService`: removed debug log.
+  - `@myrmidon/cadmus-part-biblio-ui`: added full unit tests. Fixed `ExtBibliographyPartComponent`: the link scopes thesaurus (`ext-biblio-link-scopes`) was loaded but never passed to the works list; a part without value did not clear the previous entries.
 
 - 2026-09-05: updated packages.
 
