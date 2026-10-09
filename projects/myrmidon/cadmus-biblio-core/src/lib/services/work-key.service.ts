@@ -23,8 +23,10 @@ export class WorkKeyService {
       // sort by ordinal, last, suffix
       const sorted = [...work.authors];
       sorted.sort((a: WorkAuthor, b: WorkAuthor) => {
-        if (a.ordinal !== b.ordinal) {
-          return (a.ordinal || 0) - (b.ordinal || 0);
+        // a missing ordinal is equal to 0 (as in the backend)
+        const ordinalDelta = (a.ordinal || 0) - (b.ordinal || 0);
+        if (ordinalDelta) {
+          return ordinalDelta;
         } else {
           const n = a.last.localeCompare(b.last);
           if (n !== 0) {
