@@ -1,12 +1,13 @@
-import { Component, input, OnInit, output, ChangeDetectionStrategy } from '@angular/core';
 import {
-  FormControl,
-  FormGroup,
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+  Component,
+  input,
+  linkedSignal,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { FormField, form, min } from '@angular/forms/signals';
 import { take } from 'rxjs/operators';
 
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -22,6 +23,7 @@ import { MatIcon } from '@angular/material/icon';
 import { LocalStorageService } from '@myrmidon/ngx-tools';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { isImplicitSubmission } from '@myrmidon/cadmus-ui';
 import { BiblioService, WorkFilter } from '@myrmidon/cadmus-biblio-api';
 import {
   Author,
@@ -35,14 +37,75 @@ import { WorkRefLookupService } from '../../services/work-ref-lookup.service';
 
 const WORK_FILTER_KEY = 'cadmus-biblio-ui.work-filter';
 
+interface WorkFilterControls {
+  matchAny: boolean;
+  // bound to a select only: null is "any"
+  type: string | null;
+  // the author and container picked from lookups
+  author: Author | null;
+  lastName: string;
+  language: string;
+  title: string;
+  container: Container | null;
+  yearMin: number | null;
+  yearMax: number | null;
+  key: string;
+  keyword: string;
+}
+
+/**
+ * Filter -> draft. The filter has only the IDs of its author and
+ * container: their objects are kept from the previous draft when
+ * their IDs did not change, else they are loaded later.
+ */
+function toDraft(
+  filter: WorkFilter,
+  previous?: WorkFilterControls
+): WorkFilterControls {
+  const author = previous?.author;
+  const container = previous?.container;
+  return {
+    matchAny: filter.matchAny ? true : false,
+    type: filter.type || null,
+    author:
+      author?.id && author.id === filter.authorId ? author : null,
+    lastName: filter.lastName || '',
+    language: filter.language || '',
+    title: filter.title || '',
+    container:
+      container?.id && container.id === filter.containerId ? container : null,
+    yearMin: filter.yearPubMin || 0,
+    yearMax: filter.yearPubMax || 0,
+    key: filter.key || '',
+    keyword: filter.keyword || '',
+  };
+}
+
+function toFilter(draft: WorkFilterControls): WorkFilter {
+  return {
+    pageNumber: 1,
+    pageSize: 10,
+    matchAny: draft.matchAny,
+    type: draft.type || undefined,
+    authorId: draft.author?.id,
+    lastName: draft.lastName || undefined,
+    language: draft.language || undefined,
+    title: draft.title || undefined,
+    yearPubMin: draft.yearMin ?? 0,
+    yearPubMax: draft.yearMax ?? 0,
+    key: draft.key || undefined,
+    keyword: draft.keyword || undefined,
+    containerId: draft.container?.id,
+  };
+}
+
 @Component({
   selector: 'biblio-work-filter',
   templateUrl: './work-filter.component.html',
   styleUrls: ['./work-filter.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatCheckbox,
     MatFormField,
     MatLabel,
@@ -57,7 +120,13 @@ const WORK_FILTER_KEY = 'cadmus-biblio-ui.work-filter';
   ],
 })
 export class WorkFilterComponent implements OnInit {
-  private _filter$: BehaviorSubject<WorkFilter>;
+  /**
+   * The filter being applied.
+   */
+  private readonly _filter = signal<WorkFilter>({
+    pageNumber: 1,
+    pageSize: 10,
+  });
 
   public readonly persisted = input<boolean>(false);
 
@@ -65,60 +134,27 @@ export class WorkFilterComponent implements OnInit {
 
   public readonly filterChange = output<WorkFilter>();
 
-  public form: FormGroup;
-  public matchAny: FormControl<boolean>;
-  public type: FormControl<string | null>;
-  public author: FormControl<Author | null>;
-  public lastName: FormControl<string | null>;
-  public language: FormControl<string | null>;
-  public title: FormControl<string | null>;
-  public container: FormControl<Container | null>;
-  public yearMin: FormControl<number>;
-  public yearMax: FormControl<number>;
-  public key: FormControl<string | null>;
-  public keyword: FormControl<string | null>;
+  // rebuilt whenever a filter is applied, reset or restored
+  private readonly _draft = linkedSignal<WorkFilter, WorkFilterControls>({
+    source: () => this._filter(),
+    computation: (filter, previous) => toDraft(filter, previous?.value),
+  });
+
+  public readonly form = form(this._draft, (p) => {
+    min(p.yearMin, 0);
+    min(p.yearMax, 0);
+  });
 
   public types: WorkType[];
 
   constructor(
-    formBuilder: FormBuilder,
     public authorLookupService: AuthorRefLookupService,
     public workLookupService: WorkRefLookupService,
     private _storageService: LocalStorageService,
     private _biblioService: BiblioService,
     private _biblioUtil: BiblioUtilService
   ) {
-    this._filter$ = new BehaviorSubject<WorkFilter>({
-      pageNumber: 1,
-      pageSize: 10,
-    });
     this.types = [];
-    // form
-    this.matchAny = formBuilder.control(false, { nonNullable: true });
-    this.type = formBuilder.control(null);
-    this.author = formBuilder.control(null);
-    this.lastName = formBuilder.control(null);
-    this.language = formBuilder.control(null);
-    this.title = formBuilder.control(null);
-    this.container = formBuilder.control(null); // container
-    this.yearMin = formBuilder.control(0, { nonNullable: true });
-    this.yearMax = formBuilder.control(0, { nonNullable: true });
-    this.key = formBuilder.control(null);
-    this.keyword = formBuilder.control(null); // prefix:value
-
-    this.form = formBuilder.group({
-      matchAny: this.matchAny,
-      type: this.type,
-      author: this.author,
-      lastName: this.lastName,
-      language: this.language,
-      title: this.title,
-      container: this.container,
-      yearMin: this.yearMin,
-      yearMax: this.yearMax,
-      key: this.key,
-      keyword: this.keyword,
-    });
   }
 
   ngOnInit(): void {
@@ -133,11 +169,6 @@ export class WorkFilterComponent implements OnInit {
         this.types = p.items;
       });
 
-    // update this form whenever the filter is loaded
-    this._filter$.subscribe((f) => {
-      this.updateForm(f);
-    });
-
     // load if required
     if (this.persisted()) {
       const f = this._storageService.retrieve<WorkFilter>(
@@ -145,83 +176,61 @@ export class WorkFilterComponent implements OnInit {
         true
       );
       if (f) {
-        this._filter$.next(f);
+        this.setFilter(f);
         // apply the restored filter
         this.filterChange.emit(f);
       }
     }
   }
 
-  private updateForm(filter: WorkFilter): void {
-    this.matchAny.setValue(filter.matchAny ? true : false);
-    this.type.setValue(filter.type ? filter.type : null);
-    this.lastName.setValue(filter.lastName || null);
-    this.language.setValue(filter.language ? filter.language : null);
-    this.title.setValue(filter.title || null);
-    this.yearMin.setValue(filter.yearPubMin || 0);
-    this.yearMax.setValue(filter.yearPubMax || 0);
-    this.key.setValue(filter.key || null);
-    this.keyword.setValue(filter.keyword || null);
+  /**
+   * Set the filter being applied, loading its author and container
+   * when they are not yet available.
+   */
+  private setFilter(filter: WorkFilter): void {
+    this._filter.set(filter);
+    const draft = this._draft();
 
-    // load the author from his ID if any
-    if (filter.authorId) {
+    // load the author from its ID if any
+    if (filter.authorId && !draft.author) {
       this._biblioService
         .getAuthor(filter.authorId)
         .pipe(take(1))
         .subscribe((a) => {
-          this.author.setValue(a);
+          // ignore a late response for a filter no longer applied
+          if (this._filter() === filter) {
+            this.form.author().value.set(a);
+          }
         });
-    } else {
-      this.author.setValue(null);
     }
 
-    // load the container from its container ID if any
-    if (filter.containerId) {
+    // load the container from its ID if any
+    if (filter.containerId && !draft.container) {
       this._biblioService
         .getContainer(filter.containerId)
         .pipe(take(1))
         .subscribe((c) => {
-          this.container.setValue(c);
+          if (this._filter() === filter) {
+            this.form.container().value.set(c);
+          }
         });
-    } else {
-      this.container.setValue(null);
     }
-
-    this.form.markAsPristine();
-  }
-
-  private getFilter(): WorkFilter {
-    return {
-      pageNumber: 1,
-      pageSize: 10,
-      matchAny: this.matchAny.value,
-      type: this.type.value || undefined,
-      authorId: this.author.value?.id,
-      lastName: this.lastName.value || undefined,
-      language: this.language.value || undefined,
-      title: this.title.value || undefined,
-      yearPubMin: this.yearMin.value,
-      yearPubMax: this.yearMax.value,
-      key: this.key.value || undefined,
-      keyword: this.keyword.value || undefined,
-      containerId: this.container.value?.id,
-    };
   }
 
   public onAuthorChange(author: unknown): void {
-    this.author.setValue(author as Author);
+    this.form.author().value.set((author as Author) || null);
   }
 
   public onContainerChange(container: unknown): void {
-    this.container.setValue(container as Container);
+    this.form.container().value.set((container as Container) || null);
   }
 
   public clearAuthor(): void {
-    this.author.setValue(null);
+    this.form.author().value.set(null);
   }
 
   public clearContainer(): void {
-    this.container.setValue(null);
+    this.form.container().value.set(null);
   }
 
   public authorToString(author: Author | null): string {
@@ -241,14 +250,25 @@ export class WorkFilterComponent implements OnInit {
       pageNumber: 1,
       pageSize: 10,
     };
-    this._filter$.next(filter);
+    this.setFilter(filter);
     this.saveFilter(filter);
     this.filterChange.emit(filter);
   }
 
+  /**
+   * Apply on Enter in a text input, as the former form did.
+   */
+  public onEnterKey(event: Event): void {
+    if (!isImplicitSubmission(event)) {
+      return;
+    }
+    event.preventDefault();
+    this.apply();
+  }
+
   public apply(): void {
-    const filter = this.getFilter();
-    this._filter$.next(filter);
+    const filter = toFilter(this._draft());
+    this.setFilter(filter);
     this.saveFilter(filter);
     this.filterChange.emit(filter);
   }

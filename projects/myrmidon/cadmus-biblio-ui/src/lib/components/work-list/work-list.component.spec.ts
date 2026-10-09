@@ -87,6 +87,9 @@ async function setup(
     entries?: WorkListEntry[];
     workTagEntries?: ThesaurusEntry[];
     confirm?: boolean;
+    // like a parent binding the entries two-way: each emitted value comes
+    // back as a new input (a copy, as from a parent's form)
+    roundTrip?: boolean;
   } = {}
 ) {
   const biblio = {
@@ -118,8 +121,12 @@ async function setup(
   const clipboard = { copy: vi.fn() };
   const scroller = { scrollToAnchor: vi.fn() };
   const storage = { retrieve: vi.fn(() => null), store: vi.fn() };
-  const entriesChange = vi.fn();
   const entriesInput = signal(options.entries ?? []);
+  const entriesChange = vi.fn((entries: WorkListEntry[]) => {
+    if (options.roundTrip) {
+      entriesInput.set(structuredClone(entries));
+    }
+  });
 
   const result = await render(WorkListComponent, {
     bindings: [
@@ -207,11 +214,21 @@ describe('WorkListComponent', () => {
     expect(tag).toHaveFocus();
   });
 
-  it('should show a too long tag error', async () => {
+  it('should limit the length of a typed tag', async () => {
     const { user } = await setup({ entries: ENTRIES });
+    // the field's maxLength rule is applied to the native input
     const tag = screen.getAllByRole('textbox', { name: 'tag' })[1];
+    expect(tag).toHaveAttribute('maxlength', '50');
     await user.click(tag);
     await user.paste('x'.repeat(51));
+    expect(tag).toHaveValue('x'.repeat(50));
+  });
+
+  it('should show a too long tag error for a bound value', async () => {
+    const { user } = await setup({
+      entries: [{ ...ENTRIES[1], tag: 'x'.repeat(51) }],
+    });
+    await user.click(screen.getByRole('textbox', { name: 'tag' }));
     await user.tab();
     expect(await screen.findByText('tag too long')).toBeInTheDocument();
   });
@@ -485,5 +502,78 @@ describe('WorkListComponent', () => {
     entriesInput.set([ENTRIES[1]]);
     await settle(fixture);
     expect(labels()).toEqual(['1. Roe - Journal, 1999']);
+  });
+
+  describe('autosave', () => {
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    it('should not save a normalized copy of the entries it was just given', async () => {
+      const { entriesChange } = await setup({
+        entries: [{ ...ENTRIES[1], tag: '  untrimmed  ' }],
+        roundTrip: true,
+      });
+      await wait(400); // past the autosave debounce
+      expect(entriesChange).not.toHaveBeenCalled();
+      expect(screen.getByRole('textbox', { name: 'tag' })).toHaveValue(
+        '  untrimmed  '
+      );
+    });
+
+    it('should keep an in-progress edit when its own save echoes back normalized', async () => {
+      const { user, entriesChange, entriesInput } = await setup({
+        entries: [ENTRIES[1]],
+        roundTrip: true,
+      });
+      const tag = screen.getByRole('textbox', { name: 'tag' });
+      await user.type(tag, 'abc ');
+      await wait(400); // past the autosave debounce
+
+      // the entries got the trimmed value, which came back as input...
+      expect(entriesChange).toHaveBeenLastCalledWith([
+        expect.objectContaining({ id: 'c1', tag: 'abc' }),
+      ]);
+      expect(entriesInput()[0].tag).toBe('abc');
+      // ...but the input still holds what the user typed
+      expect(tag).toHaveValue('abc ');
+      expect(tag).toHaveFocus();
+
+      // so continuing to type yields "abc d", not "abcd"
+      await user.type(tag, 'd');
+      expect(tag).toHaveValue('abc d');
+      await wait(400);
+      expect(entriesChange).toHaveBeenLastCalledWith([
+        expect.objectContaining({ id: 'c1', tag: 'abc d' }),
+      ]);
+    });
+
+    it('should keep a validation error visible after an autosave', async () => {
+      const { user } = await setup({
+        entries: [{ ...ENTRIES[1], tag: 'x'.repeat(51) }],
+        roundTrip: true,
+      });
+      const note = screen.getByRole('textbox', { name: 'note' });
+      await user.click(screen.getByRole('textbox', { name: 'tag' }));
+      await user.click(note);
+      expect(await screen.findByText('tag too long')).toBeInTheDocument();
+      // an edit which gets autosaved and echoed back
+      await user.type(note, 'n');
+      await wait(400);
+      expect(screen.getByText('tag too long')).toBeInTheDocument();
+    });
+
+    it('should save entries without the form tags', async () => {
+      const { user, entriesChange } = await setup({ entries: ENTRIES });
+      await user.type(screen.getAllByRole('textbox', { name: 'note' })[1], 'x');
+      await wait(400);
+      const saved = entriesChange.mock.lastCall![0] as WorkListEntry[];
+      for (const e of saved) {
+        expect(Object.getOwnPropertySymbols(e)).toEqual([]);
+      }
+    });
+  });
+
+  it('should render no <form>, so it can be nested at any depth', async () => {
+    const { container } = await setup({ entries: ENTRIES });
+    expect(container.querySelector('form')).toBeNull();
   });
 });

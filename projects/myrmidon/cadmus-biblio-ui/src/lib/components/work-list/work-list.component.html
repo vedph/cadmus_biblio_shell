@@ -1,11 +1,10 @@
-<!-- stop propagation: this form can be nested in other forms -->
-<form [formGroup]="form" (submit)="$event.stopPropagation()">
-  <div formArrayName="works">
-    @for ( item of works.controls; track item; let i = $index; let first =
-    $first; let last = $last) {
+<!-- no <form>: this list can be nested in other editors -->
+<div>
+  <div>
+    @for ( item of form.works; track item; let i = $index; let first = $first;
+    let last = $last) {
     <div>
-      <!-- child form -->
-      <div [formGroupName]="i">
+      <div>
         <!-- child actions -->
         {{ i + 1 }}.
         <button
@@ -59,18 +58,19 @@
           <mat-icon>content_copy</mat-icon>
         </button>
         <!-- label -->
-        {{ entries()[i].label }}
+        {{ item.label().value() }}
         <div class="work-controls">
           <!-- tag (bound) -->
           @if (workTagEntries()?.length) {
           <mat-form-field style="grid-area: tag" appearance="fill">
             <mat-label>tag</mat-label>
-            <mat-select formControlName="tag">
+            <mat-select [formField]="item.tag">
               @for (e of workTagEntries(); track e.id) {
               <mat-option [value]="e.id">{{ e.value }}</mat-option>
               }
             </mat-select>
-            @if (groupHasError(item, 'tag', 'required')) {
+            @if ( item.tag().getError('required') && (item.tag().dirty() ||
+            item.tag().touched()) ) {
             <mat-error>tag required</mat-error>
             }
           </mat-form-field>
@@ -79,8 +79,9 @@
           @else {
           <mat-form-field style="grid-area: tag" appearance="fill">
             <mat-label>tag</mat-label>
-            <input matInput formControlName="tag" />
-            @if (groupHasError(item, 'tag', 'maxlength')) {
+            <input matInput [formField]="item.tag" />
+            @if ( item.tag().getError('maxLength') && (item.tag().dirty() ||
+            item.tag().touched()) ) {
             <mat-error>tag too long</mat-error>
             }
           </mat-form-field>
@@ -88,8 +89,9 @@
           <!-- note -->
           <mat-form-field appearance="fill" style="grid-area: note">
             <mat-label>note</mat-label>
-            <input matInput formControlName="note" />
-            @if (groupHasError(item, 'note', 'maxlength')) {
+            <input matInput [formField]="item.note" />
+            @if ( item.note().getError('maxLength') && (item.note().dirty() ||
+            item.note().touched()) ) {
             <mat-error>note too long</mat-error>
             }
           </mat-form-field>
@@ -149,4 +151,4 @@
     />
   </mat-expansion-panel>
   }
-</form>
+</div>

@@ -1,5 +1,5 @@
-<!-- stop propagation: this form can be nested in other forms -->
-<form [formGroup]="form" (submit)="$event.stopPropagation(); save()">
+<!-- no <form>: this editor can be nested in other editors -->
+<div (keydown.enter)="onEnterKey($event)">
   <mat-expansion-panel [(expanded)]="editing">
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -8,12 +8,12 @@
         <span class="current">{{ currentAuthors() || "(no authors)" }}</span>
       </mat-panel-title>
       <mat-panel-description>{{
-        editedAuthors.length || 0
+        form.authors().value().length
       }}</mat-panel-description>
     </mat-expansion-panel-header>
 
     <div class="button-row">
-      <!-- Enter in the lookup must not submit the form -->
+      <!-- Enter in the lookup must not save the authors -->
       <cadmus-refs-lookup
         (keydown.enter)="$event.preventDefault()"
         [service]="authorLookupService"
@@ -34,12 +34,11 @@
     </div>
 
     <!-- authors array -->
-    <div formArrayName="editedAuthors">
-      @for ( item of groups; track item; let i = $index; let first = $first; let
-      last = $last) {
+    <div>
+      @for ( item of form.authors; track item; let i = $index; let first =
+      $first; let last = $last) {
       <div>
-        <!-- child form -->
-        <div [formGroupName]="i">
+        <div>
           <!-- child actions -->
           {{ i + 1 }}.
           <button
@@ -73,38 +72,38 @@
             <!-- last -->
             <mat-form-field>
               <mat-label>last</mat-label>
-              <input matInput formControlName="last" />
-              @if ( $any(item).controls.last.errors?.required &&
-              ($any(item).controls.last.dirty ||
-              $any(item).controls.last.touched) ) {
+              <input matInput [formField]="item.last" />
+              @if ( item.last().getError('required') &&
+              (item.last().dirty() ||
+              item.last().touched()) ) {
               <mat-error>required</mat-error>
-              } @if ( $any(item).controls.last.errors?.maxlength &&
-              ($any(item).controls.last.dirty ||
-              $any(item).controls.last.touched) ) {
+              } @if ( item.last().getError('maxLength') &&
+              (item.last().dirty() ||
+              item.last().touched()) ) {
               <mat-error>too long</mat-error>
               }
             </mat-form-field>
             <!-- first -->
             <mat-form-field>
               <mat-label>first</mat-label>
-              <input matInput formControlName="first" />
-              @if ( $any(item).controls.first.errors?.required &&
-              ($any(item).controls.first.dirty ||
-              $any(item).controls.first.touched) ) {
+              <input matInput [formField]="item.first" />
+              @if ( item.first().getError('required') &&
+              (item.first().dirty() ||
+              item.first().touched()) ) {
               <mat-error>required</mat-error>
-              } @if ( $any(item).controls.first.errors?.maxlength &&
-              ($any(item).controls.first.dirty ||
-              $any(item).controls.first.touched) ) {
+              } @if ( item.first().getError('maxLength') &&
+              (item.first().dirty() ||
+              item.first().touched()) ) {
               <mat-error>too long</mat-error>
               }
             </mat-form-field>
             <!-- suffix -->
             <mat-form-field>
               <mat-label>suffix</mat-label>
-              <input matInput formControlName="suffix" />
-              @if ( $any(item).controls.suffix.errors?.maxlength &&
-              ($any(item).controls.suffix.dirty ||
-              $any(item).controls.suffix.touched) ) {
+              <input matInput [formField]="item.suffix" />
+              @if ( item.suffix().getError('maxLength') &&
+              (item.suffix().dirty() ||
+              item.suffix().touched()) ) {
               <mat-error>too long</mat-error>
               }
             </mat-form-field>
@@ -112,7 +111,7 @@
             @if (roleEntries()?.length) {
             <mat-form-field>
               <mat-label>role</mat-label>
-              <mat-select formControlName="role">
+              <mat-select [formField]="item.role">
                 @for (e of roleEntries(); track e.id) {
                 <mat-option [value]="e.id">{{ e.value }}</mat-option>
                 }
@@ -123,10 +122,10 @@
             @else {
             <mat-form-field>
               <mat-label>role</mat-label>
-              <input matInput formControlName="role" />
-              @if ( $any(item).controls.role.errors?.maxlength &&
-              ($any(item).controls.role.dirty ||
-              $any(item).controls.role.touched) ) {
+              <input matInput [formField]="item.role" />
+              @if ( item.role().getError('maxLength') &&
+              (item.role().dirty() ||
+              item.role().touched()) ) {
               <mat-error>too long</mat-error>
               }
             </mat-form-field>
@@ -148,13 +147,14 @@
         <mat-icon class="mat-warn">clear</mat-icon>
       </button>
       <button
-        type="submit"
+        type="button"
         mat-icon-button
         matTooltip="Accept authors"
-        [disabled]="form.invalid"
+        [disabled]="form().invalid()"
+        (click)="save()"
       >
         <mat-icon class="mat-primary">check_circle</mat-icon>
       </button>
     </div>
   </mat-expansion-panel>
-</form>
+</div>

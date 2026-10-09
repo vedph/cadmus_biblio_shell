@@ -13,7 +13,7 @@
     <!-- toolbar -->
     <div id="toolbar" class="form-row">
       <!-- isContainer -->
-      <mat-checkbox [formControl]="isContainer">container</mat-checkbox>
+      <mat-checkbox [formField]="options.isContainer">container</mat-checkbox>
       <!-- add -->
       @if (addEnabled()) {
       <button
@@ -44,7 +44,7 @@
           <th>key</th>
           <th>authors</th>
           <th>title</th>
-          @if (!isContainer.value) {
+          @if (!options.isContainer().value()) {
           <th fxHide.lt-md>container</th>
           }
           <th fxHide.lt-md>number</th>
@@ -104,7 +104,7 @@
           <td>
             {{ w.title }}
           </td>
-          @if (!isContainer.value) {
+          @if (!options.isContainer().value()) {
           <td fxHide.lt-md>
             {{ w.container?.title }}
           </td>

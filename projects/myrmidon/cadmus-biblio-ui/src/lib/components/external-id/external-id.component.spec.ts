@@ -104,13 +104,24 @@ describe('ExternalIdComponent', () => {
     expect(screen.getByText('value required')).toBeInTheDocument();
   });
 
-  it('should show a too long error', async () => {
+  it('should limit the length of typed text', async () => {
     const { user } = await setup();
+    // the field's maxLength rule is applied to the native input
     const scope = screen.getByRole('textbox', { name: 'scope' });
+    expect(scope).toHaveAttribute('maxlength', '50');
     await user.click(scope);
     await user.paste('x'.repeat(51));
+    expect(scope).toHaveValue('x'.repeat(50));
+  });
+
+  it('should show a too long error for a bound value', async () => {
+    const { user } = await setup({
+      id: { sourceId: '', scope: 'x'.repeat(51), value: 'v' },
+    });
+    await user.click(screen.getByRole('textbox', { name: 'scope' }));
     await user.tab();
     expect(await screen.findByText('scope too long')).toBeInTheDocument();
+    expect(acceptButton()).toBeDisabled();
   });
 
   describe('with scope entries', () => {
@@ -159,5 +170,29 @@ describe('ExternalIdComponent', () => {
         value: '978',
       });
     });
+  });
+
+  it('should render no <form>, so it can be nested at any depth', async () => {
+    const { container } = await setup();
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should save on Enter in a text input', async () => {
+    const { user, idChange } = await setup();
+    await user.type(screen.getByRole('textbox', { name: 'value' }), '1');
+    await user.type(screen.getByRole('textbox', { name: 'scope' }), 'x{Enter}');
+    expect(idChange).toHaveBeenCalledWith({
+      sourceId: '',
+      scope: 'x',
+      value: '1',
+    });
+  });
+
+  it('should not save on Enter while unchanged', async () => {
+    const { user, idChange } = await setup({
+      id: { sourceId: 's', scope: 'doi', value: '1' },
+    });
+    await user.type(screen.getByRole('textbox', { name: 'scope' }), '{Enter}');
+    expect(idChange).not.toHaveBeenCalled();
   });
 });

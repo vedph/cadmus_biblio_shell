@@ -152,7 +152,12 @@ describe('WorkAuthorsComponent', () => {
     await user.click(accept());
     expect(authorsChange).toHaveBeenLastCalledWith([
       expect.objectContaining({ id: 'd', ordinal: 1 }),
-      expect.objectContaining({ id: null, last: 'New', first: 'Ann', ordinal: 2 }),
+      expect.objectContaining({
+        id: undefined,
+        last: 'New',
+        first: 'Ann',
+        ordinal: 2,
+      }),
     ]);
   });
 
@@ -277,6 +282,23 @@ describe('WorkAuthorsComponent', () => {
     await user.click(accept());
     expect(authorsChange).toHaveBeenLastCalledWith([
       expect.objectContaining({ id: 'r', role: 'tr' }),
+    ]);
+  });
+
+  it('should render no <form>, so it can be nested at any depth', async () => {
+    const { container } = await setup({ authors: AUTHORS });
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should accept the authors on Enter in an author input', async () => {
+    const { user, authorsChange } = await setup({ authors: AUTHORS });
+    await expand(user);
+    const first = screen.getAllByRole('textbox', { name: 'first' })[0];
+    await user.clear(first);
+    await user.type(first, 'Jack{Enter}');
+    expect(authorsChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ id: 'd', first: 'Jack' }),
+      expect.objectContaining({ id: 'r' }),
     ]);
   });
 });

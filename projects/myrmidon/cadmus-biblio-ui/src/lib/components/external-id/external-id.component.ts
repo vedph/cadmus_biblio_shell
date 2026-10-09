@@ -1,21 +1,15 @@
 import {
   Component,
+  computed,
   effect,
   input,
+  linkedSignal,
   model,
-  OnInit,
   output,
   ChangeDetectionStrategy,
   untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormField, form, maxLength, required } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
@@ -27,6 +21,25 @@ import { MatIcon } from '@angular/material/icon';
 
 import { ExternalId } from '@myrmidon/cadmus-biblio-core';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { isImplicitSubmission } from '@myrmidon/cadmus-ui';
+
+interface ExternalIdControls {
+  scope: string;
+  value: string;
+}
+
+/**
+ * Bound ID -> draft. A missing scope gets the default scope, if any.
+ */
+function toDraft(
+  id: ExternalId | undefined,
+  defaultScope: string
+): ExternalIdControls {
+  return {
+    scope: id?.scope || defaultScope,
+    value: id?.value || '',
+  };
+}
 
 /**
  * Work/container external identifier editor.
@@ -37,8 +50,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
   styleUrls: ['./external-id.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatSelect,
@@ -50,7 +62,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
     MatIcon,
   ],
 })
-export class ExternalIdComponent implements OnInit {
+export class ExternalIdComponent {
   public readonly id = model<ExternalId>();
 
   // ext-biblio-link-scopes
@@ -58,61 +70,59 @@ export class ExternalIdComponent implements OnInit {
 
   public readonly close = output();
 
-  public scope: FormControl<string>;
-  public value: FormControl<string>;
-  public form: FormGroup;
+  /**
+   * The scope used for an ID without scope: the first scope entry if any.
+   */
+  private readonly _defaultScope = computed(
+    () => this.scopeEntries()?.[0]?.id || ''
+  );
 
-  constructor(formBuilder: FormBuilder) {
-    // form
-    this.scope = formBuilder.control('', {
-      validators: [Validators.required, Validators.maxLength(50)],
-      nonNullable: true,
-    });
-    this.value = formBuilder.control('', {
-      validators: [Validators.required, Validators.maxLength(1000)],
-      nonNullable: true,
-    });
-    this.form = formBuilder.group({
-      scope: this.scope,
-      value: this.value,
-    });
+  // rebuilt only when the ID changes: changes to the scope entries
+  // must not reset the user's edits
+  private readonly _draft = linkedSignal(() =>
+    toDraft(
+      this.id(),
+      untracked(() => this._defaultScope())
+    )
+  );
 
+  public readonly form = form(this._draft, (p) => {
+    required(p.scope);
+    maxLength(p.scope, 50);
+    required(p.value);
+    maxLength(p.value, 1000);
+  });
+
+  /**
+   * True when the edited ID can be saved, i.e. it is valid and changed.
+   */
+  public readonly canSave = computed(
+    () => this.form().valid() && this.form().dirty()
+  );
+
+  constructor() {
+    // once the draft mirrors the bound ID again, clear the interaction state
     effect(() => {
-      this.updateForm(this.id());
+      const draft = this._draft();
+      untracked(() => {
+        if (this.isDraftInSync(draft)) {
+          this.form().reset();
+        }
+      });
     });
   }
 
-  public ngOnInit(): void {
-    this.setDefaultScope();
-  }
-
-  private setDefaultScope(): void {
-    // untracked: scope entries changes must not reset the form
-    const entries = untracked(() => this.scopeEntries());
-    if (entries?.length && !this.scope.value) {
-      this.scope.setValue(entries[0].id);
-    }
-  }
-
-  private updateForm(id: ExternalId | undefined): void {
-    if (!id) {
-      this.form.reset();
-      // the reset would clear the default scope
-      this.setDefaultScope();
-      return;
-    }
-    this.scope.setValue(id.scope);
-    this.value.setValue(id.value);
-    // a new ID has no scope yet: use the default one
-    this.setDefaultScope();
-    this.form.markAsPristine();
+  private isDraftInSync(draft: ExternalIdControls): boolean {
+    const bound = toDraft(this.id(), this._defaultScope());
+    return draft.scope === bound.scope && draft.value === bound.value;
   }
 
   private getId(): ExternalId {
+    const draft = this._draft();
     return {
       sourceId: this.id()?.sourceId || '',
-      scope: this.scope.value?.trim(),
-      value: this.value.value?.trim(),
+      scope: draft.scope.trim(),
+      value: draft.value.trim(),
     };
   }
 
@@ -120,8 +130,22 @@ export class ExternalIdComponent implements OnInit {
     this.close.emit();
   }
 
+  /**
+   * Save on Enter in a text input, as the former form did.
+   */
+  public onEnterKey(event: Event): void {
+    if (!isImplicitSubmission(event)) {
+      return;
+    }
+    event.preventDefault();
+    if (this.canSave()) {
+      this.save();
+    }
+  }
+
   public save(): void {
-    if (!this.form.valid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.id.set(this.getId());

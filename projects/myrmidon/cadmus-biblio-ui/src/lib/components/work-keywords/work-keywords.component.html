@@ -1,5 +1,5 @@
-<!-- stop propagation: this form can be nested in other forms -->
-<form [formGroup]="form" (submit)="$event.stopPropagation(); save()">
+<!-- no <form>: this editor can be nested in other editors -->
+<div (keydown.enter)="onEnterKey($event)">
   <mat-expansion-panel [(expanded)]="editing">
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -10,9 +10,8 @@
       }}</mat-panel-description>
     </mat-expansion-panel-header>
 
-    <!-- not a nested form: its implicit submission (Enter in the lookup)
-      would bubble up to the parent form and save it -->
-    <div [formGroup]="search">
+    <!-- lookup: Enter here must not save the keywords -->
+    <div>
       <fieldset>
         <mat-autocomplete
           #lookupAuto="matAutocomplete"
@@ -31,7 +30,7 @@
           <input
             matInput
             type="text"
-            [formControl]="lookup"
+            [formField]="search.lookup"
             [matAutocomplete]="lookupAuto"
             (keydown.enter)="$event.preventDefault()"
           />
@@ -41,7 +40,7 @@
             mat-icon-button
             matSuffix
             (click)="clearKeyword()"
-            [disabled]="!keyword"
+            [disabled]="!keyword()"
             matTooltip="Clear"
           >
             <mat-icon class="mat-warn">clear</mat-icon>
@@ -59,12 +58,10 @@
     </div>
 
     <!-- keywords array -->
-    <div formArrayName="keywords">
-      @for ( item of groups; track item; let i = $index; let first = $first; let
-      last = $last) {
+    <div>
+      @for ( item of form.keywords; track item; let i = $index) {
       <div>
-        <!-- child form -->
-        <div [formGroupName]="i" class="form-row">
+        <div class="form-row">
           <!-- child actions -->
           <div>
             {{ i + 1 }}.
@@ -82,14 +79,14 @@
           @if (langEntries()?.length) {
           <mat-form-field>
             <mat-label>language</mat-label>
-            <mat-select formControlName="language">
+            <mat-select [formField]="item.language">
               @for (e of langEntries(); track e.id) {
               <mat-option [value]="e.id">{{ e.value }}</mat-option>
               }
             </mat-select>
-            @if ( $any(item).controls.language.errors?.required &&
-            ($any(item).controls.language.dirty ||
-            $any(item).controls.language.touched) ) {
+            @if ( item.language().getError('required') &&
+            (item.language().dirty() ||
+            item.language().touched()) ) {
             <mat-error>required</mat-error>
             }
           </mat-form-field>
@@ -98,14 +95,14 @@
           @else {
           <mat-form-field>
             <mat-label>language</mat-label>
-            <input matInput formControlName="language" />
-            @if ( $any(item).controls.language.errors?.required &&
-            ($any(item).controls.language.dirty ||
-            $any(item).controls.language.touched) ) {
+            <input matInput [formField]="item.language" />
+            @if ( item.language().getError('required') &&
+            (item.language().dirty() ||
+            item.language().touched()) ) {
             <mat-error>required</mat-error>
-            } @if ($any(item).controls.language.errors?.maxlength &&
-            ($any(item).controls.language.dirty ||
-            $any(item).controls.language.touched) ) {
+            } @if (item.language().getError('maxLength') &&
+            (item.language().dirty() ||
+            item.language().touched()) ) {
             <mat-error>too long</mat-error>
             }
           </mat-form-field>
@@ -113,14 +110,14 @@
           <!-- value -->
           <mat-form-field>
             <mat-label>value</mat-label>
-            <input matInput formControlName="value" />
-            @if ( $any(item).controls.value.errors?.required &&
-            ($any(item).controls.value.dirty ||
-            $any(item).controls.value.touched) ) {
+            <input matInput [formField]="item.value" />
+            @if ( item.value().getError('required') &&
+            (item.value().dirty() ||
+            item.value().touched()) ) {
             <mat-error>required</mat-error>
-            } @if ( $any(item).controls.value.errors?.maxlength &&
-            ($any(item).controls.value.dirty ||
-            $any(item).controls.value.touched) ) {
+            } @if ( item.value().getError('maxLength') &&
+            (item.value().dirty() ||
+            item.value().touched()) ) {
             <mat-error>too long</mat-error>
             }
           </mat-form-field>
@@ -140,13 +137,14 @@
         <mat-icon class="mat-warn">clear</mat-icon>
       </button>
       <button
-        type="submit"
+        type="button"
         mat-icon-button
         matTooltip="Accept keywords"
-        [disabled]="form.invalid || form.pristine"
+        [disabled]="form().invalid() || !form().dirty()"
+        (click)="save()"
       >
         <mat-icon class="mat-primary">check_circle</mat-icon>
       </button>
     </div>
   </mat-expansion-panel>
-</form>
+</div>

@@ -1,21 +1,18 @@
 import {
   Component,
+  effect,
   input,
   model,
   OnDestroy,
   OnInit,
   output,
   signal,
+  untracked,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { ViewportScroller, AsyncPipe } from '@angular/common';
-import {
-  FormBuilder,
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormField, form } from '@angular/forms/signals';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -53,8 +50,7 @@ import { WorkDetailsComponent } from '../work-details/work-details.component';
   imports: [
     WorkFilterComponent,
     MatCheckbox,
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatButton,
     MatIcon,
     MatProgressBar,
@@ -87,7 +83,10 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
   public readonly workEdit = output<WorkInfo>();
   public readonly workDelete = output<WorkInfo>();
 
-  public isContainer: FormControl<boolean>;
+  /**
+   * The browser options: whether to list containers rather than works.
+   */
+  public readonly options = form(signal({ isContainer: false }));
 
   public page$: BehaviorSubject<DataPage<WorkInfo>>;
   // signals: these are updated in HTTP callbacks, outside of template
@@ -99,7 +98,6 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
   public readonly detailsOpen = signal<boolean>(false);
 
   constructor(
-    formBuilder: FormBuilder,
     private _biblioService: BiblioService,
     private _utilService: BiblioUtilService,
     private _scroller: ViewportScroller
@@ -115,8 +113,12 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
       pageNumber: 1,
       pageSize: this.pageSize(),
     };
-    // form
-    this.isContainer = formBuilder.control(false, { nonNullable: true });
+
+    // load the first page, and reload whenever container/work changes
+    effect(() => {
+      this.options.isContainer().value();
+      untracked(() => this.loadPage());
+    });
   }
 
   private loadPage(): void {
@@ -126,7 +128,7 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
     // cancel any pending load, so that a late response cannot
     // replace the page requested last
     this._loadSub?.unsubscribe();
-    const page$ = this.isContainer.value
+    const page$ = this.options.isContainer().value()
       ? this._biblioService.getContainers(this._filter)
       : this._biblioService.getWorks(this._filter);
     this._loadSub = page$.pipe(take(1)).subscribe({
@@ -141,13 +143,6 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.loadPage();
-
-    // whenever container/work changes, reload page
-    this.isContainer.valueChanges.subscribe((c) => {
-      this.loadPage();
-    });
-
     // handle received signals
     this._sub = this.signals$().subscribe((s) => {
       switch (s) {
@@ -192,7 +187,7 @@ export class WorkBrowserComponent implements OnInit, OnDestroy {
   }
 
   public addWork(): void {
-    this.workAdd.emit(this.isContainer.value);
+    this.workAdd.emit(this.options.isContainer().value());
   }
 
   public editWork(work: WorkInfo): void {

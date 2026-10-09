@@ -1,14 +1,10 @@
 import {
   Component,
-  effect,
   input,
   model,
-  OnDestroy,
-  OnInit,
-  ChangeDetectionStrategy
+  signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -23,6 +19,10 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { ExternalIdComponent } from '../external-id/external-id.component';
 
+/**
+ * External IDs editor. Each change made by the user (add, edit, delete)
+ * is immediately saved into the IDs model.
+ */
 @Component({
   selector: 'biblio-external-ids',
   templateUrl: './external-ids.component.html',
@@ -38,59 +38,18 @@ import { ExternalIdComponent } from '../external-id/external-id.component';
     ExternalIdComponent,
   ],
 })
-export class ExternalIdsComponent implements OnInit, OnDestroy {
-  private _sub?: Subscription;
-  private _dropNextInput?: boolean;
-
+export class ExternalIdsComponent {
   public readonly ids = model<ExternalId[]>();
 
   // ext-biblio-link-scopes
   public readonly scopeEntries = input<ThesaurusEntry[]>();
 
-  public editedId?: ExternalId;
-  public editedIndex: number;
-
-  public ctlIds: FormControl<ExternalId[]>;
-  public form: FormGroup;
-
-  constructor(formBuilder: FormBuilder) {
-    this.editedIndex = -1;
-    // form
-    this.ctlIds = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
-      ctlIds: this.ctlIds,
-    });
-
-    effect(() => {
-      if (this._dropNextInput) {
-        this._dropNextInput = false;
-        return;
-      }
-      this.updateForm(this.ids() || []);
-    });
-  }
-
-  public ngOnInit(): void {
-    this._sub = this.ctlIds.valueChanges.subscribe((_) => {
-      this._dropNextInput = true;
-      this.ids.set(this.ctlIds.value);
-    });
-  }
-
-  public ngOnDestroy(): void {
-    this._sub?.unsubscribe();
-  }
-
-  private updateForm(ids: ExternalId[]): void {
-    // do not emit: this value comes from the ids model, so it must not
-    // be echoed back to it
-    this.ctlIds.setValue(ids, { emitEvent: false });
-    this.form.markAsPristine();
-  }
+  public readonly editedId = signal<ExternalId | undefined>(undefined);
+  public readonly editedIndex = signal<number>(-1);
 
   public editId(id: ExternalId, index: number): void {
-    this.editedId = id;
-    this.editedIndex = index;
+    this.editedId.set(id);
+    this.editedIndex.set(index);
   }
 
   public addId(): void {
@@ -105,33 +64,29 @@ export class ExternalIdsComponent implements OnInit, OnDestroy {
   }
 
   public closeId(): void {
-    this.editedId = undefined;
-    this.editedIndex = -1;
+    this.editedId.set(undefined);
+    this.editedIndex.set(-1);
   }
 
   public saveId(id: ExternalId): void {
-    const ids = [...this.ctlIds.value];
-    if (this.editedIndex === -1) {
+    const ids = [...(this.ids() || [])];
+    if (this.editedIndex() === -1) {
       ids.push(id);
     } else {
-      ids[this.editedIndex] = id;
+      ids[this.editedIndex()] = id;
     }
-    this.ctlIds.setValue(ids);
-    this.ctlIds.updateValueAndValidity();
-    this.ctlIds.markAsDirty();
+    this.ids.set(ids);
     this.closeId();
   }
 
   public deleteId(index: number): void {
-    if (this.editedIndex === index) {
+    if (this.editedIndex() === index) {
       this.closeId();
-    } else if (this.editedIndex > index) {
-      this.editedIndex--;
+    } else if (this.editedIndex() > index) {
+      this.editedIndex.update((i) => i - 1);
     }
-    const ids = [...this.ctlIds.value];
+    const ids = [...(this.ids() || [])];
     ids.splice(index, 1);
-    this.ctlIds.setValue(ids);
-    this.ctlIds.updateValueAndValidity();
-    this.form.markAsDirty();
+    this.ids.set(ids);
   }
 }

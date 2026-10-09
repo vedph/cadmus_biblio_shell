@@ -261,6 +261,14 @@ describe('WorkFilterComponent', () => {
     expect(
       screen.queryByRole('textbox', { name: 'language' })
     ).not.toBeInTheDocument();
+    // no language: the select shows its "(any)" option
+    expect(screen.getByRole('combobox', { name: 'language' })).toHaveTextContent(
+      '(any)'
+    );
+    // no type: the select shows nothing, as its "(any)" option is null
+    expect(screen.getByRole('combobox', { name: 'type' })).not.toHaveTextContent(
+      '(any)'
+    );
     await user.click(screen.getByRole('combobox', { name: 'language' }));
     await user.click(await screen.findByRole('option', { name: 'Italian' }));
     await user.click(apply());
@@ -269,14 +277,28 @@ describe('WorkFilterComponent', () => {
     );
   });
 
-  it('should apply on Enter without bubbling submit to a parent form', async () => {
-    const parentSubmit = vi.fn();
-    const { user, filterChange, container } = await setup();
-    container.parentElement!.addEventListener('submit', parentSubmit);
+  it('should render no <form>, so it can be nested at any depth', async () => {
+    const { container } = await setup();
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should apply on Enter in a text input', async () => {
+    const { user, filterChange } = await setup();
     await user.type(screen.getByRole('textbox', { name: 'title' }), 'x{Enter}');
     expect(filterChange).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'x' })
     );
-    expect(parentSubmit).not.toHaveBeenCalled();
+  });
+
+  it('should keep the picked author when applying', async () => {
+    const { user, biblio } = await setup(
+      { persisted: true },
+      { ...EMPTY, authorId: 'a1' }
+    );
+    expect(biblio.getAuthor).toHaveBeenCalledTimes(1);
+    await user.click(apply());
+    // not reloaded, and still shown
+    expect(biblio.getAuthor).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Doe, John' })).toBeInTheDocument();
   });
 });

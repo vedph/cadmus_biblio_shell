@@ -2,21 +2,19 @@ import {
   Component,
   effect,
   input,
+  linkedSignal,
   model,
-  OnDestroy,
   signal,
+  untracked,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+  FormField,
+  applyEach,
+  form,
+  maxLength,
+} from '@angular/forms/signals';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ViewportScroller } from '@angular/common';
 import {
@@ -26,7 +24,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, take } from 'rxjs/operators';
 
 import { MatIconButton } from '@angular/material/button';
@@ -62,6 +60,52 @@ import { WorkBrowserComponent } from '../work-browser/work-browser.component';
 import { WorkComponent } from '../work/work.component';
 
 /**
+ * An entry of the list, with its editable tag and note.
+ */
+interface WorkListRow {
+  id: string;
+  label: string;
+  payload: string | undefined;
+  tag: string;
+  note: string;
+}
+
+interface WorkListControls {
+  works: WorkListRow[];
+}
+
+/**
+ * Entries -> draft. Each row is a new object: the form tags the objects
+ * in its arrays, so the caller's objects must not be adopted.
+ */
+function toDraft(entries: WorkListEntry[] | undefined): WorkListControls {
+  return {
+    works: (entries || []).map((e) => ({
+      id: e.id,
+      label: e.label,
+      payload: e.payload,
+      tag: e.tag || '',
+      note: e.note || '',
+    })),
+  };
+}
+
+/**
+ * Draft -> entries. This normalizes the tag and note (trimming them, and
+ * saving empty values as undefined), so its result can differ from the
+ * draft: see the echo note on _draft.
+ */
+function toEntries(draft: WorkListControls): WorkListEntry[] {
+  return draft.works.map((r) => ({
+    id: r.id,
+    label: r.label,
+    payload: r.payload,
+    tag: r.tag.trim() || undefined,
+    note: r.note.trim() || undefined,
+  }));
+}
+
+/**
  * A list of picked bibliographic entries.
  * This allows users to pick, edit, add or delete works. Also,
  * the user can add an optional tag and note to each picked
@@ -70,6 +114,8 @@ import { WorkComponent } from '../work/work.component';
  * Users can add new entries to the list using the works browser,
  * edit any work from the browser, and see the details of a work
  * from either the entries list or the browser.
+ * Changes to tags and notes are saved into the entries after
+ * a short pause in typing.
  */
 @Component({
   selector: 'biblio-work-list',
@@ -84,8 +130,7 @@ import { WorkComponent } from '../work/work.component';
   ],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatIconButton,
     MatTooltip,
     MatIcon,
@@ -104,10 +149,7 @@ import { WorkComponent } from '../work/work.component';
     BiblioWorkPipe,
   ],
 })
-export class WorkListComponent implements OnDestroy {
-  private _subs: Subscription[];
-  private _dropNextInput?: boolean;
-
+export class WorkListComponent {
   public readonly pickEnabled = input<boolean>(true);
   public readonly editEnabled = input<boolean>(true);
   public readonly deleteEnabled = input<boolean>(true);
@@ -133,9 +175,34 @@ export class WorkListComponent implements OnDestroy {
   // ext-biblio-link-scopes
   public readonly scopeEntries = input<ThesaurusEntry[]>();
 
-  public form: FormGroup;
-  // this array is kept in synch with entries:
-  public works: FormArray;
+  /**
+   * The editable draft of the entries.
+   *
+   * `previous` tells an external change apart from the echo of our own
+   * save. `toEntries()` normalizes, so saving the entries produces a value
+   * which differs from the draft; without this check, the incoming echo
+   * would rebuild the draft and stomp what the user is still typing (e.g.
+   * a tag "abc " would be saved as "abc", and the next keystroke would
+   * give "abcd" rather than "abc d").
+   */
+  private readonly _draft = linkedSignal<
+    WorkListEntry[] | undefined,
+    WorkListControls
+  >({
+    source: () => this.entries(),
+    computation: (entries, previous) =>
+      previous &&
+      JSON.stringify(entries) === JSON.stringify(toEntries(previous.value))
+        ? previous.value
+        : toDraft(entries),
+  });
+
+  public readonly form = form(this._draft, (p) => {
+    applyEach(p.works, (w) => {
+      maxLength(w.tag, 50);
+      maxLength(w.note, 500);
+    });
+  });
 
   // signals: these are updated in HTTP callbacks, outside of template
   // events, so they must notify change detection
@@ -151,81 +218,58 @@ export class WorkListComponent implements OnDestroy {
   public deletingWork: boolean | undefined;
 
   constructor(
-    private _formBuilder: FormBuilder,
     private _clipboard: Clipboard,
     private _dialogService: DialogService,
     private _biblioService: BiblioService,
     private _utilService: BiblioUtilService,
     private _scroller: ViewportScroller
   ) {
-    this._subs = [];
     this.browserSignals$ = new BehaviorSubject<string>('');
-    // form
-    this.works = _formBuilder.array([]);
-    this.form = _formBuilder.group({
-      works: this.works,
-    });
 
+    // once the draft mirrors the bound entries again, clear the
+    // interaction state. This is keyed on the draft: on an echo of our
+    // own save the draft does not change, so validation errors are not
+    // cleared while the user is typing.
     effect(() => {
-      if (this._dropNextInput) {
-        this._dropNextInput = false;
-        return;
-      }
-      this.updateForm(this.entries());
-    });
-  }
-
-  private cleanup(): void {
-    this._subs.forEach((s) => {
-      s.unsubscribe();
-    });
-    this._subs = [];
-  }
-
-  public ngOnDestroy(): void {
-    this.cleanup();
-  }
-
-  public groupHasError(
-    group: AbstractControl,
-    controlName: string,
-    errorName: string
-  ): boolean {
-    const c = (group as FormGroup)?.controls[controlName] as FormControl;
-    if (!c) {
-      return false;
-    }
-    return !!(c.errors && c.errors[errorName] && (c.dirty || c.touched));
-  }
-
-  private updateForm(entries: WorkListEntry[]): void {
-    this.cleanup();
-    this.works.clear({ emitEvent: false });
-    for (let e of entries) {
-      // push via the array (not its controls) so that the group gets
-      // registered, i.e. its changes update the array value and validity
-      this.works.push(this.getWorkGroup(e), { emitEvent: false });
-    }
-    this.form.markAsPristine();
-  }
-
-  private getEntries(): WorkListEntry[] {
-    const entries: WorkListEntry[] = [];
-
-    for (let i = 0; i < this.works.length; i++) {
-      const g = this.works.at(i) as FormGroup;
-      entries.push({
-        ...this.entries()[i],
-        tag: g.controls['tag'].value?.trim(),
-        note: g.controls['note'].value?.trim(),
+      const draft = this._draft();
+      untracked(() => {
+        if (this.isDraftInSync(draft)) {
+          this.form().reset();
+        }
       });
-    }
-    return entries;
+    });
+
+    // save tag and note changes after a pause in typing
+    toObservable(this._draft)
+      .pipe(debounceTime(300), takeUntilDestroyed())
+      .subscribe(() => {
+        // skip while the draft still mirrors the bound entries: otherwise
+        // just receiving entries would save a normalized copy of them
+        if (this.isDraftInSync(this._draft())) {
+          return;
+        }
+        this.entries.set(toEntries(this._draft()));
+      });
+  }
+
+  /**
+   * True when the draft still mirrors the bound entries,
+   * i.e. there is nothing to save.
+   */
+  private isDraftInSync(draft: WorkListControls): boolean {
+    return JSON.stringify(draft) === JSON.stringify(toDraft(this.entries()));
+  }
+
+  /**
+   * Get the entries from the draft, which include any tag/note
+   * change not yet saved (debounced).
+   */
+  private getEntries(): WorkListEntry[] {
+    return toEntries(this._draft());
   }
 
   public copyWorkId(index: number): void {
-    const entry = this.entries()[index];
-    this._clipboard.copy(entry.id);
+    this._clipboard.copy(this._draft().works[index].id);
   }
 
   private viewDetails(id: string, container: boolean): void {
@@ -267,39 +311,6 @@ export class WorkListComponent implements OnDestroy {
     }
   }
 
-  //#region Entries
-  private moveEntryUp(index: number): void {
-    if (index < 1) {
-      return;
-    }
-    const entries = [...this.entries()];
-    const item = entries[index];
-    entries.splice(index, 1);
-    entries.splice(index - 1, 0, item);
-    this.entries.set(entries);
-  }
-
-  private moveEntryDown(index: number): void {
-    if (index + 1 >= this.entries().length) {
-      return;
-    }
-    const entries = [...this.entries()];
-    const item = entries[index];
-    entries.splice(index, 1);
-    entries.splice(index + 1, 0, item);
-    this.entries.set(entries);
-  }
-
-  private removeEntry(index: number): void {
-    const entries = [...this.entries()];
-    entries.splice(index, 1);
-    if (!entries.length) {
-      this.detailWork.set(undefined);
-    }
-    this.entries.set(entries);
-  }
-  //#endregion
-
   //#region Works
   public authorsToString(authors: WorkAuthor[] | undefined): string {
     if (!authors) {
@@ -308,59 +319,44 @@ export class WorkListComponent implements OnDestroy {
     return authors.map((a) => this._utilService.authorToString(a)).join('; ');
   }
 
-  private getWorkGroup(work?: WorkListEntry): FormGroup {
-    const g = this._formBuilder.group({
-      tag: this._formBuilder.control(work?.tag, Validators.maxLength(50)),
-      note: this._formBuilder.control(work?.note, Validators.maxLength(500)),
-    });
-    this._subs.push(
-      g.valueChanges.pipe(debounceTime(300)).subscribe(() => {
-        this.form.markAsDirty();
-        this._dropNextInput = true;
-        this.entries.set(this.getEntries());
-      })
-    );
-    return g;
-  }
-
   public removeWork(index: number): void {
-    this.works.removeAt(index);
-    this.removeEntry(index);
-    this.entries.set(this.getEntries());
-    this.works.markAsDirty();
+    const entries = this.getEntries();
+    entries.splice(index, 1);
+    if (!entries.length) {
+      this.detailWork.set(undefined);
+    }
+    this.entries.set(entries);
   }
 
   public moveWorkUp(index: number): void {
     if (index < 1) {
       return;
     }
-    const work = this.works.controls[index];
-    this.works.removeAt(index);
-    this.works.insert(index - 1, work);
-    this.moveEntryUp(index);
-    this.entries.set(this.getEntries());
-    this.works.markAsDirty();
+    const entries = this.getEntries();
+    const entry = entries[index];
+    entries.splice(index, 1);
+    entries.splice(index - 1, 0, entry);
+    this.entries.set(entries);
   }
 
   public moveWorkDown(index: number): void {
-    if (index + 1 >= this.works.length) {
+    const entries = this.getEntries();
+    if (index + 1 >= entries.length) {
       return;
     }
-    const work = this.works.controls[index];
-    this.works.removeAt(index);
-    this.works.insert(index + 1, work);
-    this.moveEntryDown(index);
-    this.entries.set(this.getEntries());
-    this.works.markAsDirty();
+    const entry = entries[index];
+    entries.splice(index, 1);
+    entries.splice(index + 1, 0, entry);
+    this.entries.set(entries);
   }
 
   public viewWorkDetails(index: number): void {
-    const entry = this.entries()[index];
+    const entry = this._draft().works[index];
     this.viewDetails(entry.id, entry.payload === 'c');
   }
 
   public editWork(index: number): void {
-    const entry = this.entries()[index];
+    const entry = this._draft().works[index];
     this.edit(entry.id, entry.payload === 'c');
   }
   //#endregion
@@ -371,19 +367,15 @@ export class WorkListComponent implements OnDestroy {
    * @param work The work to add.
    */
   public pickBrowserWork(work: WorkInfo): void {
-    // start from the form entries, which include any tag/note change
-    // not yet synced with entries (debounced)
     const entries = this.getEntries();
     if (entries.find((w) => w.id === work.id)) {
       return;
     }
-    const entry: WorkListEntry = {
+    entries.push({
       id: work.id,
       label: this._utilService.workInfoToString(work),
       payload: work.isContainer ? 'c' : undefined,
-    };
-    entries.push(entry);
-    // the form is rebuilt from entries
+    });
     this.entries.set(entries);
   }
 
@@ -407,7 +399,6 @@ export class WorkListComponent implements OnDestroy {
     const index = entries.findIndex((e) => e.id === work.id);
     if (index > -1) {
       entries.splice(index, 1);
-      // the form is rebuilt from entries
       this.entries.set(entries);
     }
   }
@@ -460,17 +451,14 @@ export class WorkListComponent implements OnDestroy {
     const entries = this.getEntries();
     const index = entries.findIndex((e) => e.id === work.id);
     if (index > -1) {
-      const entry = {
+      entries.splice(index, 1, {
         // keep the entry's tag and note
         ...entries[index],
         id: work.id || '',
         label: this._utilService.workToString(work),
         payload: container ? 'c' : undefined,
-      };
-      // (no change for works)
-      entries.splice(index, 1, entry);
+      });
       this.entries.set(entries);
-      this.form.markAsDirty();
     }
   }
 

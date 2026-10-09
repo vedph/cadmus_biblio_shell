@@ -258,4 +258,28 @@ describe('WorkKeywordsComponent', () => {
       { language: 'eng', value: 'storia' },
     ]);
   });
+
+  it('should render no <form>, so it can be nested at any depth', async () => {
+    const { container } = await setup({ keywords: KEYWORDS });
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should not be made dirty by typing in the lookup', async () => {
+    const { user } = await setup({ keywords: KEYWORDS });
+    await user.click(header());
+    await user.type(screen.getByRole('combobox'), 'zzz');
+    expect(accept()).toBeDisabled();
+  });
+
+  it('should accept the keywords on Enter in a keyword input', async () => {
+    const { user, keywordsChange } = await setup({ keywords: KEYWORDS });
+    await user.click(header());
+    const value = screen.getAllByRole('textbox', { name: 'value' })[0];
+    await user.type(value, 's{Enter}');
+    expect(keywordsChange).toHaveBeenLastCalledWith([
+      { language: 'eng', value: 'arts' },
+      { language: 'eng', value: 'history' },
+      { language: 'ita', value: 'storia' },
+    ]);
+  });
 });

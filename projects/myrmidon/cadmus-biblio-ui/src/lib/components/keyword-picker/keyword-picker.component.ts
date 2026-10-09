@@ -1,11 +1,12 @@
-import { Component, EventEmitter, input, Input, OnInit, output, Output, ChangeDetectionStrategy } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+  Component,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { FormField, form } from '@angular/forms/signals';
 import { AsyncPipe } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -30,8 +31,7 @@ import { Keyword } from '@myrmidon/cadmus-biblio-core';
   styleUrls: ['./keyword-picker.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatAutocomplete,
     MatOption,
     MatFormField,
@@ -44,7 +44,7 @@ import { Keyword } from '@myrmidon/cadmus-biblio-core';
     AsyncPipe,
   ],
 })
-export class KeywordPickerComponent implements OnInit {
+export class KeywordPickerComponent {
   /**
    * The maximum count of works to retrieve. Default=10.
    */
@@ -60,16 +60,39 @@ export class KeywordPickerComponent implements OnInit {
    */
   public readonly keywordChange = output<Keyword>();
 
-  public form: FormGroup;
-  public lookup: FormControl;
-  public keywords$: Observable<Keyword[]> | undefined;
+  /**
+   * The lookup text box: a filter string while the user is typing,
+   * or the keyword picked from the autocomplete.
+   */
+  private readonly _lookup = signal<{ lookup: Keyword | string | null }>({
+    lookup: null,
+  });
+  public readonly form = form(this._lookup);
+
+  public readonly keywords$: Observable<Keyword[]>;
   public keyword: Keyword | undefined;
 
-  constructor(formBuilder: FormBuilder, private _biblioService: BiblioService) {
-    this.lookup = formBuilder.control(null);
-    this.form = formBuilder.group({
-      lookup: this.lookup,
-    });
+  constructor(private _biblioService: BiblioService) {
+    this.keywords$ = toObservable(this.form.lookup().value).pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((value: Keyword | string | null) => {
+        // cleared lookup
+        if (value === null || value === undefined) {
+          return of([]);
+        }
+        if (typeof value === 'string') {
+          const filter = this.getFilter(value);
+          return this._biblioService.getKeywords(filter).pipe(
+            switchMap((p) => {
+              return of(p.items as Keyword[]);
+            })
+          );
+        } else {
+          return of([value]);
+        }
+      })
+    );
   }
 
   private getFilter(filterText: string): KeywordFilter {
@@ -92,32 +115,9 @@ export class KeywordPickerComponent implements OnInit {
     };
   }
 
-  public ngOnInit(): void {
-    this.keywords$ = this.lookup.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((value: Keyword | string | null) => {
-        // cleared lookup
-        if (value === null || value === undefined) {
-          return of([]);
-        }
-        if (typeof value === 'string') {
-          const filter = this.getFilter(value);
-          return this._biblioService.getKeywords(filter).pipe(
-            switchMap((p) => {
-              return of(p.items as Keyword[]);
-            })
-          );
-        } else {
-          return of([value]);
-        }
-      })
-    );
-  }
-
   public clear(): void {
     this.keyword = undefined;
-    this.lookup.setValue(null);
+    this.form.lookup().value.set(null);
   }
 
   public keywordToString(keyword: Keyword): string {

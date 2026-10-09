@@ -1,24 +1,22 @@
 import {
   Component,
+  computed,
   effect,
   input,
+  linkedSignal,
   model,
-  OnInit,
   output,
   signal,
+  untracked,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { Observable } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+  FormField,
+  applyEach,
+  form,
+  maxLength,
+  required,
+} from '@angular/forms/signals';
 
 import {
   MatExpansionPanel,
@@ -35,10 +33,62 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { isImplicitSubmission } from '@myrmidon/cadmus-ui';
 import { Author, WorkAuthor } from '@myrmidon/cadmus-biblio-core';
 
 import { AuthorRefLookupService } from '../../services/author-ref-lookup.service';
+
+/**
+ * An author being edited.
+ */
+interface WorkAuthorRow {
+  id: string;
+  last: string;
+  first: string;
+  suffix: string;
+  role: string;
+}
+
+interface WorkAuthorsControls {
+  authors: WorkAuthorRow[];
+}
+
+function toRow(author?: WorkAuthor): WorkAuthorRow {
+  return {
+    id: author?.id || '',
+    last: author?.last || '',
+    first: author?.first || '',
+    suffix: author?.suffix || '',
+    role: author?.role || '',
+  };
+}
+
+/**
+ * Bound authors -> draft. The authors are sorted by their ordinals if any;
+ * otherwise, they keep the received order.
+ */
+function toDraft(authors: WorkAuthor[] | undefined): WorkAuthorsControls {
+  const sorted = [...(authors || [])];
+  sorted.sort((a, b) => (a.ordinal || 0) - (b.ordinal || 0));
+  return { authors: sorted.map((a) => toRow(a)) };
+}
+
+/**
+ * Draft -> authors, numbered by their position.
+ */
+function toAuthors(draft: WorkAuthorsControls): WorkAuthor[] | undefined {
+  const authors: WorkAuthor[] = draft.authors.map((r, i) => ({
+    id: r.id || undefined,
+    last: r.last.trim(),
+    first: r.first.trim(),
+    suffix: r.suffix.trim() || undefined,
+    role: r.role.trim() || undefined,
+    ordinal: i + 1,
+  }));
+  return authors.length ? authors : undefined;
+}
 
 /**
  * Work's authors editor. This lets users pick any author by
@@ -51,8 +101,7 @@ import { AuthorRefLookupService } from '../../services/author-ref-lookup.service
   styleUrls: ['./work-authors.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
@@ -70,9 +119,7 @@ import { AuthorRefLookupService } from '../../services/author-ref-lookup.service
     MatOption,
   ],
 })
-export class WorkAuthorsComponent implements OnInit {
-  private _updating?: boolean;
-
+export class WorkAuthorsComponent {
   public readonly authors = model<WorkAuthor[]>();
 
   /**
@@ -86,79 +133,57 @@ export class WorkAuthorsComponent implements OnInit {
    */
   public readonly editorClose = output();
 
-  public editedAuthors: FormArray;
-  public authorCount: FormControl<number>;
-  public form: FormGroup;
-  public groups: FormGroup[];
+  // rebuilt whenever the authors change, i.e. when they are bound,
+  // or when this editor saves them
+  private readonly _draft = linkedSignal(() => toDraft(this.authors()));
 
-  // signals: these are updated also outside of template events
-  // (debounced changes, timeouts), so they must notify change detection
-  public readonly currentAuthors = signal<string | undefined>(undefined);
-  public editing: boolean;
+  public readonly form = form(this._draft, (p) => {
+    // at least 1 author
+    NgxToolsSignalValidators.strictMinLength(p.authors, 1);
+    applyEach(p.authors, (a) => {
+      required(a.last);
+      maxLength(a.last, 50);
+      required(a.first);
+      maxLength(a.first, 50);
+      maxLength(a.suffix, 50);
+      maxLength(a.role, 50);
+    });
+  });
 
-  public authors$: Observable<Author[]> | undefined;
+  /**
+   * The summary of the edited authors.
+   */
+  public readonly currentAuthors = computed(() =>
+    this.buildCurrentAuthors(this.form.authors().value())
+  );
+
+  public readonly editing = signal<boolean>(false);
+
   public readonly author = signal<WorkAuthor | undefined>(undefined);
 
-  constructor(
-    public authorLookupService: AuthorRefLookupService,
-    private _formBuilder: FormBuilder
-  ) {
-    this.editing = false;
-    this.authorCount = _formBuilder.control(0, {
-      validators: Validators.min(1),
-      nonNullable: true,
-    });
-    this.editedAuthors = _formBuilder.array([]);
-    this.groups = this.editedAuthors.controls as FormGroup[];
-    this.form = _formBuilder.group({
-      editedAuthors: this.editedAuthors,
-      authorCount: this.authorCount,
-    });
-
+  constructor(public authorLookupService: AuthorRefLookupService) {
+    // once the draft mirrors the bound authors again, clear the
+    // interaction state
     effect(() => {
-      this.updateForm(this.authors());
+      const draft = this._draft();
+      untracked(() => {
+        if (this.isDraftInSync(draft)) {
+          this.form().reset();
+        }
+      });
     });
   }
 
-  public ngOnInit(): void {
-    // update current when authors change
-    this.editedAuthors.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
-      if (!this._updating) {
-        this.currentAuthors.set(this.buildCurrentAuthors());
-        this.authorCount.setValue(this.editedAuthors.length);
-        this.authorCount.updateValueAndValidity();
-        this.authorCount.markAsDirty();
-      }
-    });
+  private isDraftInSync(draft: WorkAuthorsControls): boolean {
+    return JSON.stringify(draft) === JSON.stringify(toDraft(this.authors()));
   }
 
-  private updateForm(authors?: WorkAuthor[]): void {
-    // do not emit while loading: the debounced valueChanges handler
-    // would otherwise mark the freshly loaded form as dirty
-    this.editedAuthors.clear({ emitEvent: false });
-    if (!authors?.length) {
-      this.form.reset();
-      this.currentAuthors.set(undefined);
-      return;
-    }
-
-    this._updating = true;
-    // when setting authors, we must ensure they are
-    // sorted according to their ordinals if any;
-    // otherwise, just stick with the received order.
-    const sorted = [...authors];
-    sorted.sort((a: WorkAuthor, b: WorkAuthor) => {
-      return (a.ordinal || 0) - (b.ordinal || 0);
-    });
-    for (let a of sorted) {
-      // push via the array (not its controls) so that the group gets
-      // registered, i.e. its changes update the array value and validity
-      this.editedAuthors.push(this.getAuthorGroup(a), { emitEvent: false });
-    }
-    this.currentAuthors.set(this.buildCurrentAuthors());
-    this.authorCount.setValue(this.editedAuthors.length);
-    this.form.markAsPristine();
-    this._updating = false;
+  /**
+   * Set the edited authors as the result of a user action.
+   */
+  private setAuthors(authors: WorkAuthorRow[]): void {
+    this.form.authors().value.set(authors);
+    this.form.authors().markAsDirty();
   }
 
   //#region Authors
@@ -166,7 +191,7 @@ export class WorkAuthorsComponent implements OnInit {
     this.author.set(author as Author);
     const wa: WorkAuthor = {
       ...(author as Author),
-      ordinal: this.editedAuthors.length + 1,
+      ordinal: this.form.authors().value().length + 1,
     };
     this.addAuthor(wa);
     setTimeout(() => {
@@ -174,100 +199,58 @@ export class WorkAuthorsComponent implements OnInit {
     });
   }
 
-  private getAuthorGroup(author?: WorkAuthor): FormGroup {
-    return this._formBuilder.group({
-      id: this._formBuilder.control<string | null>(author?.id || null),
-      last: this._formBuilder.control<string | null>(author?.last || null, [
-        Validators.required,
-        Validators.maxLength(50),
-      ]),
-      first: this._formBuilder.control<string | null>(author?.first || null, [
-        Validators.required,
-        Validators.maxLength(50),
-      ]),
-      suffix: this._formBuilder.control<string | null>(author?.suffix || null, {
-        validators: Validators.maxLength(50),
-        updateOn: 'change',
-      }),
-      role: this._formBuilder.control<string | null>(author?.role || null, {
-        validators: Validators.maxLength(50),
-        updateOn: 'change',
-      }),
-    });
-  }
-
   public addAuthor(item?: WorkAuthor): void {
-    // do not an already existing author
-    if (item) {
-      for (let i = 0; i < this.editedAuthors.length; i++) {
-        const g = this.editedAuthors.at(i) as FormGroup;
-        if (g.controls['id'].value === item.id) {
-          return;
-        }
-      }
+    const authors = this.form.authors().value();
+    // do not add an already existing author
+    if (item && authors.some((a) => a.id === item.id)) {
+      return;
     }
-    this.editedAuthors.push(this.getAuthorGroup(item));
-    this.editedAuthors.markAsDirty();
+    this.setAuthors([...authors, toRow(item)]);
   }
 
   public removeAuthor(index: number): void {
-    this.editedAuthors.removeAt(index);
-    this.editedAuthors.markAsDirty();
+    this.setAuthors(this.form.authors().value().filter((_, i) => i !== index));
   }
 
   public moveAuthorUp(index: number): void {
     if (index < 1) {
       return;
     }
-    const author = this.editedAuthors.controls[index];
-    this.editedAuthors.removeAt(index);
-    this.editedAuthors.insert(index - 1, author);
-    this.editedAuthors.markAsDirty();
+    const authors = [...this.form.authors().value()];
+    const author = authors[index];
+    authors.splice(index, 1);
+    authors.splice(index - 1, 0, author);
+    this.setAuthors(authors);
   }
 
   public moveAuthorDown(index: number): void {
-    if (index + 1 >= this.editedAuthors.length) {
+    const authors = [...this.form.authors().value()];
+    if (index + 1 >= authors.length) {
       return;
     }
-    const author = this.editedAuthors.controls[index];
-    this.editedAuthors.removeAt(index);
-    this.editedAuthors.insert(index + 1, author);
-    this.editedAuthors.markAsDirty();
+    const author = authors[index];
+    authors.splice(index, 1);
+    authors.splice(index + 1, 0, author);
+    this.setAuthors(authors);
   }
 
-  private getAuthors(): WorkAuthor[] | undefined {
-    const entries: WorkAuthor[] = [];
-    for (let i = 0; i < this.editedAuthors.length; i++) {
-      const g = this.editedAuthors.at(i) as FormGroup;
-      entries.push({
-        id: g.controls['id'].value,
-        last: g.controls['last'].value?.trim(),
-        first: g.controls['first'].value?.trim(),
-        suffix: g.controls['suffix'].value?.trim(),
-        role: g.controls['role'].value?.trim(),
-        ordinal: i + 1,
-      });
-    }
-    return entries.length ? entries : undefined;
-  }
-
-  private buildCurrentAuthors(): string {
+  private buildCurrentAuthors(authors: WorkAuthorRow[]): string {
     const sb: string[] = [];
-    for (let i = 0; i < this.editedAuthors.length; i++) {
-      const g = this.editedAuthors.at(i) as FormGroup;
+    for (let i = 0; i < authors.length; i++) {
+      const a = authors[i];
       if (i > 0) {
         sb.push('; ');
       }
       // last
-      sb.push(g.controls['last'].value?.trim());
+      sb.push(a.last.trim());
       // , first
-      const first = g.controls['first'].value?.trim();
+      const first = a.first.trim();
       if (first) {
         sb.push(', ');
         sb.push(first);
       }
       // (role)
-      const role = g.controls['role'].value?.trim();
+      const role = a.role.trim();
       if (role) {
         sb.push(' (');
         sb.push(role);
@@ -279,16 +262,29 @@ export class WorkAuthorsComponent implements OnInit {
   //#endregion
 
   public cancel(): void {
-    this.editing = false;
-    this.updateForm(this.authors());
+    this.editing.set(false);
+    // discard the edits
+    this._draft.set(toDraft(this.authors()));
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  /**
+   * Save on Enter in a text input, as the former form did.
+   */
+  public onEnterKey(event: Event): void {
+    if (!isImplicitSubmission(event)) {
       return;
     }
-    this.editing = false;
-    this.authors.set(this.getAuthors());
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.editing.set(false);
+    this.authors.set(toAuthors(this._draft()));
   }
 }

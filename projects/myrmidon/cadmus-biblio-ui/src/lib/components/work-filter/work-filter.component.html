@@ -1,12 +1,12 @@
-<!-- stop propagation: this form can be nested in other forms -->
-<form [formGroup]="form" (submit)="$event.stopPropagation(); apply()">
+<!-- no <form>: this filter can be nested in other editors -->
+<div (keydown.enter)="onEnterKey($event)">
   <div class="form-row">
     <!-- matchAny -->
-    <mat-checkbox [formControl]="matchAny">match any</mat-checkbox>
+    <mat-checkbox [formField]="form.matchAny">match any</mat-checkbox>
     <!-- type -->
     <mat-form-field>
       <mat-label>type</mat-label>
-      <mat-select [formControl]="type">
+      <mat-select [formField]="form.type">
         <mat-option [value]="null">(any)</mat-option>
         @for (t of types; track t.id) {
         <mat-option [value]="t.id">{{ t.name }}</mat-option>
@@ -20,8 +20,8 @@
     @if (langEntries()?.length) {
     <mat-form-field>
       <mat-label>language</mat-label>
-      <mat-select [formControl]="language">
-        <mat-option [value]="null">(any)</mat-option>
+      <mat-select [formField]="form.language">
+        <mat-option [value]="''">(any)</mat-option>
         @for (e of langEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
@@ -32,7 +32,7 @@
     @else {
     <mat-form-field style="width: 6em">
       <mat-label>language</mat-label>
-      <input matInput [formControl]="language" />
+      <input matInput [formField]="form.language" />
     </mat-form-field>
     }
   </div>
@@ -43,13 +43,13 @@
       <cadmus-refs-lookup
         label="author"
         [service]="authorLookupService"
-        [item]="author.value"
+        [item]="form.author().value()"
         (itemChange)="onAuthorChange($event)"
       />
     </div>
-    @if (author.value) {
+    @if (form.author().value(); as author) {
     <div>
-      <span class="info">{{ authorToString(author.value) }}</span>
+      <span class="info">{{ authorToString(author) }}</span>
       <button
         type="button"
         mat-icon-button
@@ -66,7 +66,7 @@
   <div>
     <mat-form-field>
       <mat-label>last name</mat-label>
-      <input matInput [formControl]="lastName" />
+      <input matInput [formField]="form.lastName" />
     </mat-form-field>
   </div>
 
@@ -74,7 +74,7 @@
   <div>
     <mat-form-field>
       <mat-label>title</mat-label>
-      <input matInput [formControl]="title" />
+      <input matInput [formField]="form.title" />
     </mat-form-field>
   </div>
 
@@ -82,13 +82,13 @@
     <!-- yearMin -->
     <mat-form-field style="width: 7em">
       <mat-label>yr.min.</mat-label>
-      <input matInput type="number" min="0" [formControl]="yearMin" />
+      <input matInput type="number" [formField]="form.yearMin" />
     </mat-form-field>
     -
     <!-- yearMax -->
     <mat-form-field style="width: 7em">
       <mat-label>yr.max.</mat-label>
-      <input matInput type="number" min="0" [formControl]="yearMax" />
+      <input matInput type="number" [formField]="form.yearMax" />
     </mat-form-field>
   </div>
 
@@ -96,7 +96,7 @@
   <div>
     <mat-form-field>
       <mat-label>key</mat-label>
-      <input matInput [formControl]="key" />
+      <input matInput [formField]="form.key" />
     </mat-form-field>
   </div>
 
@@ -104,7 +104,7 @@
   <div>
     <mat-form-field>
       <mat-label>keyword</mat-label>
-      <input matInput [formControl]="keyword" />
+      <input matInput [formField]="form.keyword" />
       <mat-hint>lng:keyword</mat-hint>
     </mat-form-field>
   </div>
@@ -115,14 +115,14 @@
       <cadmus-refs-lookup
         label="container"
         [service]="workLookupService"
-        [item]="container.value"
+        [item]="form.container().value()"
         [baseFilter]="{ container: true }"
         (itemChange)="onContainerChange($event)"
       />
     </div>
-    @if (container.value) {
+    @if (form.container().value(); as container) {
     <div>
-      <span class="info">{{ workToString(container.value) }}</span>
+      <span class="info">{{ workToString(container) }}</span>
       <button
         type="button"
         mat-icon-button
@@ -145,8 +145,13 @@
     >
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
-    <button type="submit" mat-icon-button matTooltip="Apply filters">
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Apply filters"
+      (click)="apply()"
+    >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
   </div>
-</form>
+</div>

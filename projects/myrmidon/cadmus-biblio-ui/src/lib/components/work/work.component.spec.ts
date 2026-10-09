@@ -393,4 +393,63 @@ describe('WorkComponent', () => {
       expect.objectContaining({ language: 'ita' })
     );
   });
+
+  it('should render no <form>, so it can be nested at any depth', async () => {
+    const { container } = await setup({ work: WORK });
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should be pristine after loading a work', async () => {
+    await setup({ work: WORK });
+    // wait past the child editors' autosave debounce (historical date)
+    await new Promise((r) => setTimeout(r, 600));
+    expect(accept()).toBeDisabled();
+  });
+
+  it('should save on Enter in a text input when changed', async () => {
+    const { user, workChange } = await setup({ work: WORK });
+    await user.type(textbox('number'), '{Enter}');
+    expect(workChange).not.toHaveBeenCalled();
+    await user.type(textbox('number'), 'a{Enter}');
+    expect(workChange).toHaveBeenCalledWith(
+      expect.objectContaining({ number: '3a' })
+    );
+  });
+
+  it('should only accept the authors on Enter in an author input', async () => {
+    const { user, workChange } = await setup({ work: WORK });
+    // make the work savable
+    await user.type(textbox('number'), 'a');
+    await user.click(screen.getByRole('button', { name: /Doe, John/ }));
+    await user.type(screen.getByRole('textbox', { name: 'first' }), 'x{Enter}');
+    // the authors editor closed, and the work was not saved
+    expect(screen.getByRole('button', { name: /Doe, Johnx/ })).toBeInTheDocument();
+    expect(workChange).not.toHaveBeenCalled();
+    await user.click(accept());
+    expect(workChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        authors: [expect.objectContaining({ first: 'Johnx' })],
+      })
+    );
+  });
+
+  it('should not save on Enter in the container lookup', async () => {
+    const { user, workChange } = await setup({
+      work: { ...WORK, container: undefined },
+    });
+    await user.type(textbox('number'), 'a');
+    await user.click(screen.getByRole('button', { name: 'container' }));
+    await user.type(screen.getByPlaceholderText('container'), 'jo{Enter}');
+    expect(workChange).not.toHaveBeenCalled();
+  });
+
+  it('should save arrays without the form tags', async () => {
+    const { user, workChange } = await setup({ work: WORK });
+    await user.type(textbox('number'), 'a');
+    await user.click(accept());
+    const work = workChange.mock.lastCall![0];
+    for (const item of [...work.authors, ...work.keywords, ...work.links]) {
+      expect(Object.getOwnPropertySymbols(item)).toEqual([]);
+    }
+  });
 });
