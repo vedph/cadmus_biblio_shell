@@ -20,7 +20,9 @@
             "outputPath": "dist/cadmus-biblio-shell",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["@angular/localize/init"],
+            "polyfills": [
+              "@angular/localize/init"
+            ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -34,7 +36,9 @@
                 "output": "vs"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss"
+            ],
             "scripts": [],
             "allowedCommonJsDependencies": [
               "webcola",
@@ -68,7 +72,9 @@
               "aot": false,
               "optimization": false,
               "extractLicenses": false,
-              "polyfills": ["@angular/localize/init"]
+              "polyfills": [
+                "@angular/localize/init"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -93,7 +99,10 @@
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "buildTarget": ":build:testing",
-            "runner": "vitest"
+            "runner": "vitest",
+            "setupFiles": [
+              "src/test-setup.ts"
+            ]
           }
         }
       }
@@ -120,10 +129,12 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/myrmidon/cadmus-biblio-api/tsconfig.spec.json",
-            "polyfills": []
+            "setupFiles": [
+              "projects/myrmidon/cadmus-biblio-api/src/test-setup.ts"
+            ]
           }
         }
       }
@@ -150,10 +161,12 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/myrmidon/cadmus-biblio-core/tsconfig.spec.json",
-            "polyfills": []
+            "setupFiles": [
+              "projects/myrmidon/cadmus-biblio-core/src/test-setup.ts"
+            ]
           }
         }
       }
@@ -180,10 +193,12 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/myrmidon/cadmus-biblio-ui/tsconfig.spec.json",
-            "polyfills": []
+            "setupFiles": [
+              "projects/myrmidon/cadmus-biblio-ui/src/test-setup.ts"
+            ]
           }
         }
       }
@@ -210,10 +225,12 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/myrmidon/cadmus-part-biblio-pg/tsconfig.spec.json",
-            "polyfills": []
+            "setupFiles": [
+              "projects/myrmidon/cadmus-part-biblio-pg/src/test-setup.ts"
+            ]
           }
         }
       }
@@ -240,10 +257,12 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/myrmidon/cadmus-part-biblio-ui/tsconfig.spec.json",
-            "polyfills": []
+            "setupFiles": [
+              "projects/myrmidon/cadmus-part-biblio-ui/src/test-setup.ts"
+            ]
           }
         }
       }

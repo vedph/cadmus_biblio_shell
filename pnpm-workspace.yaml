@@ -7,3 +7,4 @@ minimumReleaseAgeExclude:
   - '@myrmidon/cadmus-item-editor@18.0.0'
   - '@myrmidon/cadmus-ui@18.0.0'
   - '@myrmidon/ngx-tools@3.0.2'
+  - '@rollup/rollup-win32-arm64-msvc@4.64.3'
