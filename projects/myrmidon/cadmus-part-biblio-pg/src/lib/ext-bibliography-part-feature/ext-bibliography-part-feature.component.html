@@ -1,7 +1,7 @@
 <cadmus-current-item-bar/>
 <biblio-ext-bibliography-part
   [identity]="identity()"
-  [data]="$any(data)"
+  [data]="$any(data())"
   (dataChange)="save($event!.value!)"
   (editorClose)="close()"
   (dirtyChange)="onDirtyChange($event)"

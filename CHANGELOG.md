@@ -21,6 +21,7 @@
     - `WorkListComponent`: tag/note validation errors never appeared; editing a work dropped the tag and note of its entry; tag/note text typed just before another list operation was lost; the details and editor panels were not refreshed in zoneless mode (now signals); the editor of a new work had an empty header.
     - `WorkRefLookupService`: removed debug log.
   - `@myrmidon/cadmus-part-biblio-ui`: added full unit tests. Fixed `ExtBibliographyPartComponent`: the link scopes thesaurus (`ext-biblio-link-scopes`) was loaded but never passed to the works list; a part without value did not clear the previous entries.
+  - `@myrmidon/cadmus-part-biblio-pg`: added full unit tests. Fixed `ExtBibliographyPartFeatureComponent`: it passed the `data` signal itself (rather than its value) to the part editor, so the loaded part and its thesauri never reached the editor.
 
 - 2026-09-05: updated packages.
 
