@@ -5,14 +5,14 @@
     /></span>
     <a mat-button routerLink="/home">Cadmus Biblio</a>
     <!-- items menu -->
-    @if (logged && itemBrowsers) {
+    @if (logged() && itemBrowsers()) {
     <button type="button" mat-button [matMenuTriggerFor]="itemMenu">
       Items
     </button>
     }
     <mat-menu #itemMenu>
       <a mat-menu-item routerLink="/items">Items</a>
-      @for (entry of itemBrowsers; track entry) {
+      @for (entry of itemBrowsers(); track entry) {
       <a
         mat-menu-item
         [routerLink]="'item-browser/' + getItemBrowserRoute(entry.id)"
@@ -20,28 +20,28 @@
       }
     </mat-menu>
     <!-- item menu -->
-    @if (logged && !itemBrowsers) {
+    @if (logged() && !itemBrowsers()) {
     <button type="button" mat-button routerLink="/items">Items</button>
     }
 
     <!-- search menu -->
-    @if (logged) {
+    @if (logged()) {
     <button type="button" mat-button routerLink="/search">Search</button>
     }
     <!-- graph menu -->
-    <!-- @if (logged) {
+    <!-- @if (logged()) {
     <button type="button" mat-button routerLink="/graph">Graph</button>
     } -->
     <!-- thesauri menu -->
-    @if ( user && (user.roles.includes('admin') ||
-    user.roles.includes('editor')) ) {
+    @if ( user()?.roles?.includes('admin') ||
+    user()?.roles?.includes('editor') ) {
     <button type="button" mat-button routerLink="/thesauri">Thesauri</button>
     }
     <!-- bibliography menu -->
-    @if ( user && (user.roles.includes('admin') ||
-    user.roles.includes('editor')) ) {
+    @if ( user()?.roles?.includes('admin') ||
+    user()?.roles?.includes('editor') ) {
     <button type="button" mat-button routerLink="/biblio">Bibliography</button>
-    } @if (logged) {
+    } @if (logged()) {
     <button type="button" mat-button routerLink="/demo">Demo</button>
     <button type="button" mat-button routerLink="/works">Works</button>
     }
@@ -49,13 +49,13 @@
     <span class="tb-fill-remaining-space"></span>
 
     <!-- user -->
-    @if (user) {
+    @if (user(); as user) {
     <div>
       <!-- indicators -->
       <img [src]="user.email | gravatar : 32" alt="{{ user.userName }}" />
-      @if (user && user.roles.includes('admin')) {
+      @if (user.roles.includes('admin')) {
       <mat-icon class="small-icon" title="admin">build</mat-icon>
-      } @if (user && !user.emailConfirmed) {
+      } @if (!user.emailConfirmed) {
       <mat-icon
         class="small-icon"
         title="You must verify your email address! Please check your mailbox "
@@ -68,7 +68,7 @@
         <a mat-menu-item routerLink="/reset-password">Reset password</a>
       </mat-menu>
       <!-- admin menu -->
-      @if (user && user.roles.includes('admin')) {
+      @if (user.roles.includes('admin')) {
       <button type="button" mat-button [matMenuTriggerFor]="adminMenu">
         Admin
       </button>
@@ -81,13 +81,13 @@
     }
 
     <!-- login -->
-    @if (!logged) {
+    @if (!logged()) {
     <button type="button" mat-icon-button routerLink="/login">
       <mat-icon>login</mat-icon>
     </button>
     }
     <!-- logout -->
-    @if (logged) {
+    @if (logged()) {
     <button type="button" mat-icon-button (click)="logout()">
       <mat-icon>logout</mat-icon>
     </button>

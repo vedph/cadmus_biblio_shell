@@ -72,7 +72,15 @@ Test data: two ext-bibliography parts were created on item `b830b833…` (one pe
 - `AppComponent` always navigates to `/home` at startup (`app.component.ts:54`), so deep links are lost on reload.
 - Reset password page: its `type="submit"` button is outside the `<form>` (in `mat-card-actions`), so clicking it does nothing; only Enter in the email input submits. Kept as is.
 - App specs (`ng test cadmus-biblio-shell`) do not compile: `app.component.spec.ts` checks a missing `title`, and the page specs are stale CLI scaffolds declaring standalone components. Untouched by this migration.
-- `WorkFilterComponent.types` is a plain array assigned in an HTTP callback. In a zoneless app this does not schedule change detection by itself (**believed** harmless in practice, as other events refresh the view; check by loading the filter with no other activity).
-- `cadmus-refs-historical-date` 10.0.3 checks `getError("max-length")`, which signal forms never produce (`maxLength`), so its "tag too long" message cannot appear.
+- ~~`WorkFilterComponent.types` is a plain array assigned in an HTTP callback.~~ Fixed later on 2026-10-09: now a signal.
+- ~~`cadmus-refs-historical-date` 10.0.3 checks `getError("max-length")`~~: fixed in `cadmus-refs-historical-date` 10.0.4 (bricks workspace). The tag never had a length rule, not even in the reactive version, so the message was removed rather than given an invented limit. It reaches this app once 10.0.4 is published and installed.
 - Dead validation messages kept as they were: "tag required" in the works list (no `required` rule on tags), "too long" for the keyword language (no `maxLength` rule), "invalid language" in the work editor (no `pattern` rule).
 - `LoginPageComponent` logs the logged-in user to the console (`console.log('User logged in', user)`).
+
+## Follow-up: NG0100 on login (2026-10-09)
+
+After the login page was replaced with the Cadmus shell's one, a successful login logged `NG0100 ... Previous value: '-1'. Current value: '13'. Expression location: _AppComponent`.
+
+- Reproduced in headless Chrome. The stack ends in `ɵɵconditional` in `AppComponent_Template`; in the served `main.js`, block 13 is `@if (logged && !itemBrowsers)`, and the `@if (logged && itemBrowsers)` before it did not change. So `logged` went from false to true between the change detection pass and its dev mode check.
+- Cause (from the code): `AuthJwtService.login` emits the user synchronously in the HTTP callback; `AppComponent` set plain fields in its subscription, which notify nothing in a zoneless app. `busy.set(false)` in the login page scheduled a tick refreshing only the login page's path, not `AppComponent`'s template; the dev mode check then re-read the Eager `AppComponent` and found the new value.
+- Fix: `AppComponent.user`, `logged`, `itemBrowsers` are signals. Verified in the browser against the served code (`ctx.logged()` in `main.js`): login → 0 NG0100, toolbar shows the logged-in menus; logout → toolbar shows the login button, 0 NG0100.

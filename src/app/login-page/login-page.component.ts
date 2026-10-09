@@ -1,7 +1,7 @@
-
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule } from '@angular/forms';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,47 +20,46 @@ import {
   standalone: true,
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatButtonModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatTooltipModule,
-    AuthJwtLoginComponent
-],
+    AuthJwtLoginComponent,
+  ],
 })
 export class LoginPageComponent {
-  public busy = false;
-  public error?: string;
+  public readonly busy = signal<boolean>(false);
+  public readonly error = signal<string | undefined>(undefined);
 
   constructor(
     private _authService: AuthJwtService,
     private _router: Router,
-    private _snackbar: MatSnackBar
+    private _snackbar: MatSnackBar,
   ) {}
 
   public onLoginRequest(credentials: Credentials): void {
-    this.busy = true;
+    this.busy.set(true);
 
     this._authService.login(credentials.name, credentials.password).subscribe({
       next: (user) => {
         console.log('User logged in', user);
-        this._router.navigate([credentials.returnUrl || '/home']);
+        this.busy.set(false);
+        this._router.navigate([credentials.returnUrl || '/items']);
       },
       error: (error) => {
-        this.error = 'Login failed';
-        console.error(this.error, error);
-        this._snackbar.open(this.error, 'Dismiss', {
+        this.busy.set(false);
+        this.error.set('Login failed');
+        this._snackbar.open('Login failed', 'Dismiss', {
           duration: 5000,
         });
       },
-      complete: () => {
-        this.busy = false;
-      },
     });
   }
+
   public onResetRequest(): void {
     this._router.navigate(['/reset-password']);
   }

@@ -1,4 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription, take } from 'rxjs';
 
@@ -34,9 +41,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private _authSub?: Subscription;
   private _brSub?: Subscription;
 
-  public user?: User;
-  public logged?: boolean;
-  public itemBrowsers?: ThesaurusEntry[];
+  // signals: they are updated in subscriptions (e.g. on login), which in
+  // a zoneless app do not trigger change detection
+  public readonly user = signal<User | undefined>(undefined);
+  public readonly logged = signal<boolean>(false);
+  public readonly itemBrowsers = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   public version: string;
 
   constructor(
@@ -52,13 +63,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._router.navigate(['/home']);
-    this.user = this._authService.currentUserValue || undefined;
-    this.logged = this.user !== null;
-
     this._authSub = this._authService.currentUser$.subscribe(
       (user: User | null) => {
-        this.logged = this._authService.isAuthenticated(true);
-        this.user = user || undefined;
+        this.logged.set(this._authService.isAuthenticated(true));
+        this.user.set(user || undefined);
         if (user) {
           this._appRepository.load();
         }
@@ -67,7 +75,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this._brSub = this._appRepository.itemBrowserThesaurus$.subscribe(
       (thesaurus: Thesaurus | undefined) => {
-        this.itemBrowsers = thesaurus ? thesaurus.entries : undefined;
+        this.itemBrowsers.set(thesaurus ? thesaurus.entries : undefined);
       }
     );
   }
@@ -82,7 +90,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public logout(): void {
-    if (!this.logged) {
+    if (!this.logged()) {
       return;
     }
     this._authService
